@@ -11,8 +11,7 @@ class MoviesListScreen extends StatefulWidget {
 }
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
-  final _moviesList = <MovieShortDetails>[];
-  final _dio = DioClient();
+  List<MovieShortDetails> _moviesList;
   bool _shouldRetry = false;
 
   @override
@@ -37,23 +36,18 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 child: Center(
                   child: RaisedButton(
                     onPressed: () {
-                      _dio.getMovies().then((value) {
+                      DioClient().getMovies().then((value) {
                         setState(() {
                           if (value.isEmpty) {
                             _shouldRetry = true;
                           } else {
                             _shouldRetry = false;
-                          }
-
-                          if (_moviesList.isEmpty) {
-                            _moviesList.addAll(value);
-                          } else {
-                            _moviesList.setAll(0, value);
+                            _moviesList = value;
                           }
                         });
                       });
                     },
-                    child: Text(!_shouldRetry && _moviesList.isEmpty
+                    child: Text(!_shouldRetry && _moviesList == null
                         ? 'Buscar filmes'
                         : 'Tentar Novamente'),
                   ),
