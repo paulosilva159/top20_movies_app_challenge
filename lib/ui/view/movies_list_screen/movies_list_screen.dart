@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../data/dio/dio_client.dart';
@@ -24,9 +26,9 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
         _moviesList.addAll(value);
         _awaitingMovieList = false;
       });
-    }).catchError((onError) {
+    }).catchError((error) {
       setState(() {
-        _error = onError;
+        _error = error.error;
       });
     });
 
@@ -56,7 +58,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      if (_error.error.osError.errorCode == 7)
+                      if (_error is SocketException)
                         const Text(
                           'Verifique sua conexão',
                           style: TextStyle(
