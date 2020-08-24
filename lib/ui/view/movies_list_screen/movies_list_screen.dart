@@ -12,8 +12,26 @@ class MoviesListScreen extends StatefulWidget {
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
   final _moviesList = <MovieShortDetails>[];
+  bool _awaitingMovieList = true;
+
   final _dio = DioClient();
-  bool _shouldRetry = false;
+  dynamic _error;
+
+  @override
+  void initState() {
+    _dio.getMovies().then((value) {
+      setState(() {
+        _moviesList.addAll(value);
+        _awaitingMovieList = false;
+      });
+    }).catchError((onError) {
+      setState(() {
+        _error = onError;
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -30,34 +48,51 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 ),
               ),
             ),
-            if (!_shouldRetry && _moviesList.isNotEmpty)
-              MoviesList(_moviesList),
-            if (_shouldRetry || _moviesList.isEmpty)
+            if (_error != null)
               SliverToBoxAdapter(
                 child: Center(
-                  child: RaisedButton(
-                    onPressed: () {
-                      _dio.getMovies().then((value) {
-                        setState(() {
-                          if (value.isEmpty) {
-                            _shouldRetry = true;
-                          } else {
-                            _shouldRetry = false;
-                          }
-
-                          if (_moviesList.isEmpty) {
-                            _moviesList.addAll(value);
-                          } else {
-                            _moviesList.setAll(0, value);
-                          }
-                        });
-                      });
-                    },
-                    child: Text(!_shouldRetry && _moviesList.isEmpty
-                        ? 'Buscar filmes'
-                        : 'Tentar Novamente'),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      if (_error.error.osError.errorCode == 7)
+                        const Text(
+                          'Verifique sua conexão',
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      RaisedButton(
+                        onPressed: () {
+                          _dio.getMovies().then((value) {
+                            setState(() {
+                              _error = null;
+                              _moviesList.addAll(value);
+                              _awaitingMovieList = false;
+                            });
+                          }).catchError((onError) {
+                            setState(() {
+                              _error = onError;
+                            });
+                          });
+                        },
+                        child: const Text('Tentar Novamente'),
+                      ),
+                    ],
                   ),
                 ),
+              ),
+            if (_error == null)
+              Visibility(
+                visible: !_awaitingMovieList,
+                replacement: const SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                child: MoviesList(_moviesList),
               ),
           ],
         ),

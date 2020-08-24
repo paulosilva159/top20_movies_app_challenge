@@ -10,19 +10,14 @@ class DioClient {
   Future<List<MovieShortDetails>> getMovies() async {
     final movieList = <MovieShortDetails>[];
 
-    try {
-      final response = await _dio.get(baseUrl);
+    final response = await _dio.get(baseUrl);
 
-      if (response.statusCode == 200) {
-        response.data.forEach((movie) {
-          movieList.add(MovieShortDetails.fromJson(movie));
-        });
-      } else {
-        print(
-            'We got ${response.statusCode} while trying to obtain the movies');
-      }
-    } catch (error) {
-      print(error);
+    if (response.statusCode == 200) {
+      response.data.forEach((movie) {
+        movieList.add(MovieShortDetails.fromJson(movie));
+      });
+    } else {
+      print('We got ${response.statusCode} while trying to obtain the movies');
     }
 
     return movieList;
@@ -31,17 +26,12 @@ class DioClient {
   Future<MovieLongDetails> getMovieDetails(int id) async {
     MovieLongDetails movieDetails;
 
-    try {
-      final response = await _dio.get('$baseUrl/$id');
+    final response = await _dio.get('$baseUrl/$id');
 
-      if (response.statusCode == 200) {
-        movieDetails = MovieLongDetails.fromJson(response.data);
-      } else {
-        print(
-            'We got ${response.statusCode} while trying to obtain the details');
-      }
-    } catch (error) {
-      print(error);
+    if (response.statusCode == 200) {
+      movieDetails = MovieLongDetails.fromJson(response.data);
+    } else {
+      print('We got ${response.statusCode} while trying to obtain the details');
     }
 
     return movieDetails;
