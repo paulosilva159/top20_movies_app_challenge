@@ -11,7 +11,7 @@ class MoviesListScreen extends StatefulWidget {
 }
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
-  List<MovieShortDetails> _moviesList;
+  final _moviesList = <MovieShortDetails>[];
   bool _shouldRetry = false;
 
   @override
@@ -42,7 +42,12 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                             _shouldRetry = true;
                           } else {
                             _shouldRetry = false;
-                            _moviesList = value;
+                          }
+
+                          if (_moviesList.isEmpty) {
+                            _moviesList.addAll(value);
+                          } else {
+                            _moviesList.setAll(0, value);
                           }
                         });
                       });
