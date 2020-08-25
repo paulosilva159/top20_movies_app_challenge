@@ -1,11 +1,19 @@
+import 'package:meta/meta.dart';
+
 class MovieShortDetails {
   MovieShortDetails(
-      {this.id,
-      this.voteAverage,
-      this.title,
-      this.posterUrl,
-      this.genres,
-      this.releaseDate});
+      {@required this.id,
+      @required this.voteAverage,
+      @required this.title,
+      @required this.posterUrl,
+      @required this.genres,
+      @required this.releaseDate})
+      : assert(id != null),
+        assert(voteAverage != null),
+        assert(title != null),
+        assert(posterUrl != null),
+        assert(genres != null),
+        assert(releaseDate != null);
 
   factory MovieShortDetails.fromJson(Map<String, dynamic> json) =>
       MovieShortDetails(

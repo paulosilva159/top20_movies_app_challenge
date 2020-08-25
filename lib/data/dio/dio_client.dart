@@ -8,32 +8,16 @@ class DioClient {
   final Dio _dio = Dio();
 
   Future<List<MovieShortDetails>> getMovies() async {
-    final movieList = <MovieShortDetails>[];
-
     final response = await _dio.get(baseUrl);
 
-    if (response.statusCode == 200) {
-      response.data.forEach((movie) {
-        movieList.add(MovieShortDetails.fromJson(movie));
-      });
-    } else {
-      print('We got ${response.statusCode} while trying to obtain the movies');
-    }
-
-    return movieList;
+    return response.data
+        .map<MovieShortDetails>((movie) => MovieShortDetails.fromJson(movie))
+        .toList();
   }
 
   Future<MovieLongDetails> getMovieDetails(int id) async {
-    MovieLongDetails movieDetails;
-
     final response = await _dio.get('$baseUrl/$id');
 
-    if (response.statusCode == 200) {
-      movieDetails = MovieLongDetails.fromJson(response.data);
-    } else {
-      print('We got ${response.statusCode} while trying to obtain the details');
-    }
-
-    return movieDetails;
+    return MovieLongDetails.fromJson(response.data);
   }
 }

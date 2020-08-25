@@ -4,7 +4,7 @@ class ImageLoader extends StatelessWidget {
   const ImageLoader(
       {@required this.url,
       @required this.title,
-      this.backdropUrl,
+      this.fallbackUrl,
       this.boxFit,
       this.titleStyle})
       : assert(url != null),
@@ -13,52 +13,35 @@ class ImageLoader extends StatelessWidget {
   final BoxFit boxFit;
   final String url;
   final String title;
-  final String backdropUrl;
+  final String fallbackUrl;
   final TextStyle titleStyle;
 
   @override
   Widget build(BuildContext context) => Image(
-        fit: boxFit ?? BoxFit.fitHeight,
-        image: NetworkImage(url),
-        loadingBuilder: (context, child, loadingProgress) =>
-            loadingProgress == null
-                ? child
-                : Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.blue,
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  ),
-        errorBuilder: (context, exception, stackTrace) => backdropUrl == null
-            ? _ImagePlaceholder(
-                title: title,
-                titleStyle: titleStyle,
-              )
-            : Image(
-                fit: boxFit ?? BoxFit.fitWidth,
-                image: NetworkImage(backdropUrl),
-                loadingBuilder: (context, child, loadingProgress) =>
-                    loadingProgress == null
-                        ? child
-                        : Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Colors.blue,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          ),
-                errorBuilder: (context, exception, stackTrace) =>
-                    _ImagePlaceholder(
-                  title: title,
-                  titleStyle: titleStyle,
+      fit: boxFit ?? BoxFit.fitHeight,
+      image: NetworkImage(url),
+      loadingBuilder: (context, child, loadingProgress) =>
+          loadingProgress == null
+              ? child
+              : const Center(
+                  child: CircularProgressIndicator(
+//                    value: loadingProgress.expectedTotalBytes != null
+//                        ? loadingProgress.cumulativeBytesLoaded /
+//                            loadingProgress.expectedTotalBytes
+//                        : null,
+                      ),
                 ),
-              ),
-      );
+      errorBuilder: (context, exception, stackTrace) => fallbackUrl == null
+          ? _ImagePlaceholder(
+              title: title,
+              titleStyle: titleStyle,
+            )
+          : ImageLoader(
+              url: fallbackUrl,
+              title: title,
+              boxFit: boxFit,
+              titleStyle: titleStyle,
+            ));
 }
 
 class _ImagePlaceholder extends StatelessWidget {
