@@ -13,29 +13,41 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  MovieLongDetails _detailsContent = MovieLongDetails();
-  bool _awaitingDetailsContent = true;
+  MovieLongDetails _detailsContent;
+  bool _awaitingDetailsContent;
   int _id;
 
   dynamic _error;
   final _dio = DioClient();
+
+  void _getMovieDetails({bool isRetrying = false}) {
+    setState(() {
+      _error = null;
+      _awaitingDetailsContent = true;
+    });
+
+    _dio.getMovieDetails(_id).then((value) {
+      setState(() {
+        if (isRetrying) {
+          _error = null;
+        }
+        _detailsContent = value;
+        _awaitingDetailsContent = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        _error = error.error;
+        print(_error);
+      });
+    });
+  }
 
   @override
   void didChangeDependencies() {
     if (_id == null) {
       _id = ModalRoute.of(context).settings.arguments;
 
-      _dio.getMovieDetails(_id).then((value) {
-        setState(() {
-          _detailsContent = value;
-          _awaitingDetailsContent = false;
-        });
-      }).catchError((error) {
-        setState(() {
-          _error = error.error;
-          print(_error);
-        });
-      });
+      _getMovieDetails();
     }
 
     super.didChangeDependencies();
@@ -43,16 +55,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-          body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text('Detalhes'),
-            ),
-          ),
-          if (_error != null)
-            SliverToBoxAdapter(
-              child: Center(
+        appBar: AppBar(
+          title: const Text('Detalhes'),
+          centerTitle: true,
+        ),
+        body: Stack(
+          children: [
+            if (_error != null)
+              Center(
                 child: Column(
                   children: [
                     const SizedBox(
@@ -68,34 +78,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       ),
                     RaisedButton(
                       onPressed: () {
-                        _dio.getMovieDetails(_id).then((value) {
-                          setState(() {
-                            _error = null;
-                            _detailsContent = value;
-                            _awaitingDetailsContent = false;
-                          });
-                        }).catchError((onError) {
-                          setState(() {
-                            _error = onError;
-                          });
-                        });
+                        _getMovieDetails(isRetrying: true);
                       },
                       child: const Text('Tentar Novamente'),
                     ),
                   ],
                 ),
-              ),
-            ),
-          if (_error == null)
-            Visibility(
-              visible: !_awaitingDetailsContent,
-              replacement: const SliverFillRemaining(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              child: MovieDetailsTile(_detailsContent),
-            ),
-        ],
-      ));
+              )
+            else if (_awaitingDetailsContent)
+              const Center(
+                child: CircularProgressIndicator(),
+              )
+            else
+              MovieDetailsTile(_detailsContent)
+          ],
+        ),
+      );
 }

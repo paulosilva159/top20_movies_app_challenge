@@ -8,54 +8,52 @@ class MovieDetailsTile extends StatelessWidget {
   final MovieLongDetails detailsContent;
 
   @override
-  Widget build(BuildContext context) => SliverList(
-        delegate: SliverChildListDelegate.fixed(
-          [
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Text('${detailsContent.title} #${detailsContent.id}'),
+  Widget build(BuildContext context) => ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Text('${detailsContent.title} #${detailsContent.id}'),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+            child: Text(
+              '${detailsContent.tagline}',
+              textAlign: TextAlign.center,
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
-              child: Text(
-                '${detailsContent.tagline}',
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    text: 'Nota: ',
-                    style: const TextStyle(color: Colors.black),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: '${detailsContent.voteAverage}',
-                          style: const TextStyle(color: Colors.black))
-                    ],
-                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: 'Nota: ',
+                  style: const TextStyle(color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: '${detailsContent.voteAverage}',
+                        style: const TextStyle(color: Colors.black))
+                  ],
                 ),
-                RichText(
-                  text: TextSpan(
-                    text: 'Qtd. de votos: ',
-                    style: const TextStyle(color: Colors.black),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: '${detailsContent.voteCount}',
-                          style: const TextStyle(color: Colors.black))
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              child: Text(
-                '${detailsContent.overview}',
               ),
+              RichText(
+                text: TextSpan(
+                  text: 'Qtd. de votos: ',
+                  style: const TextStyle(color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: '${detailsContent.voteCount}',
+                        style: const TextStyle(color: Colors.black))
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Text(
+              '${detailsContent.overview}',
             ),
-          ],
-        ),
+          ),
+        ],
       );
 }
