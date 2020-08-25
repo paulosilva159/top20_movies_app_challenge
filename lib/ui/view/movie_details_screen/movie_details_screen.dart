@@ -55,14 +55,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Detalhes'),
-          centerTitle: true,
-        ),
-        body: Stack(
-          children: [
-            if (_error != null)
-              Center(
+          body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Detalhes'),
+            ),
+          ),
+          if (_error != null)
+            SliverToBoxAdapter(
+              child: Center(
                 child: Column(
                   children: [
                     const SizedBox(
@@ -84,14 +86,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     ),
                   ],
                 ),
-              )
-            else if (_awaitingDetailsContent)
-              const Center(
+              ),
+            )
+          else if (_awaitingDetailsContent)
+            const SliverFillRemaining(
+              child: Center(
                 child: CircularProgressIndicator(),
-              )
-            else
-              MovieDetailsTile(_detailsContent)
-          ],
-        ),
-      );
+              ),
+            )
+          else
+            MovieDetailsTile(_detailsContent)
+        ],
+      ));
 }
