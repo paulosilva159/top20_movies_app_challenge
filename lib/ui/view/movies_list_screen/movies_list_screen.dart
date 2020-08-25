@@ -13,17 +13,24 @@ class MoviesListScreen extends StatefulWidget {
 }
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
-  final _moviesList = <MovieShortDetails>[];
+  List<MovieShortDetails> _moviesList;
   bool _awaitingMovieList = true;
 
   final _dio = DioClient();
   dynamic _error;
 
-  @override
-  void initState() {
+  void _getMovies({bool isRetrying = false}) {
+    setState(() {
+      _error = null;
+      _awaitingMovieList = true;
+    });
+
     _dio.getMovies().then((value) {
       setState(() {
-        _moviesList.addAll(value);
+        if (isRetrying) {
+          _error = null;
+        }
+        _moviesList = value;
         _awaitingMovieList = false;
       });
     }).catchError((error) {
@@ -31,72 +38,67 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
         _error = error.error;
       });
     });
+  }
+
+  @override
+  void initState() {
+    _getMovies();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250,
-              flexibleSpace: FlexibleSpaceBar(
-                title: const Text('TMDb'),
-                centerTitle: true,
-                background: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Image.asset('lib/ui/assets/top-20.png'),
-                ),
-              ),
-            ),
+      appBar: AppBar(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+          ),
+        ),
+        elevation: 20,
+        toolbarHeight: 250,
+        title: Padding(
+          padding: const EdgeInsets.all(70),
+          child: Image.asset('lib/ui/assets/top-20.png'),
+        ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Stack(
+          children: [
             if (_error != null)
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
+              Center(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    if (_error is SocketException)
+                      const Text(
+                        'Verifique sua conexão',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12),
                       ),
-                      if (_error is SocketException)
-                        const Text(
-                          'Verifique sua conexão',
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                      RaisedButton(
-                        onPressed: () {
-                          _dio.getMovies().then((value) {
-                            setState(() {
-                              _error = null;
-                              _moviesList.addAll(value);
-                              _awaitingMovieList = false;
-                            });
-                          }).catchError((onError) {
-                            setState(() {
-                              _error = onError;
-                            });
-                          });
-                        },
-                        child: const Text('Tentar Novamente'),
-                      ),
-                    ],
-                  ),
+                    RaisedButton(
+                      onPressed: () {
+                        _getMovies(isRetrying: true);
+                      },
+                      child: const Text('Tentar Novamente'),
+                    ),
+                  ],
                 ),
-              ),
-            if (_error == null)
-              Visibility(
-                visible: !_awaitingMovieList,
-                replacement: const SliverFillRemaining(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                child: MoviesList(_moviesList),
-              ),
+              )
+            else if (_awaitingMovieList)
+              const Center(
+                child: CircularProgressIndicator(),
+              )
+            else
+              MoviesList(_moviesList)
           ],
         ),
-      );
+      ));
 }
