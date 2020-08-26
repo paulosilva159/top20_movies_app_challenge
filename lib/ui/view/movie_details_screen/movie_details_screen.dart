@@ -22,16 +22,18 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   void _getMovieDetails({bool isRetrying = false}) {
     setState(() {
-      _error = null;
+      if (isRetrying) {
+        _error = null;
+      }
       _awaitingDetailsContent = true;
     });
 
-    _dio.getMovieDetails(_id).then((value) {
+    _dio.getMovieDetails(_id).then((movieDetails) {
       setState(() {
         if (isRetrying) {
           _error = null;
         }
-        _detailsContent = value;
+        _detailsContent = movieDetails;
         _awaitingDetailsContent = false;
       });
     }).catchError((error) {
@@ -54,48 +56,50 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-          body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text('Detalhes'),
-            ),
+  Widget build(BuildContext context) {
+    Widget _body;
+
+    if (_error != null) {
+      _body = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 10,
           ),
-          if (_error != null)
-            SliverToBoxAdapter(
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    if (_error is SocketException)
-                      const Text(
-                        'Verifique sua conexão',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12),
-                      ),
-                    RaisedButton(
-                      onPressed: () {
-                        _getMovieDetails(isRetrying: true);
-                      },
-                      child: const Text('Tentar Novamente'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (_awaitingDetailsContent)
-            const SliverFillRemaining(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+          if (_error is SocketException)
+            const Text(
+              'Verifique sua conexão',
+              style: TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
             )
           else
-            MovieDetailsTile(_detailsContent)
+            const Text(
+              'Erro!',
+              style: TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+          RaisedButton(
+            onPressed: () {
+              _getMovieDetails(isRetrying: true);
+            },
+            child: const Text('Tentar Novamente'),
+          ),
         ],
-      ));
+      );
+    } else if (_awaitingDetailsContent) {
+      _body = const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      _body = MovieDetailsTile(detailsContent: _detailsContent);
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes'),
+        centerTitle: true,
+      ),
+      body: _body,
+    );
+  }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 import '../../../../data/model/model.dart';
 
 class MovieDetailsTile extends StatelessWidget {
-  const MovieDetailsTile(this.detailsContent) : assert(detailsContent != null);
+  const MovieDetailsTile({@required this.detailsContent})
+      : assert(detailsContent != null);
 
   final MovieLongDetails detailsContent;
 

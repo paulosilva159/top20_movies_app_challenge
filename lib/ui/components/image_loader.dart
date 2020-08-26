@@ -23,13 +23,13 @@ class ImageLoader extends StatelessWidget {
       loadingBuilder: (context, child, loadingProgress) =>
           loadingProgress == null
               ? child
-              : const Center(
+              : Center(
                   child: CircularProgressIndicator(
-//                    value: loadingProgress.expectedTotalBytes != null
-//                        ? loadingProgress.cumulativeBytesLoaded /
-//                            loadingProgress.expectedTotalBytes
-//                        : null,
-                      ),
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes
+                        : null,
+                  ),
                 ),
       errorBuilder: (context, exception, stackTrace) => fallbackUrl == null
           ? _ImagePlaceholder(
