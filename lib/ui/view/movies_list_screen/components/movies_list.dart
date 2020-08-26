@@ -8,9 +8,9 @@ import '../../../../routes/routes.dart';
 import '../../../components/image_loader.dart';
 
 class MoviesList extends StatelessWidget {
-  const MoviesList({@required this.movieList}) : assert(movieList != null);
+  const MoviesList({@required this.moviesList}) : assert(moviesList != null);
 
-  final List<MovieShortDetails> movieList;
+  final List<MovieShortDetails> moviesList;
 
   @override
   Widget build(BuildContext context) => SliverList(
@@ -18,15 +18,15 @@ class MoviesList extends StatelessWidget {
           (context, index) => FlatButton(
             onPressed: () {
               Navigator.pushNamed(context, Routes.details,
-                  arguments: movieList[index].id);
+                  arguments: moviesList[index].id);
             },
             child: ImageLoader(
-              title: movieList[index].title,
-              url: movieList[index].posterUrl,
+              title: moviesList[index].title,
+              url: moviesList[index].posterUrl,
               titleStyle: Theme.of(context).textTheme.headline1,
             ),
           ),
-          childCount: movieList.length,
+          childCount: moviesList.length,
         ),
       );
 }

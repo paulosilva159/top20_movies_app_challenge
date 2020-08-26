@@ -14,7 +14,7 @@ class MoviesListScreen extends StatefulWidget {
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
   List<MovieShortDetails> _moviesList;
-  bool _awaitingMovieList = true;
+  bool _awaitingMoviesList;
 
   final _dio = DioClient();
   dynamic _error;
@@ -22,17 +22,18 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   void _getMovies() {
     setState(() {
       _error = null;
-      _awaitingMovieList = true;
+      _awaitingMoviesList = true;
     });
 
     _dio.getMovies().then((movieList) {
       setState(() {
         _moviesList = movieList;
-        _awaitingMovieList = false;
+        _awaitingMoviesList = false;
       });
     }).catchError((error) {
       setState(() {
         _error = error.error;
+        _awaitingMoviesList = false;
       });
     });
   }
@@ -45,18 +46,61 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget _body;
+  Widget build(BuildContext context) => Scaffold(
+          body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              title: const Text('TMDb'),
+              centerTitle: true,
+              background: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Image.asset('lib/ui/assets/top-20.png'),
+              ),
+            ),
+          ),
+          _BodyWidget(
+            error: _error,
+            moviesList: _moviesList,
+            awaitingMoviesList: _awaitingMoviesList,
+            getMovies: () => _getMovies,
+          ),
+        ],
+      ));
+}
 
-    if (_error != null) {
-      _body = SliverFillRemaining(
+class _BodyWidget extends StatelessWidget {
+  const _BodyWidget(
+      {@required this.error,
+      @required this.moviesList,
+      @required this.awaitingMoviesList,
+      @required this.getMovies})
+      : assert(awaitingMoviesList != null),
+        assert(getMovies != null);
+
+  final dynamic error;
+  final List<MovieShortDetails> moviesList;
+  final bool awaitingMoviesList;
+  final VoidCallback getMovies;
+
+  @override
+  Widget build(BuildContext context) {
+    if (awaitingMoviesList) {
+      return const SliverFillRemaining(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else if (error != null) {
+      return SliverFillRemaining(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
               height: 10,
             ),
-            if (_error is SocketException)
+            if (error is SocketException)
               const Text(
                 'Verifique sua conexão',
                 style: TextStyle(
@@ -65,40 +109,14 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                     fontSize: 12),
               ),
             RaisedButton(
-              onPressed: () {
-                _getMovies();
-              },
+              onPressed: () => getMovies,
               child: const Text('Tentar Novamente'),
             ),
           ],
         ),
       );
-    } else if (_awaitingMovieList) {
-      _body = const SliverFillRemaining(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
     } else {
-      _body = MoviesList(movieList: _moviesList);
+      return MoviesList(moviesList: moviesList);
     }
-
-    return Scaffold(
-        body: CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 250,
-          flexibleSpace: FlexibleSpaceBar(
-            title: const Text('TMDb'),
-            centerTitle: true,
-            background: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Image.asset('lib/ui/assets/top-20.png'),
-            ),
-          ),
-        ),
-        _body,
-      ],
-    ));
   }
 }
