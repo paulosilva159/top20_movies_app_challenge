@@ -60,18 +60,20 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
               ),
             ),
           ),
-          _BodyWidget(
+          _MoviesListBody(
             error: _error,
             moviesList: _moviesList,
             awaitingMoviesList: _awaitingMoviesList,
-            getMovies: () => _getMovies,
+            getMovies: () {
+              _getMovies();
+            },
           ),
         ],
       ));
 }
 
-class _BodyWidget extends StatelessWidget {
-  const _BodyWidget(
+class _MoviesListBody extends StatelessWidget {
+  const _MoviesListBody(
       {@required this.error,
       @required this.moviesList,
       @required this.awaitingMoviesList,
@@ -109,7 +111,7 @@ class _BodyWidget extends StatelessWidget {
                     fontSize: 12),
               ),
             RaisedButton(
-              onPressed: () => getMovies,
+              onPressed: getMovies,
               child: const Text('Tentar Novamente'),
             ),
           ],
