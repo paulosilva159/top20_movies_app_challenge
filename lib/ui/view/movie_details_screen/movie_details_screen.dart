@@ -13,8 +13,8 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  MovieLongDetails _detailsContent;
-  bool _awaitingDetailsContent;
+  MovieLongDetails _movieDetails;
+  bool _awaitingMovieDetails;
   int _id;
 
   dynamic _error;
@@ -23,18 +23,18 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   void _getMovieDetails() {
     setState(() {
       _error = null;
-      _awaitingDetailsContent = true;
+      _awaitingMovieDetails = true;
     });
 
     _dio.getMovieDetails(_id).then((movieDetails) {
       setState(() {
-        _detailsContent = movieDetails;
-        _awaitingDetailsContent = false;
+        _movieDetails = movieDetails;
+        _awaitingMovieDetails = false;
       });
     }).catchError((error) {
       setState(() {
         _error = error.error;
-        print(_error);
+        _awaitingMovieDetails = false;
       });
     });
   }
@@ -51,17 +51,48 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget _body;
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Detalhes'),
+          centerTitle: true,
+        ),
+        body: _BodyWidget(
+          error: _error,
+          movieDetails: _movieDetails,
+          awaitingMovieDetails: _awaitingMovieDetails,
+          getMovieDetails: () => _getMovieDetails,
+        ),
+      );
+}
 
-    if (_error != null) {
-      _body = Column(
+class _BodyWidget extends StatelessWidget {
+  const _BodyWidget(
+      {@required this.error,
+      @required this.movieDetails,
+      @required this.awaitingMovieDetails,
+      @required this.getMovieDetails})
+      : assert(awaitingMovieDetails != null),
+        assert(getMovieDetails != null);
+
+  final dynamic error;
+  final MovieLongDetails movieDetails;
+  final bool awaitingMovieDetails;
+  final VoidCallback getMovieDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    if (awaitingMovieDetails) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (error != null) {
+      return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(
             height: 10,
           ),
-          if (_error is SocketException)
+          if (error is SocketException)
             const Text(
               'Verifique sua conexão',
               style: TextStyle(
@@ -74,27 +105,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
             ),
           RaisedButton(
-            onPressed: () {
-              _getMovieDetails();
-            },
+            onPressed: () => getMovieDetails,
             child: const Text('Tentar Novamente'),
           ),
         ],
       );
-    } else if (_awaitingDetailsContent) {
-      _body = const Center(
-        child: CircularProgressIndicator(),
-      );
     } else {
-      _body = MovieDetailsTile(detailsContent: _detailsContent);
+      return MovieDetailsTile(movieDetails: movieDetails);
     }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detalhes'),
-        centerTitle: true,
-      ),
-      body: _body,
-    );
   }
 }
