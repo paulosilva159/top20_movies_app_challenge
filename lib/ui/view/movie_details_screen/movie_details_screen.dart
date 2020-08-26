@@ -20,19 +20,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   dynamic _error;
   final _dio = DioClient();
 
-  void _getMovieDetails({bool isRetrying = false}) {
+  void _getMovieDetails() {
     setState(() {
-      if (isRetrying) {
-        _error = null;
-      }
+      _error = null;
       _awaitingDetailsContent = true;
     });
 
     _dio.getMovieDetails(_id).then((movieDetails) {
       setState(() {
-        if (isRetrying) {
-          _error = null;
-        }
         _detailsContent = movieDetails;
         _awaitingDetailsContent = false;
       });
@@ -80,7 +75,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             ),
           RaisedButton(
             onPressed: () {
-              _getMovieDetails(isRetrying: true);
+              _getMovieDetails();
             },
             child: const Text('Tentar Novamente'),
           ),

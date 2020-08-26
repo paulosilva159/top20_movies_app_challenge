@@ -19,19 +19,14 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   final _dio = DioClient();
   dynamic _error;
 
-  void _getMovies({bool isRetrying = false}) {
+  void _getMovies() {
     setState(() {
-      if (isRetrying) {
-        _error = null;
-      }
+      _error = null;
       _awaitingMovieList = true;
     });
 
     _dio.getMovies().then((movieList) {
       setState(() {
-        if (isRetrying) {
-          _error = null;
-        }
         _moviesList = movieList;
         _awaitingMovieList = false;
       });
@@ -71,7 +66,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
               ),
             RaisedButton(
               onPressed: () {
-                _getMovies(isRetrying: true);
+                _getMovies();
               },
               child: const Text('Tentar Novamente'),
             ),
