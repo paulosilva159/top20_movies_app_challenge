@@ -56,17 +56,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           title: const Text('Detalhes'),
           centerTitle: true,
         ),
-        body: _BodyWidget(
+        body: _MovieDetailsBody(
           error: _error,
           movieDetails: _movieDetails,
           awaitingMovieDetails: _awaitingMovieDetails,
-          getMovieDetails: () => _getMovieDetails,
+          getMovieDetails: () {
+            _getMovieDetails();
+          },
         ),
       );
 }
 
-class _BodyWidget extends StatelessWidget {
-  const _BodyWidget(
+class _MovieDetailsBody extends StatelessWidget {
+  const _MovieDetailsBody(
       {@required this.error,
       @required this.movieDetails,
       @required this.awaitingMovieDetails,
@@ -86,29 +88,34 @@ class _BodyWidget extends StatelessWidget {
         child: CircularProgressIndicator(),
       );
     } else if (error != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          if (error is SocketException)
-            const Text(
-              'Verifique sua conexão',
-              style: TextStyle(
-                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
-            )
-          else
-            const Text(
-              'Erro!',
-              style: TextStyle(
-                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
+      return Center(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
             ),
-          RaisedButton(
-            onPressed: () => getMovieDetails,
-            child: const Text('Tentar Novamente'),
-          ),
-        ],
+            if (error is SocketException)
+              const Text(
+                'Verifique sua conexão',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
+              )
+            else
+              const Text(
+                'Erro!',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
+              ),
+            RaisedButton(
+              onPressed: getMovieDetails,
+              child: const Text('Tentar Novamente'),
+            ),
+          ],
+        ),
       );
     } else {
       return MovieDetailsTile(movieDetails: movieDetails);
