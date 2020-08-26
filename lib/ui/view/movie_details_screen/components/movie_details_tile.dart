@@ -19,7 +19,7 @@ class MovieDetailsTile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
             child: Text(
-              '${movieDetails.tagline}',
+              movieDetails.tagline,
               textAlign: TextAlign.center,
             ),
           ),
@@ -32,7 +32,7 @@ class MovieDetailsTile extends StatelessWidget {
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '${movieDetails.voteAverage}',
+                        text: movieDetails.voteAverage.toString(),
                         style: const TextStyle(color: Colors.black))
                   ],
                 ),
@@ -43,7 +43,7 @@ class MovieDetailsTile extends StatelessWidget {
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '${movieDetails.voteCount}',
+                        text: movieDetails.voteCount.toString(),
                         style: const TextStyle(color: Colors.black))
                   ],
                 ),
@@ -53,7 +53,7 @@ class MovieDetailsTile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: Text(
-              '${movieDetails.overview}',
+              movieDetails.overview,
             ),
           ),
         ],

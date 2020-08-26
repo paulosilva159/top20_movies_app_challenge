@@ -73,12 +73,12 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
 }
 
 class _MoviesListBody extends StatelessWidget {
-  const _MoviesListBody(
-      {@required this.error,
-      @required this.moviesList,
-      @required this.awaitingMoviesList,
-      @required this.getMovies})
-      : assert(awaitingMoviesList != null),
+  const _MoviesListBody({
+    @required this.awaitingMoviesList,
+    @required this.getMovies,
+    this.error,
+    this.moviesList,
+  })  : assert(awaitingMoviesList != null),
         assert(getMovies != null);
 
   final dynamic error;
