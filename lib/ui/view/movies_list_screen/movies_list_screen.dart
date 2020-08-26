@@ -21,16 +21,18 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
 
   void _getMovies({bool isRetrying = false}) {
     setState(() {
-      _error = null;
+      if (isRetrying) {
+        _error = null;
+      }
       _awaitingMovieList = true;
     });
 
-    _dio.getMovies().then((value) {
+    _dio.getMovies().then((movieList) {
       setState(() {
         if (isRetrying) {
           _error = null;
         }
-        _moviesList = value;
+        _moviesList = movieList;
         _awaitingMovieList = false;
       });
     }).catchError((error) {
@@ -48,57 +50,60 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(25),
-            bottomRight: Radius.circular(25),
-          ),
-        ),
-        elevation: 20,
-        toolbarHeight: 250,
-        title: Padding(
-          padding: const EdgeInsets.all(70),
-          child: Image.asset('lib/ui/assets/top-20.png'),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: Stack(
+  Widget build(BuildContext context) {
+    Widget _body;
+
+    if (_error != null) {
+      _body = SliverFillRemaining(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_error != null)
-              Center(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    if (_error is SocketException)
-                      const Text(
-                        'Verifique sua conexão',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12),
-                      ),
-                    RaisedButton(
-                      onPressed: () {
-                        _getMovies(isRetrying: true);
-                      },
-                      child: const Text('Tentar Novamente'),
-                    ),
-                  ],
-                ),
-              )
-            else if (_awaitingMovieList)
-              const Center(
-                child: CircularProgressIndicator(),
-              )
-            else
-              MoviesList(_moviesList)
+            const SizedBox(
+              height: 10,
+            ),
+            if (_error is SocketException)
+              const Text(
+                'Verifique sua conexão',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
+              ),
+            RaisedButton(
+              onPressed: () {
+                _getMovies(isRetrying: true);
+              },
+              child: const Text('Tentar Novamente'),
+            ),
           ],
         ),
-      ));
+      );
+    } else if (_awaitingMovieList) {
+      _body = const SliverFillRemaining(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      _body = MoviesList(movieList: _moviesList);
+    }
+
+    return Scaffold(
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 250,
+          flexibleSpace: FlexibleSpaceBar(
+            title: const Text('TMDb'),
+            centerTitle: true,
+            background: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Image.asset('lib/ui/assets/top-20.png'),
+            ),
+          ),
+        ),
+        _body,
+      ],
+    ));
+  }
 }
