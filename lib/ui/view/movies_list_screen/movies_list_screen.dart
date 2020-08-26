@@ -64,7 +64,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
             error: _error,
             moviesList: _moviesList,
             awaitingMoviesList: _awaitingMoviesList,
-            getMovies: () {
+            onTryAgainTap: () {
               _getMovies();
             },
           ),
@@ -75,16 +75,16 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
 class _MoviesListBody extends StatelessWidget {
   const _MoviesListBody({
     @required this.awaitingMoviesList,
-    @required this.getMovies,
+    @required this.onTryAgainTap,
     this.error,
     this.moviesList,
   })  : assert(awaitingMoviesList != null),
-        assert(getMovies != null);
+        assert(onTryAgainTap != null);
 
   final dynamic error;
   final List<MovieShortDetails> moviesList;
   final bool awaitingMoviesList;
-  final VoidCallback getMovies;
+  final VoidCallback onTryAgainTap;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +111,7 @@ class _MoviesListBody extends StatelessWidget {
                     fontSize: 12),
               ),
             RaisedButton(
-              onPressed: getMovies,
+              onPressed: onTryAgainTap,
               child: const Text('Tentar Novamente'),
             ),
           ],
