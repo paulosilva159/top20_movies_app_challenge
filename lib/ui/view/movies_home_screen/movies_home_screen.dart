@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
 
+import '../../../ui/components/app_flow.dart';
+
 import 'components/movies_content_body.dart';
 
 class MoviesListScreen extends StatefulWidget {
@@ -13,6 +15,21 @@ class MoviesListScreen extends StatefulWidget {
 class _MoviesListScreenState extends State<MoviesListScreen> {
   List<MovieShortDetails> _moviesList;
   bool _awaitingMoviesList;
+
+  final List<AppFlow> appFlows = [
+    AppFlow(
+      title: 'List',
+      iconData: Icons.list,
+      mainColor: Colors.amber,
+      navigatorKey: GlobalKey<NavigatorState>(),
+    ),
+    AppFlow(
+      title: 'Grid',
+      iconData: Icons.grid_on,
+      mainColor: Colors.pinkAccent,
+      navigatorKey: GlobalKey<NavigatorState>(),
+    ),
+  ];
 
   final _dio = DioClient();
   dynamic _error;
