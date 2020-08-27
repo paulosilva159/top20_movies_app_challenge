@@ -7,12 +7,12 @@ import '../../../ui/components/app_flow.dart';
 
 import 'components/movies_content_body.dart';
 
-class MoviesListScreen extends StatefulWidget {
+class MoviesHomeScreen extends StatefulWidget {
   @override
-  _MoviesListScreenState createState() => _MoviesListScreenState();
+  _MoviesHomeScreenState createState() => _MoviesHomeScreenState();
 }
 
-class _MoviesListScreenState extends State<MoviesListScreen> {
+class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
   List<MovieShortDetails> _moviesList;
   bool _awaitingMoviesList;
 
