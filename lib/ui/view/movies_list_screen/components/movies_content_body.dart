@@ -42,6 +42,14 @@ class MoviesContentBody extends StatelessWidget {
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
                     fontSize: 12),
+              )
+            else
+              const Text(
+                'Error',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
               ),
             RaisedButton(
               onPressed: onTryAgainTap,
