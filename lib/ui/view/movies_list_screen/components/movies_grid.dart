@@ -6,13 +6,13 @@ import '../../../../routes/routes.dart';
 
 import '../../../components/image_loader.dart';
 
-class MoviesList extends StatelessWidget {
-  const MoviesList({@required this.moviesList}) : assert(moviesList != null);
+class MoviesGrid extends StatelessWidget {
+  const MoviesGrid({@required this.moviesList}) : assert(moviesList != null);
 
   final List<MovieShortDetails> moviesList;
 
   @override
-  Widget build(BuildContext context) => SliverList(
+  Widget build(BuildContext context) => SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (context, index) => FlatButton(
             onPressed: () {
@@ -27,5 +27,7 @@ class MoviesList extends StatelessWidget {
           ),
           childCount: moviesList.length,
         ),
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       );
 }
