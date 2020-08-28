@@ -1,5 +1,9 @@
 import 'package:meta/meta.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'movie_long_details.g.dart';
+
+@JsonSerializable(nullable: false)
 class MovieLongDetails {
   MovieLongDetails(
       {@required this.budget,
@@ -39,43 +43,36 @@ class MovieLongDetails {
         assert(voteCount != null);
 
   factory MovieLongDetails.fromJson(Map<String, dynamic> json) =>
-      MovieLongDetails(
-        budget: json['budget'],
-        genres: json['genres'],
-        id: json['id'],
-        imdbId: json['imdb_id'],
-        originalLanguage: json['original_language'],
-        originalTitle: json['original_title'],
-        overview: json['overview'],
-        popularity: json['popularity'],
-        posterUrl: json['poster_url'],
-        backdropUrl: json['backdrop_url'],
-        releaseDate: json['release_date'],
-        revenue: json['revenue'],
-        productionCountries: json['production_countries'],
-        tagline: json['tagline'],
-        title: json['title'],
-        spokenLanguages: json['spoken_languages'],
-        voteAverage: json['vote_average'],
-        voteCount: json['vote_count'],
-      );
+      _$MovieLongDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MovieLongDetailsToJson(this);
 
   int budget;
   List genres;
   int id;
+  @JsonKey(name: 'imdb_id')
   String imdbId;
+  @JsonKey(name: 'original_language')
   String originalLanguage;
+  @JsonKey(name: 'original_title')
   String originalTitle;
   String overview;
   double popularity;
+  @JsonKey(name: 'poster_url')
   String posterUrl;
+  @JsonKey(name: 'backdrop_url')
   String backdropUrl;
+  @JsonKey(name: 'release_date')
   String releaseDate;
   int revenue;
+  @JsonKey(name: 'production_countries')
   List productionCountries;
+  @JsonKey(name: 'spoken_languages')
   List spokenLanguages;
   String tagline;
   String title;
+  @JsonKey(name: 'vote_average')
   double voteAverage;
+  @JsonKey(name: 'vote_count')
   int voteCount;
 }
