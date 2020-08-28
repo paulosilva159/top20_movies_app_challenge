@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../../data/model/model.dart';
-import 'movies_list.dart';
+import 'movies_structure.dart';
 
 class MoviesContentBody extends StatelessWidget {
   const MoviesContentBody({
+    @required this.movieStructureType,
     @required this.awaitingMoviesList,
     @required this.onTryAgainTap,
     this.error,
@@ -15,6 +16,7 @@ class MoviesContentBody extends StatelessWidget {
         assert(onTryAgainTap != null);
 
   final dynamic error;
+  final MovieStructureType movieStructureType;
   final List<MovieShortDetails> moviesList;
   final bool awaitingMoviesList;
   final VoidCallback onTryAgainTap;
@@ -59,7 +61,10 @@ class MoviesContentBody extends StatelessWidget {
         ),
       );
     } else {
-      return MoviesList(moviesList: moviesList);
+      return MoviesStructure(
+        moviesList: moviesList,
+        movieStructureType: movieStructureType,
+      );
     }
   }
 }
