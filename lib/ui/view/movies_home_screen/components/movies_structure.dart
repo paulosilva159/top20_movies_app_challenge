@@ -20,7 +20,7 @@ class MoviesStructure extends StatelessWidget {
       SliverChildBuilderDelegate(
         (context, index) => FlatButton(
           onPressed: () {
-            pushPage(context, true, parameter: moviesList[index].id);
+            pushPage(context, true, arguments: moviesList[index].id);
           },
           child: ImageLoader(
             title: moviesList[index].title,

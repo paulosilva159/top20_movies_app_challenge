@@ -9,27 +9,27 @@ import '../../ui/view/movie_details_screen/movie_details_screen.dart';
 PageRoute<T> _buildAdaptivePageRoute<T>({
   @required WidgetBuilder builder,
   bool fullscreenDialog = false,
-  Object parameter,
+  Object arguments,
 }) =>
     Platform.isAndroid
         ? MaterialPageRoute(
-            settings: RouteSettings(arguments: parameter),
+            settings: RouteSettings(arguments: arguments),
             builder: builder,
             fullscreenDialog: fullscreenDialog,
           )
         : CupertinoPageRoute(
-            settings: RouteSettings(arguments: parameter),
+            settings: RouteSettings(arguments: arguments),
             builder: builder,
             fullscreenDialog: fullscreenDialog,
           );
 
 void pushPage(BuildContext context, bool isHorizontalNavigation,
-    {Object parameter}) {
+    {Object arguments}) {
   Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
     _buildAdaptivePageRoute(
       builder: (context) => MovieDetailsScreen(),
       fullscreenDialog: !isHorizontalNavigation,
-      parameter: parameter,
+      arguments: arguments,
     ),
   );
 }
