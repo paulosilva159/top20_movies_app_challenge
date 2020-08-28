@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
-import 'package:tokenlab_challenge/ui/components/cupertino_bottom_navigation_tab.dart';
-import 'package:tokenlab_challenge/ui/components/material_bottom_navigation_scaffold.dart';
+
+import '../../ui/components/bottom_navigator_tab.dart';
+import '../../ui/components/cupertino_bottom_navigation_tab.dart';
+import '../../ui/components/material_bottom_navigation_scaffold.dart';
 
 class AdaptiveBottomNavigationScaffold extends StatefulWidget {
   const AdaptiveBottomNavigationScaffold({

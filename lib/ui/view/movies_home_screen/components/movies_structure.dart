@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen.dart';
 
 import '../../../../data/model/model.dart';
 
-import '../../../components/image_loader.dart';
+import '../../../../ui/components/image_loader.dart';
+
+import '../../movie_details_screen/movie_details_screen.dart';
 
 class MoviesStructure extends StatelessWidget {
   const MoviesStructure({
@@ -22,8 +23,7 @@ class MoviesStructure extends StatelessWidget {
       SliverChildBuilderDelegate(
         (context, index) => FlatButton(
           onPressed: () {
-            _pushPage(context,
-                isHorizontalNavigation: true, movieId: moviesList[index].id);
+            _pushPage(context, true, movieId: moviesList[index].id);
           },
           child: ImageLoader(
             title: moviesList[index].title,
@@ -40,7 +40,7 @@ class MoviesStructure extends StatelessWidget {
           ? SliverList(
               delegate: sliverBuilder(context),
             )
-          : movieStructureType == MovieStructureType.list
+          : movieStructureType == MovieStructureType.grid
               ? SliverGrid(
                   delegate: sliverBuilder(context),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -52,7 +52,7 @@ class MoviesStructure extends StatelessWidget {
                       onPressed: () {
                         _pushPage(
                           context,
-                          isHorizontalNavigation: false,
+                          false,
                         );
                       },
                       child: const Text('Vertical'),
@@ -77,16 +77,10 @@ class MoviesStructure extends StatelessWidget {
               fullscreenDialog: fullscreenDialog,
             );
 
-  void _pushPage(BuildContext context,
-      {bool isHorizontalNavigation, int movieId}) {
+  void _pushPage(BuildContext context, bool isHorizontalNavigation,
+      {int movieId}) {
     Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
       _buildAdaptivePageRoute(
-//        builder: (context) => MovieIndexedPage(
-//          // If it's a new flow, the displayed index should be 1 again.
-//          index: isHorizontalNavigation ? index + 1 : 1,
-//          containingFlowTitle:
-//              isHorizontalNavigation ? containingFlowTitle : 'New',
-//        ),
         builder: (context) => MovieDetailsScreen(),
         fullscreenDialog: !isHorizontalNavigation,
         movieId: movieId,

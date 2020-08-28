@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:tokenlab_challenge/ui/view/movies_home_screen/components/movies_structure.dart';
+
+import '../../ui/view/movies_home_screen/components/movies_structure.dart';
 
 class AppFlow {
   const AppFlow({

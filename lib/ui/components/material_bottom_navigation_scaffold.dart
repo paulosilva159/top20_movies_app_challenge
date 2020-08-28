@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
+
+import '../../ui/components/bottom_navigator_tab.dart';
 
 class MaterialBottomNavigationScaffold extends StatefulWidget {
   const MaterialBottomNavigationScaffold({

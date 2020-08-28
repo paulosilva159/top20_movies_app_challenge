@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../../data/model/model.dart';
+
 import 'movies_structure.dart';
 
 class MoviesContentBody extends StatelessWidget {
@@ -12,7 +13,8 @@ class MoviesContentBody extends StatelessWidget {
     @required this.onTryAgainTap,
     this.error,
     this.moviesList,
-  })  : assert(awaitingMoviesList != null),
+  })  : assert(movieStructureType != null),
+        assert(awaitingMoviesList != null),
         assert(onTryAgainTap != null);
 
   final dynamic error;
