@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'bottom_navigator_tab.dart';
+import '../bottom_navigator_tab.dart';
 
 class CupertinoBottomNavigationScaffold extends StatelessWidget {
   const CupertinoBottomNavigationScaffold({

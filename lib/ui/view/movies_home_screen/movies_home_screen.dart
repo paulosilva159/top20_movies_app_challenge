@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
 
-import '../../../ui/components/adaptive_bottom_navigation_scaffold.dart';
 import '../../../ui/components/app_flow.dart';
 import '../../../ui/components/bottom_navigator_tab.dart';
+
+import '../../components/bottom_navigation_scaffold/adaptive.dart';
 
 import 'components/movies_content_body.dart';
 import 'components/movies_structure.dart';

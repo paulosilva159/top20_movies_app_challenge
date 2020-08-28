@@ -19,7 +19,7 @@ class MoviesStructure extends StatelessWidget {
   final List<MovieShortDetails> moviesList;
   final MovieStructureType movieStructureType;
 
-  SliverChildBuilderDelegate sliverBuilder(BuildContext context) =>
+  SliverChildBuilderDelegate _buildSliverChildDelegate(BuildContext context) =>
       SliverChildBuilderDelegate(
         (context, index) => FlatButton(
           onPressed: () {
@@ -38,11 +38,11 @@ class MoviesStructure extends StatelessWidget {
   Widget build(BuildContext context) =>
       movieStructureType == MovieStructureType.list
           ? SliverList(
-              delegate: sliverBuilder(context),
+              delegate: _buildSliverChildDelegate(context),
             )
           : movieStructureType == MovieStructureType.grid
               ? SliverGrid(
-                  delegate: sliverBuilder(context),
+                  delegate: _buildSliverChildDelegate(context),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
                 )

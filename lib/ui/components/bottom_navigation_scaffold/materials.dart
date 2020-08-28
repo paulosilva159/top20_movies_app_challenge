@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../ui/components/bottom_navigator_tab.dart';
+import '../bottom_navigator_tab.dart';
 
 class MaterialBottomNavigationScaffold extends StatefulWidget {
   const MaterialBottomNavigationScaffold({
@@ -90,7 +90,7 @@ class _MaterialBottomNavigationScaffoldState
           fit: StackFit.expand,
           children: materialNavigationBarItems
               .map(
-                (barItem) => _BuildPageFlow(
+                (barItem) => PageFlowBuilder(
                   animationControllers: _animationControllers,
                   shouldBuildTab: _shouldBuildTab,
                   selectedIndex: widget.selectedIndex,
@@ -110,8 +110,8 @@ class _MaterialBottomNavigationScaffoldState
       );
 }
 
-class _BuildPageFlow extends StatelessWidget {
-  const _BuildPageFlow({
+class PageFlowBuilder extends StatelessWidget {
+  const PageFlowBuilder({
     @required this.animationControllers,
     @required this.shouldBuildTab,
     @required this.selectedIndex,
