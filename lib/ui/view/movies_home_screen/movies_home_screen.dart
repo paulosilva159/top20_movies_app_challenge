@@ -70,54 +70,42 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
 
   @override
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
-        navigationBarItems: appFlows.map(
-          (flow) => BottomNavigationTab(
-            bottomNavigationBarItem: BottomNavigationBarItem(
-              title: Text(flow.title),
-              icon: Icon(flow.iconData),
-            ),
-            navigatorKey: flow.navigatorKey,
-            initialPageBuilder: (context) => Scaffold(
-              body: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    expandedHeight: 250,
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: const Text('TMDb'),
-                      centerTitle: true,
-                      background: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Image.asset('lib/ui/assets/top-20.png'),
+        navigationBarItems: appFlows
+            .map(
+              (flow) => BottomNavigationTab(
+                bottomNavigationBarItem: BottomNavigationBarItem(
+                  title: Text(flow.title),
+                  icon: Icon(flow.iconData),
+                ),
+                navigatorKey: flow.navigatorKey,
+                initialPageBuilder: (context) => Scaffold(
+                  body: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        expandedHeight: 250,
+                        flexibleSpace: FlexibleSpaceBar(
+                          title: const Text('TMDb'),
+                          centerTitle: true,
+                          background: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Image.asset('lib/ui/assets/top-20.png'),
+                          ),
+                        ),
                       ),
-                    ),
+                      MoviesContentBody(
+                        movieStructureType: flow.movieStructureType,
+                        error: _error,
+                        moviesList: _moviesList,
+                        awaitingMoviesList: _awaitingMoviesList,
+                        onTryAgainTap: () {
+                          _getMovies();
+                        },
+                      ),
+                    ],
                   ),
-                  MoviesContentBody(
-                    movieStructureType: flow.movieStructureType,
-                    error: _error,
-                    moviesList: _moviesList,
-                    awaitingMoviesList: _awaitingMoviesList,
-                    onTryAgainTap: () {
-                      _getMovies();
-                    },
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-      );
-
-  PageRoute<T> _buildAdaptivePageRoute<T>({
-    @required WidgetBuilder builder,
-    bool fullscreenDialog = false,
-  }) =>
-      Platform.isAndroid
-          ? MaterialPageRoute(
-              builder: builder,
-              fullscreenDialog: fullscreenDialog,
             )
-          : CupertinoPageRoute(
-              builder: builder,
-              fullscreenDialog: fullscreenDialog,
-            );
+            .toList(),
+      );
 }
