@@ -9,9 +9,10 @@ import '../../../../data/model/model.dart';
 import '../../../components/image_loader.dart';
 
 class MoviesStructure extends StatelessWidget {
-  const MoviesStructure(
-      {@required this.moviesList, @required this.movieStructureType})
-      : assert(moviesList != null),
+  const MoviesStructure({
+    @required this.moviesList,
+    @required this.movieStructureType,
+  })  : assert(moviesList != null),
         assert(movieStructureType != null);
 
   final List<MovieShortDetails> moviesList;
@@ -39,11 +40,25 @@ class MoviesStructure extends StatelessWidget {
           ? SliverList(
               delegate: sliverBuilder(context),
             )
-          : SliverGrid(
-              delegate: sliverBuilder(context),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-            );
+          : movieStructureType == MovieStructureType.list
+              ? SliverGrid(
+                  delegate: sliverBuilder(context),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                )
+              : SliverFillRemaining(
+                  child: Center(
+                    child: RaisedButton(
+                      onPressed: () {
+                        _pushPage(
+                          context,
+                          isHorizontalNavigation: false,
+                        );
+                      },
+                      child: const Text('Vertical'),
+                    ),
+                  ),
+                );
 
   PageRoute<T> _buildAdaptivePageRoute<T>({
     @required WidgetBuilder builder,
@@ -83,4 +98,5 @@ class MoviesStructure extends StatelessWidget {
 enum MovieStructureType {
   grid,
   list,
+  vertical,
 }

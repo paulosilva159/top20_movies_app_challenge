@@ -37,6 +37,13 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
       mainColor: Colors.pinkAccent,
       navigatorKey: GlobalKey<NavigatorState>(),
     ),
+    AppFlow(
+      title: 'Vertical',
+      movieStructureType: MovieStructureType.vertical,
+      iconData: Icons.vertical_align_bottom,
+      mainColor: Colors.pinkAccent,
+      navigatorKey: GlobalKey<NavigatorState>(),
+    ),
   ];
 
   final _dio = DioClient();
