@@ -21,9 +21,8 @@ class MoviesStructure extends StatelessWidget {
       SliverChildBuilderDelegate(
         (context, index) => FlatButton(
           onPressed: () {
-            /// TODO: implementar trocar de página aqui
-//            Navigator.pushNamed(context, Routes.details,
-//                arguments: moviesList[index].id);
+            _pushPage(context,
+                isHorizontalNavigation: true, movieId: moviesList[index].id);
           },
           child: ImageLoader(
             title: moviesList[index].title,
@@ -63,8 +62,8 @@ class MoviesStructure extends StatelessWidget {
               fullscreenDialog: fullscreenDialog,
             );
 
-  void _pushPage(
-      BuildContext context, bool isHorizontalNavigation, int movieId) {
+  void _pushPage(BuildContext context,
+      {bool isHorizontalNavigation, int movieId}) {
     Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
       _buildAdaptivePageRoute(
 //        builder: (context) => MovieIndexedPage(
