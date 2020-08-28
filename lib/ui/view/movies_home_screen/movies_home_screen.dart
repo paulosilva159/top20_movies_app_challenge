@@ -6,6 +6,7 @@ import '../../../data/model/model.dart';
 
 import '../../../ui/components/app_flow.dart';
 import '../../../ui/components/bottom_navigator_tab.dart';
+import '../../../ui/components/page_navigation.dart';
 
 import '../../components/bottom_navigation_scaffold/adaptive.dart';
 
@@ -33,13 +34,6 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
       title: 'Grid',
       movieStructureType: MovieStructureType.grid,
       iconData: Icons.grid_on,
-      mainColor: Colors.pinkAccent,
-      navigatorKey: GlobalKey<NavigatorState>(),
-    ),
-    AppFlow(
-      title: 'Vertical',
-      movieStructureType: MovieStructureType.vertical,
-      iconData: Icons.vertical_align_bottom,
       mainColor: Colors.pinkAccent,
       navigatorKey: GlobalKey<NavigatorState>(),
     ),
@@ -88,6 +82,14 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
                   body: CustomScrollView(
                     slivers: [
                       SliverAppBar(
+                        actions: [
+                          IconButton(
+                            onPressed: () {
+                              pushPage(context, false);
+                            },
+                            icon: const Icon(Icons.vertical_align_top),
+                          )
+                        ],
                         expandedHeight: 250,
                         flexibleSpace: FlexibleSpaceBar(
                           title: const Text('TMDb'),
