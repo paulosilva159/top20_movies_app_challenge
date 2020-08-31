@@ -1,0 +1,11 @@
+{
+  "@@locale": "pt_BR",
+  "detailsTileVotesQtt": "Qtd. de Votos: ",
+  "detailsTileScore": "Pontuação: ",
+  "detailsScreenTopTitle": "Detalhes",
+  "tryAgainMessage": "Tente Novamente",
+  "connectionErrorMessage": "Verifique sua conexão!",
+  "genericErrorMessage": "Deu erro!",
+  "bottomNavigationItemListTitle": "Lista",
+  "bottomNavigationItemGridTitle": "Grade"
+}

@@ -1,0 +1,11 @@
+{
+  "@@locale": "en_US",
+  "detailsTileVotesQtt": "Number of Votes: ",
+  "detailsTileScore": "Score: ",
+  "detailsScreenTopTitle": "Details",
+  "tryAgainMessage": "Try Again",
+  "connectionErrorMessage": "Verify your connection!",
+  "genericErrorMessage": "Error!",
+  "bottomNavigationItemListTitle": "List",
+  "bottomNavigationItemGridTitle": "Grid"
+}

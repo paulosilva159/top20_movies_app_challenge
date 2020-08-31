@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../data/model/model.dart';
+import '../../../../generated/l10n.dart';
 
 class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})
@@ -27,7 +28,7 @@ class MovieDetailsTile extends StatelessWidget {
             children: [
               RichText(
                 text: TextSpan(
-                  text: 'Nota: ',
+                  text: S.of(context).detailsTileScore,
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
@@ -38,7 +39,7 @@ class MovieDetailsTile extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                  text: 'Qtd. de votos: ',
+                  text: S.of(context).detailsTileVotesQtt,
                   style: const TextStyle(color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(

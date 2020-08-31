@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 
 import '../bottom_navigator_tab.dart';
-import 'cupertinos.dart';
-import 'materials.dart';
+import 'cupertinos_bottom_navigation_scaffold.dart';
+import 'materials_bottom_navigation_scaffold.dart';
 
 class AdaptiveBottomNavigationScaffold extends StatefulWidget {
   const AdaptiveBottomNavigationScaffold({

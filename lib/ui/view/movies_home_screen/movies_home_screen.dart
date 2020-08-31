@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
 
+import '../../../generated/l10n.dart';
+
 import '../../../ui/components/app_flow.dart';
 import '../../../ui/components/bottom_navigator_tab.dart';
 import '../../../ui/components/page_navigation.dart';
 
-import '../../components/bottom_navigation_scaffold/adaptive.dart';
+import '../../components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
 
 import 'components/movies_content_body.dart';
 import 'components/movies_structure.dart';
@@ -20,24 +22,9 @@ class MoviesHomeScreen extends StatefulWidget {
 
 class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
   List<MovieShortDetails> _moviesList;
+  Locale _userLocale;
   bool _awaitingMoviesList;
-
-  final List<AppFlow> appFlows = [
-    AppFlow(
-      title: 'List',
-      movieStructureType: MovieStructureType.list,
-      iconData: Icons.list,
-      mainColor: Colors.amber,
-      navigatorKey: GlobalKey<NavigatorState>(),
-    ),
-    AppFlow(
-      title: 'Grid',
-      movieStructureType: MovieStructureType.grid,
-      iconData: Icons.grid_on,
-      mainColor: Colors.pinkAccent,
-      navigatorKey: GlobalKey<NavigatorState>(),
-    ),
-  ];
+  List<AppFlow> _appFlows;
 
   final _dio = DioClient();
   dynamic _error;
@@ -69,8 +56,36 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    final newLocale = Localizations.localeOf(context);
+
+    if (newLocale != _userLocale) {
+      _userLocale = newLocale;
+
+      _appFlows = [
+        AppFlow(
+          title: S.of(context).bottomNavigationItemListTitle,
+          movieStructureType: MovieStructureType.list,
+          iconData: Icons.list,
+          mainColor: Colors.amber,
+          navigatorKey: GlobalKey<NavigatorState>(),
+        ),
+        AppFlow(
+          title: S.of(context).bottomNavigationItemGridTitle,
+          movieStructureType: MovieStructureType.grid,
+          iconData: Icons.grid_on,
+          mainColor: Colors.pinkAccent,
+          navigatorKey: GlobalKey<NavigatorState>(),
+        ),
+      ];
+    }
+
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
-        navigationBarItems: appFlows
+        navigationBarItems: _appFlows
             .map(
               (flow) => BottomNavigationTab(
                 bottomNavigationBarItem: BottomNavigationBarItem(
