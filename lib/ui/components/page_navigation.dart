@@ -23,13 +23,19 @@ PageRoute<T> _buildAdaptivePageRoute<T>({
             fullscreenDialog: fullscreenDialog,
           );
 
+// void pushPage(BuildContext context, bool isHorizontalNavigation,
+//     {Object arguments}) {
+//   Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
+//     _buildAdaptivePageRoute(
+//       builder: (context) => MovieDetailsScreen(),
+//       fullscreenDialog: !isHorizontalNavigation,
+//       arguments: arguments,
+//     ),
+//   );
+// }
+
 void pushPage(BuildContext context, bool isHorizontalNavigation,
     {Object arguments}) {
-  Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
-    _buildAdaptivePageRoute(
-      builder: (context) => MovieDetailsScreen(),
-      fullscreenDialog: !isHorizontalNavigation,
-      arguments: arguments,
-    ),
-  );
+  Navigator.of(context, rootNavigator: !isHorizontalNavigation)
+      .pushNamed('/movies/$arguments');
 }

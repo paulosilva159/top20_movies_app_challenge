@@ -10,6 +10,12 @@ import '../../../generated/l10n.dart';
 import 'components/movie_details_tile.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
+  const MovieDetailsScreen({@required this.id, Key key})
+      : assert(id != null),
+        super(key: key);
+
+  final int id;
+
   @override
   _MovieDetailsScreenState createState() => _MovieDetailsScreenState();
 }
@@ -17,7 +23,6 @@ class MovieDetailsScreen extends StatefulWidget {
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   MovieLongDetails _movieDetails;
   bool _awaitingMovieDetails;
-  int _id;
 
   dynamic _error;
   final _dio = DioClient();
@@ -28,7 +33,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       _awaitingMovieDetails = true;
     });
 
-    _dio.getMovieDetails(_id).then((movieDetails) {
+    _dio.getMovieDetails(widget.id).then((movieDetails) {
       setState(() {
         _movieDetails = movieDetails;
         _awaitingMovieDetails = false;
@@ -43,11 +48,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_id == null) {
-      _id = ModalRoute.of(context).settings.arguments;
-
-      _getMovieDetails();
-    }
+    _getMovieDetails();
 
     super.didChangeDependencies();
   }
