@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'generated/l10n.dart';
+
 import 'ui/view/movies_home_screen/movies_home_screen.dart';
 
 void main() {
