@@ -57,7 +57,10 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
                     icon: Icon(flow.iconData),
                   ),
                   navigatorKey: flow.navigatorKey,
-                  initialRouteName: 'movies/${flow.movieStructureType}'),
+                  initialRouteName:
+                      flow.movieStructureType == MovieStructureType.list
+                          ? 'list'
+                          : 'grid'),
             )
             .toList(),
       );

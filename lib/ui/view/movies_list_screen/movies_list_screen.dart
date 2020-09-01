@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tokenlab_challenge/routes/routes.dart';
 
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
@@ -57,7 +58,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 IconButton(
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true)
-                        .pushNamed('vertical_example');
+                        .pushNamed(Routes.favorites);
                   },
                   icon: const Icon(Icons.vertical_align_top),
                 )
