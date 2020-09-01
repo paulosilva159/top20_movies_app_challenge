@@ -31,11 +31,6 @@ class MovieDetailsTile extends StatelessWidget {
                   text:
                       S.of(context).detailsTileScore(movieDetails.voteAverage),
                   style: const TextStyle(color: Colors.black),
-                  // children: <TextSpan>[
-                  //   TextSpan(
-                  //       text: movieDetails.voteAverage.toString(),
-                  //       style: const TextStyle(color: Colors.black))
-                  // ],
                 ),
               ),
               RichText(
@@ -43,11 +38,6 @@ class MovieDetailsTile extends StatelessWidget {
                   text:
                       S.of(context).detailsTileVotesQtt(movieDetails.voteCount),
                   style: const TextStyle(color: Colors.black),
-                  // children: <TextSpan>[
-                  //   TextSpan(
-                  //       text: movieDetails.voteCount.toString(),
-                  //       style: const TextStyle(color: Colors.black))
-                  // ],
                 ),
               ),
             ],
