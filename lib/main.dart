@@ -29,20 +29,20 @@ void main() {
       ),
     )
     ..define(
-      '/:movieStructureType',
+      ':${Routes.movieStructureTypeParam}',
       handler: Handler(
         handlerFunc: (context, params) {
-          final movieStructureType = params['movieStructureType'][0];
+          final movieStructureType = params[Routes.movieStructureTypeParam][0];
 
           return MoviesListScreen(movieStructureType: movieStructureType);
         },
       ),
     )
     ..define(
-      '${Routes.movieDetails}/:id',
+      '${Routes.movieDetails}/:${Routes.movieDetailsIdParam}',
       handler: Handler(
         handlerFunc: (context, params) {
-          final id = int.parse(params['id'][0]);
+          final id = int.parse(params[Routes.movieDetailsIdParam][0]);
 
           return MovieDetailsScreen(
             id: id,
