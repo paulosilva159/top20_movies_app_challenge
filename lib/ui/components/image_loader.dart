@@ -57,7 +57,7 @@ class _ImagePlaceholder extends StatelessWidget {
           const Placeholder(),
           Center(
             child: Text(
-              '$title',
+              title,
               style: titleStyle,
               textAlign: TextAlign.center,
             ),

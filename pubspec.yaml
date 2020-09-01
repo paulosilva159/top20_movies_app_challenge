@@ -8,6 +8,9 @@ environment:
 
 dependencies:
   json_serializable: ^3.4.1
+  flutter_localizations:
+    sdk: flutter
+  intl: 0.16.1
   dio: ^3.0.10
   flutter:
     sdk: flutter
@@ -23,3 +26,7 @@ flutter:
 
   assets:
     - lib/ui/assets/top-20.png
+
+flutter_intl:
+  main_locale: en_US
+  enabled: true

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
 
+import '../../../generated/l10n.dart';
+
 import 'components/movie_details_tile.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
@@ -53,7 +55,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Detalhes'),
+          title: Text(S.of(context).detailsScreenTopTitle),
           centerTitle: true,
         ),
         body: _MovieDetailsBody(
@@ -95,24 +97,24 @@ class _MovieDetailsBody extends StatelessWidget {
               height: 10,
             ),
             if (error is SocketException)
-              const Text(
-                'Verifique sua conexão',
-                style: TextStyle(
+              Text(
+                S.of(context).connectionErrorMessage,
+                style: const TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
                     fontSize: 12),
               )
             else
-              const Text(
-                'Erro!',
-                style: TextStyle(
+              Text(
+                S.of(context).genericErrorMessage,
+                style: const TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
                     fontSize: 12),
               ),
             RaisedButton(
               onPressed: getMovieDetails,
-              child: const Text('Tentar Novamente'),
+              child: Text(S.of(context).tryAgainMessage),
             ),
           ],
         ),
