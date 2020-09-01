@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../../../data/model/model.dart';
+import '../../../data/model/model.dart';
 
-import '../../../components/movies_structure.dart';
+import '../../components/movies_structure.dart';
 
 class MoviesContentBody extends StatelessWidget {
   const MoviesContentBody({

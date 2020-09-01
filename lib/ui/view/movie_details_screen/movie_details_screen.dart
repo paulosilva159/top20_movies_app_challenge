@@ -7,7 +7,7 @@ import '../../../data/model/model.dart';
 
 import '../../../generated/l10n.dart';
 
-import 'components/movie_details_tile.dart';
+import 'movie_details_tile.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
   const MovieDetailsScreen({@required this.id, Key key})

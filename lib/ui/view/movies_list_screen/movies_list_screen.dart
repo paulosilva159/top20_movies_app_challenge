@@ -9,7 +9,7 @@ import '../../../routes/routes.dart';
 
 import '../../../ui/components/movies_structure.dart';
 
-import 'components/movies_list_body.dart';
+import 'movies_list_body.dart';
 
 class MoviesListScreen extends StatefulWidget {
   const MoviesListScreen({
