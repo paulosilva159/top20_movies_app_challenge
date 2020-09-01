@@ -33,23 +33,23 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Number of Votes: `
-  String get detailsTileVotesQtt {
+  /// `{voteQuantity}: Votes`
+  String detailsTileVotesQtt(Object voteQuantity) {
     return Intl.message(
-      'Number of Votes: ',
+      '$voteQuantity: Votes',
       name: 'detailsTileVotesQtt',
       desc: '',
-      args: [],
+      args: [voteQuantity],
     );
   }
 
-  /// `Score: `
-  String get detailsTileScore {
+  /// `{score}: Score`
+  String detailsTileScore(Object score) {
     return Intl.message(
-      'Score: ',
+      '$score: Score',
       name: 'detailsTileScore',
       desc: '',
-      args: [],
+      args: [score],
     );
   }
 

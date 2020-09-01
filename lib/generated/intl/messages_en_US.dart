@@ -19,14 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en_US';
 
+  static m0(score) => "${score}: Score";
+
+  static m1(voteQuantity) => "${voteQuantity}: Votes";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "bottomNavigationItemGridTitle" : MessageLookupByLibrary.simpleMessage("Grid"),
     "bottomNavigationItemListTitle" : MessageLookupByLibrary.simpleMessage("List"),
     "connectionErrorMessage" : MessageLookupByLibrary.simpleMessage("Verify your connection!"),
     "detailsScreenTopTitle" : MessageLookupByLibrary.simpleMessage("Details"),
-    "detailsTileScore" : MessageLookupByLibrary.simpleMessage("Score: "),
-    "detailsTileVotesQtt" : MessageLookupByLibrary.simpleMessage("Number of Votes: "),
+    "detailsTileScore" : m0,
+    "detailsTileVotesQtt" : m1,
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Error!"),
     "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Try Again")
   };

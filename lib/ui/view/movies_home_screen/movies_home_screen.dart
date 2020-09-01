@@ -85,7 +85,7 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
 
   @override
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
-        key: GlobalKey(),
+        key: ObjectKey(_appFlows),
         navigationBarItems: _appFlows
             .map(
               (flow) => BottomNavigationTab(
