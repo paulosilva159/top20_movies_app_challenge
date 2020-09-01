@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:enum_to_string/enum_to_string.dart';
+
 import '../../../generated/l10n.dart';
 
 import '../../../ui/components/app_flow.dart';
@@ -52,15 +54,13 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
         navigationBarItems: _appFlows
             .map(
               (flow) => BottomNavigationTab(
-                  bottomNavigationBarItem: BottomNavigationBarItem(
-                    title: Text(flow.title),
-                    icon: Icon(flow.iconData),
-                  ),
-                  navigatorKey: flow.navigatorKey,
-                  initialRouteName:
-                      flow.movieStructureType == MovieStructureType.list
-                          ? 'list'
-                          : 'grid'),
+                bottomNavigationBarItem: BottomNavigationBarItem(
+                  title: Text(flow.title),
+                  icon: Icon(flow.iconData),
+                ),
+                navigatorKey: flow.navigatorKey,
+                initialRouteName: EnumToString.parse(flow.movieStructureType),
+              ),
             )
             .toList(),
       );

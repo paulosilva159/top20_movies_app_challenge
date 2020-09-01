@@ -6,7 +6,6 @@ import 'package:tokenlab_challenge/routes/routes.dart';
 
 import 'generated/l10n.dart';
 
-import 'ui/components/movies_structure.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_home_screen/movies_home_screen.dart';
 import 'ui/view/movies_list_screen/movies_list_screen.dart';
@@ -20,7 +19,7 @@ void main() {
       ),
     )
     ..define(
-      '/${Routes.favorites}',
+      Routes.favorites,
       handler: Handler(
         handlerFunc: (context, params) => Container(
           child: const Center(
@@ -30,21 +29,17 @@ void main() {
       ),
     )
     ..define(
-      '/${Routes.moviesView}',
+      '/:movieStructureType',
       handler: Handler(
         handlerFunc: (context, params) {
           final movieStructureType = params['movieStructureType'][0];
 
-          return MoviesListScreen(
-            movieStructureType: movieStructureType == 'list'
-                ? MovieStructureType.list
-                : MovieStructureType.grid,
-          );
+          return MoviesListScreen(movieStructureType: movieStructureType);
         },
       ),
     )
     ..define(
-      '/${Routes.movieDetails}',
+      '${Routes.movieDetails}/:id',
       handler: Handler(
         handlerFunc: (context, params) {
           final id = int.parse(params['id'][0]);

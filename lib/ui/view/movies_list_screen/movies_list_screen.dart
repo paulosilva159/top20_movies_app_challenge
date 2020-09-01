@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/routes/routes.dart';
+
+import 'package:enum_to_string/enum_to_string.dart';
 
 import '../../../data/dio/dio_client.dart';
 import '../../../data/model/model.dart';
 
+import '../../../routes/routes.dart';
+
 import '../../../ui/components/movies_structure.dart';
+
 import 'components/movies_list_body.dart';
 
 class MoviesListScreen extends StatefulWidget {
-  const MoviesListScreen({Key key, this.movieStructureType}) : super(key: key);
+  const MoviesListScreen({
+    @required this.movieStructureType,
+    Key key,
+  })  : assert(movieStructureType != null),
+        super(key: key);
 
-  final MovieStructureType movieStructureType;
+  final String movieStructureType;
 
   @override
   _MoviesListScreenState createState() => _MoviesListScreenState();
@@ -74,7 +82,10 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
               ),
             ),
             MoviesContentBody(
-              movieStructureType: widget.movieStructureType,
+              movieStructureType: widget.movieStructureType ==
+                      EnumToString.parse(MovieStructureType.list)
+                  ? MovieStructureType.list
+                  : MovieStructureType.grid,
               error: _error,
               moviesList: _moviesList,
               awaitingMoviesList: _awaitingMoviesList,
