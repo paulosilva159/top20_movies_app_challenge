@@ -1,12 +1,14 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
+import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen.dart';
 
 import 'generated/l10n.dart';
 
+import 'ui/components/movies_structure.dart';
+import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_home_screen/movies_home_screen.dart';
+import 'ui/view/movies_list_screen/movies_list_screen.dart';
 
 void main() {
   Router.appRouter
@@ -16,10 +18,25 @@ void main() {
         handlerFunc: (context, params) => MoviesHomeScreen(),
       ),
     )
+    ..define('/vertical_example',
+        handler: Handler(
+            handlerFunc: (context, params) => Container(
+                  child: const Center(
+                    child: Text('Vertical Example'),
+                  ),
+                )))
     ..define(
-      '/movies',
+      '/movies/:movieStructureType',
       handler: Handler(
-        handlerFunc: (context, params) => Container(),
+        handlerFunc: (context, params) {
+          final movieStructureType = params['movieStructureType'][0];
+
+          return MoviesListScreen(
+            movieStructureType: movieStructureType == 'MovieStructureType.list'
+                ? MovieStructureType.list
+                : MovieStructureType.grid,
+          );
+        },
       ),
     )
     ..define(
