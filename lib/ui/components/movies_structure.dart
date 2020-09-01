@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/model/model.dart';
+import '../../data/model/model.dart';
 
-import '../../../../ui/components/image_loader.dart';
-import '../../../../ui/components/page_navigation.dart';
+import 'image_loader.dart';
+import 'page_navigation.dart';
 
 class MoviesStructure extends StatelessWidget {
   const MoviesStructure({

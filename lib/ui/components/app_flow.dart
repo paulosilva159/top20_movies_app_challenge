@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../ui/view/movies_home_screen/components/movies_structure.dart';
+import 'movies_structure.dart';
 
 class AppFlow {
   const AppFlow({

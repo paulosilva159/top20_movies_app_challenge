@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'package:fluro/fluro.dart';
+
 import '../bottom_navigator_tab.dart';
 
 class MaterialBottomNavigationScaffold extends StatefulWidget {
@@ -53,7 +55,7 @@ class _MaterialBottomNavigationScaffoldState
               bottomNavigationBarItem: barItem.bottomNavigationBarItem,
               navigatorKey: barItem.navigatorKey,
               subtreeKey: GlobalKey(),
-              initialPageBuilder: barItem.initialPageBuilder,
+              initialRouteName: barItem.initialRouteName,
             ),
           )
           .toList(),
@@ -144,10 +146,10 @@ class PageFlowBuilder extends StatelessWidget {
         child: shouldBuildTab[tabIndex]
             ? Navigator(
                 key: item.navigatorKey,
-                onGenerateRoute: (settings) => MaterialPageRoute(
-                  settings: settings,
-                  builder: item.initialPageBuilder,
-                ),
+                initialRoute: item.initialRouteName,
+                onGenerateRoute: (settings) => Router.appRouter
+                    .matchRoute(context, settings.name, routeSettings: settings)
+                    .route,
               )
             : Container(),
       ),
@@ -171,15 +173,15 @@ class _MaterialBottomNavigationTab extends BottomNavigationTab {
     @required this.subtreeKey,
     @required BottomNavigationBarItem bottomNavigationBarItem,
     @required GlobalKey<NavigatorState> navigatorKey,
-    @required WidgetBuilder initialPageBuilder,
+    @required String initialRouteName,
   })  : assert(subtreeKey != null),
         assert(bottomNavigationBarItem != null),
         assert(navigatorKey != null),
-        assert(initialPageBuilder != null),
+        assert(initialRouteName != null),
         super(
           bottomNavigationBarItem: bottomNavigationBarItem,
           navigatorKey: navigatorKey,
-          initialPageBuilder: initialPageBuilder,
+          initialRouteName: initialRouteName,
         );
 
   final GlobalKey subtreeKey;

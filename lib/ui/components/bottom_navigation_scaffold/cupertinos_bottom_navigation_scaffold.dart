@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'package:fluro/fluro.dart';
+
 import '../bottom_navigator_tab.dart';
 
 class CupertinoBottomNavigationScaffold extends StatelessWidget {
@@ -32,12 +34,20 @@ class CupertinoBottomNavigationScaffold extends StatelessWidget {
           final barItem = navigationBarItems[index];
 
           return CupertinoTabView(
-            navigatorKey: barItem.navigatorKey,
-            onGenerateRoute: (settings) => CupertinoPageRoute(
-              settings: settings,
-              builder: barItem.initialPageBuilder,
-            ),
-          );
+              navigatorKey: barItem.navigatorKey,
+              onGenerateRoute: (settings) {
+                var routeSettings = settings;
+
+                if (settings.name == '/') {
+                  routeSettings =
+                      settings.copyWith(name: barItem.initialRouteName);
+                }
+
+                return Router.appRouter
+                    .matchRoute(context, routeSettings.name,
+                        routeSettings: routeSettings)
+                    .route;
+              });
         },
       );
 }

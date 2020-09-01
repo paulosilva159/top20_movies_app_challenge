@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../data/model/model.dart';
-import '../../../../generated/l10n.dart';
+import '../../../data/model/model.dart';
+import '../../../generated/l10n.dart';
 
 class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})

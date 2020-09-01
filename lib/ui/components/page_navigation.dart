@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../ui/view/movie_details_screen/movie_details_screen.dart';
+import '../../routes/routes.dart';
 
 PageRoute<T> _buildAdaptivePageRoute<T>({
   @required WidgetBuilder builder,
@@ -25,11 +25,7 @@ PageRoute<T> _buildAdaptivePageRoute<T>({
 
 void pushPage(BuildContext context, bool isHorizontalNavigation,
     {Object arguments}) {
-  Navigator.of(context, rootNavigator: !isHorizontalNavigation).push(
-    _buildAdaptivePageRoute(
-      builder: (context) => MovieDetailsScreen(),
-      fullscreenDialog: !isHorizontalNavigation,
-      arguments: arguments,
-    ),
+  Navigator.of(context, rootNavigator: !isHorizontalNavigation).pushNamed(
+    Routes.movieById(arguments),
   );
 }
