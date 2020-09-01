@@ -7,7 +7,7 @@ import 'package:tokenlab_challenge/routes/routes.dart';
 import 'generated/l10n.dart';
 
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
-import 'ui/view/movies_home_screen/movies_home_screen.dart';
+import 'ui/view/movies_home_screen.dart';
 import 'ui/view/movies_list_screen/movies_list_screen.dart';
 
 void main() {

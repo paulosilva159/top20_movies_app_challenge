@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 import 'package:enum_to_string/enum_to_string.dart';
 
-import '../../../generated/l10n.dart';
+import '../../generated/l10n.dart';
 
-import '../../../ui/components/app_flow.dart';
-import '../../../ui/components/bottom_navigator_tab.dart';
+import '../components/app_flow.dart';
+import '../components/bottom_navigator_tab.dart';
 
-import '../../components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
-import '../../components/movies_structure.dart';
+import '../components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
+import '../components/movies_structure.dart';
 
 class MoviesHomeScreen extends StatefulWidget {
   @override
