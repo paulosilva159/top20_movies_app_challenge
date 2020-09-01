@@ -1,7 +1,7 @@
 {
   "@@locale": "en_US",
-  "detailsTileVotesQtt": "Number of Votes: ",
-  "detailsTileScore": "Score: ",
+  "detailsTileVotesQtt": "{voteQuantity}: Votes",
+  "detailsTileScore": "{score}: Score",
   "detailsScreenTopTitle": "Details",
   "tryAgainMessage": "Try Again",
   "connectionErrorMessage": "Verify your connection!",
