@@ -7,8 +7,8 @@ import 'package:tokenlab_challenge/data/dio/dio_client.dart';
 
 import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen_state.dart';
 
-class MoviesDetailsBloc {
-  MoviesDetailsBloc({
+class MovieDetailsBloc {
+  MovieDetailsBloc({
     @required this.movieId,
   }) : assert(movieId != null) {
     _subscriptions
