@@ -15,7 +15,7 @@ class MoviesListBloc {
         ),
       )
       ..add(
-        _onTryAgainSubject.stream.flatMap((_) => _fetchMoviesList()).listen(
+        _onTryAgainController.stream.flatMap((_) => _fetchMoviesList()).listen(
               (_onNewStateSubject.add),
             ),
       );
@@ -23,8 +23,8 @@ class MoviesListBloc {
 
   final _subscriptions = CompositeSubscription();
 
-  final _onTryAgainSubject = StreamController<void>();
-  Sink<void> get onTryAgain => _onTryAgainSubject.sink;
+  final _onTryAgainController = StreamController<void>();
+  Sink<void> get onTryAgain => _onTryAgainController.sink;
 
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
@@ -44,7 +44,7 @@ class MoviesListBloc {
   }
 
   void dispose() {
-    _onTryAgainSubject.close();
+    _onTryAgainController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();
   }
