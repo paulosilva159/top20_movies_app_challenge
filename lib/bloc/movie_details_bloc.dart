@@ -34,7 +34,7 @@ class MovieDetailsBloc {
   Sink<void> get onTryAgain => _onTryAgainSubject.sink;
 
   final _onNewStateSubject = BehaviorSubject<MovieDetailsBodyState>();
-  Stream<MovieDetailsBodyState> get onNewState => _onNewStateSubject;
+  Stream<MovieDetailsBodyState> get onNewState => _onNewStateSubject.stream;
 
   Stream<MovieDetailsBodyState> _fetchMovieLongDetails() async* {
     yield Loading();

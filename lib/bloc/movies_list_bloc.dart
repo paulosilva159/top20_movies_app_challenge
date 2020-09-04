@@ -27,7 +27,7 @@ class MoviesListBloc {
   Sink<void> get onTryAgain => _onTryAgainSubject.sink;
 
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
-  Stream<MoviesListBodyState> get onNewState => _onNewStateSubject;
+  Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
 
   Stream<MoviesListBodyState> _fetchMoviesList() async* {
     yield Loading();

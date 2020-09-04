@@ -84,14 +84,20 @@ class MoviesListBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('1');
+    print(moviesListScreenState.data);
     if (moviesListScreenState.data == null ||
         moviesListScreenState.data is Loading) {
+      print('2');
+      print(moviesListScreenState.data);
       return const SliverFillRemaining(
         child: Center(
           child: CircularProgressIndicator(),
         ),
       );
     } else if (moviesListScreenState.data is Error) {
+      print('3');
+      print(moviesListScreenState.data);
       return SliverFillRemaining(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -124,11 +130,16 @@ class MoviesListBody extends StatelessWidget {
           ],
         ),
       );
-    } else {
+    } else if (moviesListScreenState.data is Success) {
+      print('4');
+      print(moviesListScreenState.data);
+
       return MoviesStructure(
         moviesList: moviesListScreenState.data.movieList,
         movieStructureType: movieStructureType,
       );
     }
+
+    throw Exception();
   }
 }

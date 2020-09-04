@@ -54,15 +54,14 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   ),
                 ),
               ),
-              if (snapshot.data != null)
-                MoviesListBody(
-                  moviesListScreenState: snapshot,
-                  movieStructureType: widget.movieStructureType ==
-                          EnumToString.parse(MovieStructureType.list)
-                      ? MovieStructureType.list
-                      : MovieStructureType.grid,
-                  onTryAgainTap: () => _bloc.onTryAgain.add(null),
-                ),
+              MoviesListBody(
+                moviesListScreenState: snapshot,
+                movieStructureType: widget.movieStructureType ==
+                        EnumToString.parse(MovieStructureType.list)
+                    ? MovieStructureType.list
+                    : MovieStructureType.grid,
+                onTryAgainTap: () => _bloc.onTryAgain.add(null),
+              ),
             ],
           ),
         ),
