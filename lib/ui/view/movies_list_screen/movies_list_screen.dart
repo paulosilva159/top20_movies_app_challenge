@@ -4,8 +4,6 @@ import 'package:enum_to_string/enum_to_string.dart';
 
 import '../../../bloc/movies_list_bloc.dart';
 
-import '../../../data/model/model.dart';
-
 import '../../../routes/routes.dart';
 
 import '../../../ui/components/movies_structure.dart';
