@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 
-import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen_state.dart';
-
 import '../../components/movies_structure.dart';
+import 'movies_list_screen_state.dart';
 
 // class MoviesListBody extends StatelessWidget {
 //   const MoviesListBody({
@@ -140,6 +139,10 @@ class MoviesListBody extends StatelessWidget {
       );
     }
 
-    throw Exception();
+    return const SliverFillRemaining(
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
