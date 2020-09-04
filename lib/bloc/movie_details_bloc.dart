@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import 'package:tokenlab_challenge/data/dio/dio_client.dart';
+import '../data/dio/dio_client.dart';
 
-import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen_state.dart';
+import '../ui/view/movie_details_screen/movie_details_screen_state.dart';
 
 class MovieDetailsBloc {
   MovieDetailsBloc({
@@ -19,7 +19,7 @@ class MovieDetailsBloc {
       )
       ..add(
         _onTryAgainSubject.stream
-            .flatMap((value) => _fetchMovieLongDetails())
+            .flatMap((_) => _fetchMovieLongDetails())
             .listen(
               (_onNewStateSubject.add),
             ),

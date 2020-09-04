@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:enum_to_string/enum_to_string.dart';
 
-import '../../../data/dio/dio_client.dart';
+import '../../../bloc/movies_list_bloc.dart';
+
 import '../../../data/model/model.dart';
 
 import '../../../routes/routes.dart';
@@ -25,75 +26,51 @@ class MoviesListScreen extends StatefulWidget {
 }
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
-  List<MovieShortDetails> _moviesList;
-  bool _awaitingMoviesList;
-
-  final _dio = DioClient();
-  dynamic _error;
-
-  void _getMovies() {
-    setState(() {
-      _error = null;
-      _awaitingMoviesList = true;
-    });
-
-    _dio.getMovies().then((movieList) {
-      setState(() {
-        _moviesList = movieList;
-        _awaitingMoviesList = false;
-      });
-    }).catchError((error) {
-      setState(() {
-        _error = error.error;
-        _awaitingMoviesList = false;
-      });
-    });
-  }
+  final _bloc = MoviesListBloc();
 
   @override
-  void initState() {
-    _getMovies();
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed(Routes.favorites);
-                  },
-                  icon: const Icon(Icons.vertical_align_top),
-                )
-              ],
-              expandedHeight: 250,
-              flexibleSpace: FlexibleSpaceBar(
-                title: const Text('TMDb'),
-                centerTitle: true,
-                background: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Image.asset('lib/ui/assets/top-20.png'),
+  Widget build(BuildContext context) => StreamBuilder<Object>(
+        stream: _bloc.onNewState,
+        builder: (context, snapshot) => Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushNamed(Routes.favorites);
+                    },
+                    icon: const Icon(Icons.vertical_align_top),
+                  )
+                ],
+                expandedHeight: 250,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const Text('TMDb'),
+                  centerTitle: true,
+                  background: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.asset('lib/ui/assets/top-20.png'),
+                  ),
                 ),
               ),
-            ),
-            MoviesContentBody(
-              movieStructureType: widget.movieStructureType ==
-                      EnumToString.parse(MovieStructureType.list)
-                  ? MovieStructureType.list
-                  : MovieStructureType.grid,
-              error: _error,
-              moviesList: _moviesList,
-              awaitingMoviesList: _awaitingMoviesList,
-              onTryAgainTap: () {
-                _getMovies();
-              },
-            ),
-          ],
+              if (snapshot.data != null)
+                MoviesListBody(
+                  moviesListScreenState: snapshot,
+                  movieStructureType: widget.movieStructureType ==
+                          EnumToString.parse(MovieStructureType.list)
+                      ? MovieStructureType.list
+                      : MovieStructureType.grid,
+                  onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                ),
+            ],
+          ),
         ),
       );
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
 }

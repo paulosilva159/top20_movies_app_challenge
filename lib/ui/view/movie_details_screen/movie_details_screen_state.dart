@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:tokenlab_challenge/data/model/model.dart';
+
+import '../../../data/model/model.dart';
 
 abstract class MovieDetailsBodyState {}
 
