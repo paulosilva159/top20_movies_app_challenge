@@ -33,6 +33,26 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Want to save?`
+  String get wantToSaveListMessage {
+    return Intl.message(
+      'Want to save?',
+      name: 'wantToSaveListMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List saved`
+  String get listSavedMessage {
+    return Intl.message(
+      'List saved',
+      name: 'listSavedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{voteQuantity}: Votes`
   String detailsTileVotesQtt(Object voteQuantity) {
     return Intl.message(

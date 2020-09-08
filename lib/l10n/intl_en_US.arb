@@ -1,5 +1,7 @@
 {
   "@@locale": "en_US",
+  "wantToSaveListMessage": "Want to save?",
+  "listSavedMessage": "List saved",
   "detailsTileVotesQtt": "{voteQuantity}: Votes",
   "detailsTileScore": "{score}: Score",
   "detailsScreenTopTitle": "Details",

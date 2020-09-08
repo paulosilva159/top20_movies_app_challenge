@@ -32,14 +32,16 @@ class MoviesListBloc {
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
 
+  List _moviesList;
+
   Stream<MoviesListBodyState> _fetchMoviesList() async* {
     yield Loading();
 
     try {
-      moviesList = await _repository.getMoviesList();
+      _moviesList = await _repository.getMoviesList();
 
       yield Success(
-        moviesList: moviesList,
+        moviesList: _moviesList,
       );
     } catch (error) {
       yield Error(
@@ -50,9 +52,7 @@ class MoviesListBloc {
 
   bool get hasLoadMoviesListFromCache => _repository.hasLoadMoviesListFromCache;
 
-  List moviesList;
-
-  void get onSaveTap => _repository.saveMoviesList(moviesList);
+  void get onSaveTap => _repository.saveMoviesList(_moviesList);
 
   void dispose() {
     _onTryAgainController.close();

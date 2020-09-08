@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../generated/l10n.dart';
+
 class SaveFAB extends StatelessWidget {
   const SaveFAB({@required this.isToSave, @required this.onSaveTap})
       : assert(isToSave != null),
@@ -11,7 +13,9 @@ class SaveFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) => FloatingActionButton.extended(
         onPressed: isToSave ? onSaveTap : null,
-        label: Text(isToSave ? 'Salvar lista' : 'Lista salva'),
+        label: Text(isToSave
+            ? S.of(context).wantToSaveListMessage
+            : S.of(context).listSavedMessage),
         icon: isToSave
             ? null
             : const Icon(

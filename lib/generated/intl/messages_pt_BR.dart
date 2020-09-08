@@ -32,6 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailsTileScore" : m0,
     "detailsTileVotesQtt" : m1,
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Deu erro!"),
-    "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Tente Novamente")
+    "listSavedMessage" : MessageLookupByLibrary.simpleMessage("Lista salva"),
+    "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Tente Novamente"),
+    "wantToSaveListMessage" : MessageLookupByLibrary.simpleMessage("Salvar lista?")
   };
 }

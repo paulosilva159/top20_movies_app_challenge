@@ -15,9 +15,9 @@ class Repository {
       movieDetails = await _cacheDataSource.getMovieDetails(movieId);
       hasLoadMovieDetailsFromCache = true;
     } catch (error) {
+      hasLoadMovieDetailsFromCache = false;
       if (error is RangeError) {
         movieDetails = await _remoteDataSource.getMovieDetails(movieId);
-        hasLoadMovieDetailsFromCache = false;
       }
 
       print(error);
@@ -33,14 +33,10 @@ class Repository {
       moviesList = await _cacheDataSource.getMoviesList();
       hasLoadMoviesListFromCache = true;
     } catch (error) {
-      print(error);
-
+      hasLoadMoviesListFromCache = false;
       if (error is RangeError) {
         moviesList = await _remoteDataSource.getMoviesList();
-        hasLoadMoviesListFromCache = false;
       }
-
-      print('object');
     }
 
     return moviesList;
