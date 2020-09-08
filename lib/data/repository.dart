@@ -5,14 +5,19 @@ class Repository {
   final RemoteDataSource _remoteDataSource = RemoteDataSource();
   final CacheDataSource _cacheDataSource = CacheDataSource();
 
+  bool hasLoadMovieDetailsFromCache = false;
+  bool hasLoadMoviesListFromCache = false;
+
   Future getMovieDetails(int movieId) async {
     dynamic movieDetails;
 
     try {
       movieDetails = await _cacheDataSource.getMovieDetails(movieId);
+      hasLoadMovieDetailsFromCache = true;
     } catch (error) {
       if (error is RangeError) {
-        movieDetails ??= await _remoteDataSource.getMovieDetails(movieId);
+        movieDetails = await _remoteDataSource.getMovieDetails(movieId);
+        hasLoadMovieDetailsFromCache = false;
       }
 
       print(error);
@@ -26,20 +31,22 @@ class Repository {
 
     try {
       moviesList = await _cacheDataSource.getMoviesList();
+      hasLoadMoviesListFromCache = true;
     } catch (error) {
+      print(error);
+
       if (error is RangeError) {
         moviesList = await _remoteDataSource.getMoviesList();
+        hasLoadMoviesListFromCache = false;
       }
 
-      print(error);
+      print('object');
     }
 
     return moviesList;
   }
 
-  void saveMoviesList<T>(List<T> moviesList) {
-    assert(T is MovieShortDetailsRM || T is MovieShortDetailsCM);
-
+  void saveMoviesList(List moviesList) {
     _cacheDataSource.saveMoviesList(
       moviesList
           .map<MovieShortDetailsCM>(_movieShortDetailsToCacheModel)
@@ -47,9 +54,7 @@ class Repository {
     );
   }
 
-  void saveMovieDetails<T>(T movieDetails) {
-    assert(T is MovieLongDetailsRM || T is MovieLongDetailsCM);
-
+  void saveMovieDetails(dynamic movieDetails) {
     _cacheDataSource.saveMovieDetails(
       _movieLongDetailsToCacheModel(movieDetails),
     );

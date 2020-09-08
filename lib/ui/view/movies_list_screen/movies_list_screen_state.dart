@@ -5,9 +5,9 @@ import '../../../data/model/model.dart';
 abstract class MoviesListBodyState {}
 
 class Success implements MoviesListBodyState {
-  Success({@required this.movieList}) : assert(movieList != null);
+  Success({@required this.moviesList}) : assert(moviesList != null);
 
-  final List<MovieShortDetailsRM> movieList;
+  final List moviesList;
 }
 
 class Loading implements MoviesListBodyState {}

@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import '../../../ui/components/indicators/indicators.dart';
 import '../../../ui/components/movies_structure_type.dart';
 
-import 'movie_list_structure.dart';
 import 'movies_list_screen_state.dart';
+import 'movies_list_structure.dart';
 
 class MoviesListBody extends StatelessWidget {
   const MoviesListBody({
-    @required this.moviesListScreenState,
+    @required this.moviesListScreenSnapshot,
     @required this.movieStructureType,
     @required this.onTryAgainTap,
-  })  : assert(moviesListScreenState != null),
+  })  : assert(moviesListScreenSnapshot != null),
         assert(movieStructureType != null),
         assert(onTryAgainTap != null);
 
-  final AsyncSnapshot moviesListScreenState;
+  final AsyncSnapshot moviesListScreenSnapshot;
   final MovieStructureType movieStructureType;
   final VoidCallback onTryAgainTap;
 
   @override
   Widget build(BuildContext context) {
-    final stateData = moviesListScreenState.data;
+    final stateData = moviesListScreenSnapshot.data;
 
     if (stateData == null || stateData is Loading) {
       return SliverFillRemaining(child: LoadingIndicator());
@@ -34,7 +34,7 @@ class MoviesListBody extends StatelessWidget {
       );
     } else if (stateData is Success) {
       return MoviesListStructure(
-        moviesList: stateData.movieList,
+        moviesList: stateData.moviesList,
         movieStructureType: movieStructureType,
       );
     }

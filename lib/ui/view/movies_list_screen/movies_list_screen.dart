@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:tokenlab_challenge/ui/components/save_fab.dart';
 
 import '../../../bloc/movies_list_bloc.dart';
 
@@ -30,6 +31,10 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   Widget build(BuildContext context) => StreamBuilder<Object>(
         stream: _bloc.onNewState,
         builder: (context, snapshot) => Scaffold(
+          floatingActionButton: SaveFAB(
+            isToSave: !_bloc.hasLoadMoviesListFromCache,
+            onSaveTap: () => _bloc.onSaveTap,
+          ),
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -39,7 +44,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(Routes.favorites);
                     },
-                    icon: const Icon(Icons.vertical_align_top),
+                    icon: const Icon(Icons.favorite),
                   )
                 ],
                 expandedHeight: 250,
@@ -53,7 +58,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 ),
               ),
               MoviesListBody(
-                moviesListScreenState: snapshot,
+                moviesListScreenSnapshot: snapshot,
                 movieStructureType: widget.movieStructureType ==
                         EnumToString.parse(MovieStructureType.list)
                     ? MovieStructureType.list

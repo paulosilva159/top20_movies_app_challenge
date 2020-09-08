@@ -53,6 +53,7 @@ class _ImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Stack(
+        alignment: Alignment.center,
         children: [
           const Placeholder(),
           Center(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/model/model.dart';
 import '../../../generated/l10n.dart';
 
 class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})
       : assert(movieDetails != null);
 
-  final MovieLongDetailsRM movieDetails;
+  final dynamic movieDetails;
 
   @override
   Widget build(BuildContext context) => ListView(

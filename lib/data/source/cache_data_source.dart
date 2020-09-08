@@ -11,13 +11,19 @@ class CacheDataSource {
           .then((box) => List<MovieShortDetailsCM>.from(box.getAt(0)));
 
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
-      Hive.openBox(movieDetailsBoxName).then((box) => box.getAt(movieId));
+      Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
+          .then((box) => box.getAt(movieId));
 
   Future<void> saveMoviesList(List<MovieShortDetailsCM> moviesList) =>
-      Hive.openBox<List<MovieShortDetailsCM>>(moviesListBoxName)
-          .then((box) => box.putAll({0: moviesList}));
+      Hive.isBoxOpen(moviesListBoxName)
+          ? Hive.box<List>(moviesListBoxName).putAll({0: moviesList})
+          : Hive.openBox<List>(moviesListBoxName)
+              .then((box) => box.putAll({0: moviesList}));
 
   Future<void> saveMovieDetails(MovieLongDetailsCM movieDetails) =>
-      Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
-          .then((box) => box.putAll({movieDetails.id: movieDetails}));
+      Hive.isBoxOpen(movieDetailsBoxName)
+          ? Hive.box<MovieLongDetailsCM>(movieDetailsBoxName)
+              .putAll({movieDetails.id: movieDetails})
+          : Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
+              .then((box) => box.putAll({movieDetails.id: movieDetails}));
 }

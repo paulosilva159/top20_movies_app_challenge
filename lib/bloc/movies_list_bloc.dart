@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../data/repository.dart';
@@ -21,6 +22,8 @@ class MoviesListBloc {
       );
   }
 
+  final _repository = Repository();
+
   final _subscriptions = CompositeSubscription();
 
   final _onTryAgainController = StreamController<void>();
@@ -33,8 +36,10 @@ class MoviesListBloc {
     yield Loading();
 
     try {
+      moviesList = await _repository.getMoviesList();
+
       yield Success(
-        movieList: await Repository().getMoviesList(),
+        moviesList: moviesList,
       );
     } catch (error) {
       yield Error(
@@ -42,6 +47,12 @@ class MoviesListBloc {
       );
     }
   }
+
+  bool get hasLoadMoviesListFromCache => _repository.hasLoadMoviesListFromCache;
+
+  List moviesList;
+
+  void get onSaveTap => _repository.saveMoviesList(moviesList);
 
   void dispose() {
     _onTryAgainController.close();
