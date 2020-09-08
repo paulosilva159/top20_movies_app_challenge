@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import '../data/source/remote_data_source.dart';
+import '../data/repository.dart';
 
 import '../ui/view/movie_details_screen/movie_details_screen_state.dart';
 
@@ -41,11 +41,11 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-        movieDetails: await RemoteDataSource().getMovieDetails(movieId),
+        movieDetails: await Repository().getMovieDetails(movieId),
       );
     } catch (error) {
       yield Error(
-        error: error.error,
+        error: error,
       );
     }
   }

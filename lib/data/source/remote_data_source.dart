@@ -8,7 +8,7 @@ class RemoteDataSource {
 
   final Dio _dio = Dio();
 
-  Future<List<MovieShortDetailsRM>> getMovies() async {
+  Future<List<MovieShortDetailsRM>> getMoviesList() async {
     final response = await _dio.get(_baseUrl);
 
     return response.data
@@ -17,8 +17,8 @@ class RemoteDataSource {
         .toList();
   }
 
-  Future<MovieLongDetailsRM> getMovieDetails(int id) async {
-    final response = await _dio.get('$_baseUrl/$id');
+  Future<MovieLongDetailsRM> getMovieDetails(int movieId) async {
+    final response = await _dio.get('$_baseUrl/$movieId');
 
     return MovieLongDetailsRM.fromJson(response.data);
   }

@@ -20,7 +20,7 @@ class ErrorIndicator extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            if (error is SocketException)
+            if (error.error is SocketException)
               Text(
                 S.of(context).connectionErrorMessage,
                 style: const TextStyle(

@@ -2,15 +2,27 @@ import 'package:flutter/material.dart';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tokenlab_challenge/routes/routes.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'data/model/model.dart';
 
 import 'generated/l10n.dart';
+
+import 'routes/routes.dart';
 
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_home_screen.dart';
 import 'ui/view/movies_list_screen/movies_list_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Hive
+    ..init((await getApplicationDocumentsDirectory()).path)
+    ..registerAdapter<MovieLongDetailsCM>(MovieLongDetailsCMAdapter())
+    ..registerAdapter<MovieShortDetailsCM>(MovieShortDetailsCMAdapter());
+
   Router.appRouter
     ..define(
       Routes.initial,

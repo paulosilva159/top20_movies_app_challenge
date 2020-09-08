@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:tokenlab_challenge/data/source/remote_data_source.dart';
 
-import '../data/source/remote_data_source.dart';
+import '../data/repository.dart';
 
 import '../ui/view/movies_list_screen/movies_list_screen_state.dart';
 
@@ -35,11 +34,11 @@ class MoviesListBloc {
 
     try {
       yield Success(
-        movieList: await RemoteDataSource().getMovies(),
+        movieList: await Repository().getMoviesList(),
       );
     } catch (error) {
       yield Error(
-        error: error.error,
+        error: error,
       );
     }
   }
