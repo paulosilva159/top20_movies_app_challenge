@@ -37,7 +37,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           ),
           body: MovieDetailsBody(
               movieDetailsBodyState: snapshot,
-              getMovieDetails: () => _bloc.onTryAgain.add(null)),
+              onTryAgainTap: () => _bloc.onTryAgain.add(null)),
         ),
       );
 

@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-import '../../../generated/l10n.dart';
+import '../../../ui/components/indicators/error_indicator.dart';
+import '../../../ui/components/indicators/loading_indicator.dart';
 
 import 'movie_details_screen_state.dart';
 import 'movie_details_tile.dart';
@@ -10,53 +9,27 @@ import 'movie_details_tile.dart';
 class MovieDetailsBody extends StatelessWidget {
   const MovieDetailsBody({
     @required this.movieDetailsBodyState,
-    @required this.getMovieDetails,
+    @required this.onTryAgainTap,
   })  : assert(movieDetailsBodyState != null),
-        assert(getMovieDetails != null);
+        assert(onTryAgainTap != null);
 
   final AsyncSnapshot movieDetailsBodyState;
-  final VoidCallback getMovieDetails;
+  final VoidCallback onTryAgainTap;
 
   @override
   Widget build(BuildContext context) {
-    if (movieDetailsBodyState.data == null ||
-        movieDetailsBodyState.data is Loading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    } else if (movieDetailsBodyState.data is Error) {
-      return Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            if (movieDetailsBodyState.data.error is SocketException)
-              Text(
-                S.of(context).connectionErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              )
-            else
-              Text(
-                S.of(context).genericErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              ),
-            RaisedButton(
-              onPressed: getMovieDetails,
-              child: Text(S.of(context).tryAgainMessage),
-            ),
-          ],
-        ),
+    final stateData = movieDetailsBodyState.data;
+
+    if (stateData == null || stateData is Loading) {
+      return LoadingIndicator();
+    } else if (stateData is Error) {
+      return ErrorIndicator(
+        error: stateData.error,
+        onTryAgainTap: onTryAgainTap,
       );
     } else {
       return MovieDetailsTile(
-        movieDetails: movieDetailsBodyState.data.movieDetails,
+        movieDetails: stateData.movieDetails,
       );
     }
   }

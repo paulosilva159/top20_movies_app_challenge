@@ -1,0 +1,4 @@
+enum MovieStructureType {
+  grid,
+  list,
+}
