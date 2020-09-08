@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/components/indicators/error_indicator.dart';
-import '../../../ui/components/indicators/loading_indicator.dart';
+import '../../../ui/components/indicators/indicators.dart';
 import '../../../ui/components/movies_structure_type.dart';
 
 import 'movie_list_structure.dart';

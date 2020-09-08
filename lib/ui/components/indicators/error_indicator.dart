@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/generated/l10n.dart';
+
+import '../../../generated/l10n.dart';
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator({

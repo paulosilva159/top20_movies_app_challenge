@@ -1,7 +1,5 @@
-import 'package:tokenlab_challenge/data/model/model.dart';
-
-import 'source/cache_data_source.dart';
-import 'source/remote_data_source.dart';
+import 'model/model.dart';
+import 'source/source.dart';
 
 class Repository {
   final RemoteDataSource _remoteDataSource = RemoteDataSource();
