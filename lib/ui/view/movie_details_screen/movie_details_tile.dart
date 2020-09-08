@@ -7,7 +7,7 @@ class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})
       : assert(movieDetails != null);
 
-  final MovieLongDetails movieDetails;
+  final MovieLongDetailsRM movieDetails;
 
   @override
   Widget build(BuildContext context) => ListView(

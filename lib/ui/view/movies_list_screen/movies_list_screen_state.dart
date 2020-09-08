@@ -7,7 +7,7 @@ abstract class MoviesListBodyState {}
 class Success implements MoviesListBodyState {
   Success({@required this.movieList}) : assert(movieList != null);
 
-  final List<MovieShortDetails> movieList;
+  final List<MovieShortDetailsRM> movieList;
 }
 
 class Loading implements MoviesListBodyState {}

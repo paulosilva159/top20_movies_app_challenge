@@ -13,7 +13,7 @@ class MoviesStructure extends StatelessWidget {
   })  : assert(moviesList != null),
         assert(movieStructureType != null);
 
-  final List<MovieShortDetails> moviesList;
+  final List<MovieShortDetailsRM> moviesList;
   final MovieStructureType movieStructureType;
 
   SliverChildBuilderDelegate _buildSliverChildDelegate(BuildContext context) =>

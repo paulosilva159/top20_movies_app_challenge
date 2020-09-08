@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import '../data/dio/dio_client.dart';
+import '../data/source/remote_data_source.dart';
 
 import '../ui/view/movie_details_screen/movie_details_screen_state.dart';
 
@@ -41,7 +41,7 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-        movieDetails: await DioClient().getMovieDetails(movieId),
+        movieDetails: await RemoteDataSource().getMovieDetails(movieId),
       );
     } catch (error) {
       yield Error(

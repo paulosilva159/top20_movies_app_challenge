@@ -7,7 +7,7 @@ abstract class MovieDetailsBodyState {}
 class Success implements MovieDetailsBodyState {
   Success({@required this.movieDetails}) : assert(movieDetails != null);
 
-  final MovieLongDetails movieDetails;
+  final MovieLongDetailsRM movieDetails;
 }
 
 class Loading implements MovieDetailsBodyState {}

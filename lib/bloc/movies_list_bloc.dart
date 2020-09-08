@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
+import 'package:tokenlab_challenge/data/source/remote_data_source.dart';
 
-import '../data/dio/dio_client.dart';
+import '../data/source/remote_data_source.dart';
 
 import '../ui/view/movies_list_screen/movies_list_screen_state.dart';
 
@@ -34,7 +35,7 @@ class MoviesListBloc {
 
     try {
       yield Success(
-        movieList: await DioClient().getMovies(),
+        movieList: await RemoteDataSource().getMovies(),
       );
     } catch (error) {
       yield Error(
