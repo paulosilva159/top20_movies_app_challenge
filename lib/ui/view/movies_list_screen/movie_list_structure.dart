@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/model/model.dart';
+import '../../../data/model/model.dart';
 
-import 'image_loader.dart';
-import 'page_navigation.dart';
+import '../../../ui/components/image_loader.dart';
+import '../../../ui/components/movies_structure_type.dart';
+import '../../../ui/components/page_navigation.dart';
 
-class MoviesStructure extends StatelessWidget {
-  const MoviesStructure({
+class MoviesListStructure extends StatelessWidget {
+  const MoviesListStructure({
     @required this.moviesList,
     @required this.movieStructureType,
   })  : assert(moviesList != null),
@@ -42,9 +43,4 @@ class MoviesStructure extends StatelessWidget {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
             );
-}
-
-enum MovieStructureType {
-  grid,
-  list,
 }

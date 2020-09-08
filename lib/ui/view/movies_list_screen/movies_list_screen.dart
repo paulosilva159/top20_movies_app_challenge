@@ -6,7 +6,7 @@ import '../../../bloc/movies_list_bloc.dart';
 
 import '../../../routes/routes.dart';
 
-import '../../../ui/components/movies_structure.dart';
+import '../../../ui/components/movies_structure_type.dart';
 
 import 'movies_list_body.dart';
 

@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-import '../../../generated/l10n.dart';
+import '../../../ui/components/indicators/error_indicator.dart';
+import '../../../ui/components/indicators/loading_indicator.dart';
+import '../../../ui/components/movies_structure_type.dart';
 
-import '../../components/movies_structure.dart';
-
+import 'movie_list_structure.dart';
 import 'movies_list_screen_state.dart';
 
 class MoviesListBody extends StatelessWidget {
@@ -23,49 +22,20 @@ class MoviesListBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (moviesListScreenState.data == null ||
-        moviesListScreenState.data is Loading) {
-      return const SliverFillRemaining(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    } else if (moviesListScreenState.data is Error) {
+    final stateData = moviesListScreenState.data;
+
+    if (stateData == null || stateData is Loading) {
+      return SliverFillRemaining(child: LoadingIndicator());
+    } else if (stateData is Error) {
       return SliverFillRemaining(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            if (moviesListScreenState.data.error is SocketException)
-              Text(
-                S.of(context).connectionErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              )
-            else
-              Text(
-                S.of(context).genericErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              ),
-            RaisedButton(
-              onPressed: onTryAgainTap,
-              child: Text(
-                S.of(context).tryAgainMessage,
-              ),
-            ),
-          ],
+        child: ErrorIndicator(
+          error: stateData.error,
+          onTryAgainTap: onTryAgainTap,
         ),
       );
-    } else if (moviesListScreenState.data is Success) {
-      return MoviesStructure(
-        moviesList: moviesListScreenState.data.movieList,
+    } else if (stateData is Success) {
+      return MoviesListStructure(
+        moviesList: stateData.movieList,
         movieStructureType: movieStructureType,
       );
     }
