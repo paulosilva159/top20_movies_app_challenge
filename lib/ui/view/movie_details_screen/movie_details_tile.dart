@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../generated/l10n.dart';
 
+import '../../../ui/components/indicators/favorite_indicator.dart';
+
 class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})
       : assert(movieDetails != null);
@@ -11,6 +13,9 @@ class MovieDetailsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView(
         children: [
+          FavoriteIndicator(
+            movieId: movieDetails.id,
+          ),
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text('${movieDetails.title} #${movieDetails.id}'),

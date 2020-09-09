@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../ui/components/image_loader.dart';
+import '../../../ui/components/indicators/favorite_indicator.dart';
 import '../../../ui/components/movies_structure_type.dart';
 import '../../../ui/components/page_navigation.dart';
 
@@ -23,10 +23,19 @@ class MoviesListStructure extends StatelessWidget {
           },
           child: Stack(
             children: [
-              ImageLoader(
-                title: moviesList[index].title,
-                url: moviesList[index].posterUrl,
-                titleStyle: Theme.of(context).textTheme.headline1,
+              Align(
+                alignment: Alignment.center,
+                child: ImageLoader(
+                  title: moviesList[index].title,
+                  url: moviesList[index].posterUrl,
+                  titleStyle: Theme.of(context).textTheme.headline1,
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: FavoriteIndicator(
+                  movieId: moviesList[index].id,
+                ),
               ),
             ],
           ),

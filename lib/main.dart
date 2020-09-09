@@ -35,7 +35,9 @@ Future<void> main() async {
       handler: Handler(
         handlerFunc: (context, params) => Container(
           child: const Center(
-            child: Text('Favs'),
+            child: Text(
+              'Favs',
+            ),
           ),
         ),
       ),

@@ -12,6 +12,7 @@ class SaveFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FloatingActionButton.extended(
+        heroTag: null,
         onPressed: isToSave ? onSaveTap : null,
         label: Text(isToSave
             ? S.of(context).wantToSaveListMessage

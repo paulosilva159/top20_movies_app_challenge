@@ -24,7 +24,9 @@ class MoviesListBody extends StatelessWidget {
     final stateData = moviesListScreenSnapshot.data;
 
     if (stateData == null || stateData is Loading) {
-      return SliverFillRemaining(child: LoadingIndicator());
+      return SliverFillRemaining(
+        child: LoadingIndicator(),
+      );
     } else if (stateData is Error) {
       return SliverFillRemaining(
         child: ErrorIndicator(

@@ -72,4 +72,20 @@ class Repository {
         title: movieShortDetails.title,
         posterUrl: movieShortDetails.posterUrl,
       );
+
+  Future<List<int>> getFavorite() async {
+    List<int> favoritesList;
+
+    try {
+      favoritesList = await _cacheDataSource.getFavorites();
+    } catch (error) {
+      print(error);
+    }
+
+    return favoritesList;
+  }
+
+  void saveFavoriteMovieId(int movieId) {
+    _cacheDataSource.saveFavorites(movieId);
+  }
 }
