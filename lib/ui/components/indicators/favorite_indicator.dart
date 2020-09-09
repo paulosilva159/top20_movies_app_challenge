@@ -21,16 +21,35 @@ class _FavoriteIndicatorState extends State<FavoriteIndicator> {
     super.initState();
   }
 
+  dynamic _booleanCheck(bool state,
+      {var nullState, var trueState, var falseState}) {
+    if (state == null) {
+      return nullState;
+    } else if (state == true) {
+      return trueState;
+    } else {
+      return falseState;
+    }
+  }
+
   @override
   Widget build(BuildContext context) => StreamBuilder(
       stream: _bloc.onNewState,
-      builder: (context, snapshot) => IconButton(
-            icon: snapshot.data != null
-                ? Icon(
-                    snapshot.data ? Icons.favorite : Icons.favorite_border,
-                    color: Colors.pinkAccent,
-                  )
-                : LoadingIndicator(),
-            onPressed: () => _bloc.onSaveMovieIdTap,
-          ));
+      builder: (context, snapshot) {
+        final bool isFavoriteState = snapshot.data;
+
+        return IconButton(
+            icon: _booleanCheck(
+              isFavoriteState,
+              nullState: LoadingIndicator(),
+              trueState: const Icon(Icons.favorite, color: Colors.pinkAccent),
+              falseState: const Icon(Icons.favorite_border),
+            ),
+            onPressed: _booleanCheck(
+              isFavoriteState,
+              nullState: null,
+              trueState: () => _bloc.onFavoriteTapped.add(null),
+              falseState: () => _bloc.onFavoriteTapped.add(null),
+            ));
+      });
 }

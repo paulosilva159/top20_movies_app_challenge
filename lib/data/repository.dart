@@ -42,6 +42,18 @@ class Repository {
     return moviesList;
   }
 
+  Future<List<int>> getFavorites() async {
+    List<int> favoritesList;
+
+    try {
+      favoritesList = await _cacheDataSource.getFavorites();
+    } catch (error) {
+      print(error);
+    }
+
+    return favoritesList;
+  }
+
   void saveMoviesList(List moviesList) {
     _cacheDataSource.saveMoviesList(
       moviesList
@@ -56,36 +68,28 @@ class Repository {
     );
   }
 
-  MovieLongDetailsCM _movieLongDetailsToCacheModel(var movieLongDetails) =>
-      MovieLongDetailsCM(
-        id: movieLongDetails.id,
-        tagline: movieLongDetails.tagline,
-        title: movieLongDetails.title,
-        voteAverage: movieLongDetails.voteAverage,
-        voteCount: movieLongDetails.voteCount,
-        overview: movieLongDetails.overview,
-      );
-
-  MovieShortDetailsCM _movieShortDetailsToCacheModel(var movieShortDetails) =>
-      MovieShortDetailsCM(
-        id: movieShortDetails.id,
-        title: movieShortDetails.title,
-        posterUrl: movieShortDetails.posterUrl,
-      );
-
-  Future<List<int>> getFavorite() async {
-    List<int> favoritesList;
-
-    try {
-      favoritesList = await _cacheDataSource.getFavorites();
-    } catch (error) {
-      print(error);
-    }
-
-    return favoritesList;
+  void saveFavoriteMovieId(int movieId) {
+    _cacheDataSource.saveFavoriteMovieId(movieId);
   }
 
-  void saveFavoriteMovieId(int movieId) {
-    _cacheDataSource.saveFavorites(movieId);
+  void removeFavoriteMovieId(int movieId) {
+    _cacheDataSource.removeFavoriteMovieId(movieId);
   }
 }
+
+MovieLongDetailsCM _movieLongDetailsToCacheModel(var movieLongDetails) =>
+    MovieLongDetailsCM(
+      id: movieLongDetails.id,
+      tagline: movieLongDetails.tagline,
+      title: movieLongDetails.title,
+      voteAverage: movieLongDetails.voteAverage,
+      voteCount: movieLongDetails.voteCount,
+      overview: movieLongDetails.overview,
+    );
+
+MovieShortDetailsCM _movieShortDetailsToCacheModel(var movieShortDetails) =>
+    MovieShortDetailsCM(
+      id: movieShortDetails.id,
+      title: movieShortDetails.title,
+      posterUrl: movieShortDetails.posterUrl,
+    );
