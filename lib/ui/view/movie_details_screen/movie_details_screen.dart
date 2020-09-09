@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-import '../../../data/dio/dio_client.dart';
-import '../../../data/model/model.dart';
+import '../../../bloc/movie_details_bloc.dart';
 
 import '../../../generated/l10n.dart';
 
-import 'movie_details_tile.dart';
+import 'movie_details_body.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
   const MovieDetailsScreen({@required this.id, Key key})
@@ -21,107 +18,32 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  MovieLongDetails _movieDetails;
-  bool _awaitingMovieDetails;
+  MovieDetailsBloc _bloc;
 
-  dynamic _error;
-  final _dio = DioClient();
+  @override
+  void initState() {
+    _bloc = MovieDetailsBloc(movieId: widget.id);
 
-  void _getMovieDetails() {
-    setState(() {
-      _error = null;
-      _awaitingMovieDetails = true;
-    });
-
-    _dio.getMovieDetails(widget.id).then((movieDetails) {
-      setState(() {
-        _movieDetails = movieDetails;
-        _awaitingMovieDetails = false;
-      });
-    }).catchError((error) {
-      setState(() {
-        _error = error.error;
-        _awaitingMovieDetails = false;
-      });
-    });
+    super.initState();
   }
 
   @override
-  void didChangeDependencies() {
-    _getMovieDetails();
-
-    super.didChangeDependencies();
-  }
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: _bloc.onNewState,
+        builder: (context, snapshot) => Scaffold(
+          appBar: AppBar(
+            title: Text(S.of(context).detailsScreenTopTitle),
+            centerTitle: true,
+          ),
+          body: MovieDetailsBody(
+              movieDetailsBodyState: snapshot,
+              onTryAgainTap: () => _bloc.onTryAgain.add(null)),
+        ),
+      );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).detailsScreenTopTitle),
-          centerTitle: true,
-        ),
-        body: _MovieDetailsBody(
-          error: _error,
-          movieDetails: _movieDetails,
-          awaitingMovieDetails: _awaitingMovieDetails,
-          getMovieDetails: () {
-            _getMovieDetails();
-          },
-        ),
-      );
-}
-
-class _MovieDetailsBody extends StatelessWidget {
-  const _MovieDetailsBody({
-    @required this.awaitingMovieDetails,
-    @required this.getMovieDetails,
-    this.error,
-    this.movieDetails,
-  })  : assert(awaitingMovieDetails != null),
-        assert(getMovieDetails != null);
-
-  final dynamic error;
-  final MovieLongDetails movieDetails;
-  final bool awaitingMovieDetails;
-  final VoidCallback getMovieDetails;
-
-  @override
-  Widget build(BuildContext context) {
-    if (awaitingMovieDetails) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    } else if (error != null) {
-      return Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            if (error is SocketException)
-              Text(
-                S.of(context).connectionErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              )
-            else
-              Text(
-                S.of(context).genericErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              ),
-            RaisedButton(
-              onPressed: getMovieDetails,
-              child: Text(S.of(context).tryAgainMessage),
-            ),
-          ],
-        ),
-      );
-    } else {
-      return MovieDetailsTile(movieDetails: movieDetails);
-    }
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
   }
 }

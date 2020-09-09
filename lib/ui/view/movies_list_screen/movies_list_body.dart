@@ -1,72 +1,45 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-import '../../../data/model/model.dart';
+import '../../../ui/components/indicators/error_indicator.dart';
+import '../../../ui/components/indicators/loading_indicator.dart';
+import '../../../ui/components/movies_structure_type.dart';
 
-import '../../components/movies_structure.dart';
+import 'movie_list_structure.dart';
+import 'movies_list_screen_state.dart';
 
-class MoviesContentBody extends StatelessWidget {
-  const MoviesContentBody({
+class MoviesListBody extends StatelessWidget {
+  const MoviesListBody({
+    @required this.moviesListScreenState,
     @required this.movieStructureType,
-    @required this.awaitingMoviesList,
     @required this.onTryAgainTap,
-    this.error,
-    this.moviesList,
-  })  : assert(movieStructureType != null),
-        assert(awaitingMoviesList != null),
+  })  : assert(moviesListScreenState != null),
+        assert(movieStructureType != null),
         assert(onTryAgainTap != null);
 
-  final dynamic error;
+  final AsyncSnapshot moviesListScreenState;
   final MovieStructureType movieStructureType;
-  final List<MovieShortDetails> moviesList;
-  final bool awaitingMoviesList;
   final VoidCallback onTryAgainTap;
 
   @override
   Widget build(BuildContext context) {
-    if (awaitingMoviesList) {
-      return const SliverFillRemaining(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    } else if (error != null) {
+    final stateData = moviesListScreenState.data;
+
+    if (stateData == null || stateData is Loading) {
+      return SliverFillRemaining(child: LoadingIndicator());
+    } else if (stateData is Error) {
       return SliverFillRemaining(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            if (error is SocketException)
-              const Text(
-                'Verifique sua conexão',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              )
-            else
-              const Text(
-                'Error',
-                style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              ),
-            RaisedButton(
-              onPressed: onTryAgainTap,
-              child: const Text('Tentar Novamente'),
-            ),
-          ],
+        child: ErrorIndicator(
+          error: stateData.error,
+          onTryAgainTap: onTryAgainTap,
         ),
       );
-    } else {
-      return MoviesStructure(
-        moviesList: moviesList,
+    } else if (stateData is Success) {
+      return MoviesListStructure(
+        moviesList: stateData.movieList,
         movieStructureType: movieStructureType,
       );
     }
+
+    throw Exception();
   }
 }
