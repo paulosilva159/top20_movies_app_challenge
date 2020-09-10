@@ -32,15 +32,7 @@ Future<void> main() async {
     )
     ..define(
       Routes.favorites,
-      handler: Handler(
-        handlerFunc: (context, params) => Container(
-          child: const Center(
-            child: Text(
-              'Favs',
-            ),
-          ),
-        ),
-      ),
+      handler: Handler(handlerFunc: (context, params) => Container()),
     )
     ..define(
       ':${Routes.movieStructureTypeParam}',

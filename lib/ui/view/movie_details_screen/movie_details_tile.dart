@@ -15,6 +15,7 @@ class MovieDetailsTile extends StatelessWidget {
         children: [
           FavoriteIndicator(
             movieId: movieDetails.id,
+            movieName: movieDetails.title,
           ),
           Padding(
             padding: const EdgeInsets.all(15),

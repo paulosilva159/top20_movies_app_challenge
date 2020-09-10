@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
+import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';
 
-import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
-
-class MoviesListBloc {
-  MoviesListBloc() {
+class FavoritesListBloc {
+  FavoritesListBloc() {
     _subscriptions
       ..add(
         _fetchMoviesList().listen(
@@ -28,15 +27,15 @@ class MoviesListBloc {
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
 
-  final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
-  Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
+  final _onNewStateSubject = BehaviorSubject<FavoritesListScreenState>();
+  Stream<FavoritesListScreenState> get onNewState => _onNewStateSubject.stream;
 
-  Stream<MoviesListBodyState> _fetchMoviesList() async* {
+  Stream<FavoritesListScreenState> _fetchMoviesList() async* {
     yield Loading();
 
     try {
       yield Success(
-        moviesList: await _repository.getMoviesList(),
+        favoritesId: await _repository.getFavorites(),
       );
     } catch (error) {
       yield Error(

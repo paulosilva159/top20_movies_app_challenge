@@ -36,16 +36,9 @@ class MoviesRepository {
     return moviesList;
   }
 
-  Future<List<int>> getFavorites() async {
-    List<int> favoritesList;
-
-    await _cacheDataSource
-        .getFavorites()
-        .then((favorites) => favoritesList = favorites)
-        .catchError(print);
-
-    return favoritesList;
-  }
+  Future<List<int>> getFavorites() => _cacheDataSource
+      .getFavorites()
+      .then((favorites) => favorites.keys.toList());
 
   void upsertMoviesList(List moviesList) {
     _cacheDataSource.upsertMoviesList(
@@ -59,8 +52,8 @@ class MoviesRepository {
     );
   }
 
-  void upsertFavoriteMovieId(int movieId) {
-    _cacheDataSource.upsertFavoriteMovieId(movieId);
+  void upsertFavoriteMovieId(int movieId, String movieName) {
+    _cacheDataSource.upsertFavoriteMovieId(movieId, movieName);
   }
 
   void removeMoviesList() {

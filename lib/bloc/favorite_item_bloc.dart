@@ -5,8 +5,10 @@ import 'package:meta/meta.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
-class SavedItemBloc {
-  SavedItemBloc({@required this.movieId}) : assert(movieId != null) {
+class FavoriteItemBloc {
+  FavoriteItemBloc({@required this.movieId, @required this.movieName})
+      : assert(movieId != null),
+        assert(movieName != null) {
     _subscriptions
       ..add(_fetchFavorite().listen(_onNewStateSubject.add))
       ..add(_onFavoriteTapController.stream
@@ -14,6 +16,7 @@ class SavedItemBloc {
           .listen(_onNewStateSubject.add));
   }
   final int movieId;
+  final String movieName;
 
   final _repository = MoviesRepository();
 
@@ -28,13 +31,10 @@ class SavedItemBloc {
   Stream<bool> _fetchFavorite() async* {
     bool isFavorite;
 
-    try {
-      await _repository
-          .getFavorites()
-          .then((value) => isFavorite = value.contains(movieId));
-    } catch (error) {
-      print(error);
-    }
+    await _repository
+        .getFavorites()
+        .then((value) => isFavorite = value.contains(movieId))
+        .catchError(print);
 
     yield isFavorite;
   }
@@ -42,19 +42,15 @@ class SavedItemBloc {
   Stream<bool> _editFavorites() async* {
     bool isFavorite;
 
-    try {
-      await _repository
-          .getFavorites()
-          .then((value) => isFavorite = value.contains(movieId));
+    await _repository.getFavorites().then((value) {
+      isFavorite = value.contains(movieId);
 
       if (!isFavorite) {
-        _repository.upsertFavoriteMovieId(movieId);
+        _repository.upsertFavoriteMovieId(movieId, movieName);
       } else {
         _repository.removeFavoriteMovieId(movieId);
       }
-    } catch (error) {
-      print(error);
-    }
+    }).catchError(print);
 
     yield !isFavorite;
   }

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 
-import 'package:tokenlab_challenge/bloc/favorited_item_bloc.dart';
+import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 
 class FavoriteIndicator extends StatefulWidget {
-  const FavoriteIndicator({@required this.movieId, Key key})
+  const FavoriteIndicator(
+      {@required this.movieId, @required this.movieName, Key key})
       : assert(movieId != null),
+        assert(movieName != null),
         super(key: key);
 
   final int movieId;
+  final String movieName;
 
   @override
   _FavoriteIndicatorState createState() => _FavoriteIndicatorState();
 }
 
 class _FavoriteIndicatorState extends State<FavoriteIndicator> {
-  SavedItemBloc _bloc;
+  FavoriteItemBloc _bloc;
 
   @override
   void dispose() {
@@ -25,7 +28,8 @@ class _FavoriteIndicatorState extends State<FavoriteIndicator> {
 
   @override
   void initState() {
-    _bloc = SavedItemBloc(movieId: widget.movieId);
+    _bloc =
+        FavoriteItemBloc(movieId: widget.movieId, movieName: widget.movieName);
 
     super.initState();
   }

@@ -15,8 +15,10 @@ class MoviesCacheDataSource {
       Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
           .then((box) => box.getAt(movieId));
 
-  Future<List<int>> getFavorites() => Hive.openBox<String>(favoritesBoxName)
-      .then((box) => List<int>.from(box.keys));
+  Future<Map<int, String>> getFavorites() =>
+      Hive.openBox<String>(favoritesBoxName)
+          .then((box) => Map<int, String>.from(box.toMap()))
+          .catchError(print);
 
   Future<void> upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
       Hive.openBox<List>(moviesListBoxName)
@@ -26,9 +28,10 @@ class MoviesCacheDataSource {
       Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
           .then((box) => box.put(movieDetails.id, movieDetails));
 
-  Future<void> upsertFavoriteMovieId(int favoriteMovieId) =>
-      Hive.openBox<int>(favoritesBoxName)
-          .then((box) => box.put(favoriteMovieId, favoriteMovieId));
+  Future<void> upsertFavoriteMovieId(
+          int favoriteMovieId, String favoriteMovieName) =>
+      Hive.openBox<String>(favoritesBoxName)
+          .then((box) => box.put(favoriteMovieId, favoriteMovieName));
 
   Future<void> removeMoviesList() =>
       Hive.openBox<List>(moviesListBoxName).then((box) => box.deleteAt(0));

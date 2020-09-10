@@ -35,6 +35,7 @@ class MoviesListStructure extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: FavoriteIndicator(
                   movieId: moviesList[index].id,
+                  movieName: moviesList[index].title,
                 ),
               ),
             ],
