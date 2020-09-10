@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
 
-import '../data/movies_repository.dart';
+import 'package:tokenlab_challenge/data/movies_repository.dart';
 
-import '../ui/view/movies_list_screen/movies_list_screen_state.dart';
+import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 class MoviesListBloc {
   MoviesListBloc() {

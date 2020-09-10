@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 
-import '../bottom_navigator_tab.dart';
+import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
+
 import 'cupertinos_bottom_navigation_scaffold.dart';
 import 'materials_bottom_navigation_scaffold.dart';
 

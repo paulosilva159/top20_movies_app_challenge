@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:enum_to_string/enum_to_string.dart';
 
-import '../../../bloc/movies_list_bloc.dart';
+import 'package:tokenlab_challenge/bloc/movies_list_bloc.dart';
 
-import '../../../routes/routes.dart';
+import 'package:tokenlab_challenge/routes/routes.dart';
 
-import '../../../ui/components/movies_structure_type.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
 import 'movies_list_body.dart';
 

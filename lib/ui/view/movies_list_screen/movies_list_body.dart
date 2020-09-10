@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/components/indicators/indicators.dart';
-import '../../../ui/components/movies_structure_type.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
 import 'movies_list_screen_state.dart';
 import 'movies_list_structure.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 class FavoritesListScreen extends StatefulWidget {

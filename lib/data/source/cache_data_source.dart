@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 
-import '../model/model.dart';
+import 'package:tokenlab_challenge/data/model/model.dart';
 
-class CacheDataSource {
+class MoviesCacheDataSource {
   final String moviesListBoxName = 'moviesListBox';
   final String movieDetailsBoxName = 'movieDetailsBox';
   final String favoritesBoxName = 'favoritesBox';
@@ -18,15 +18,15 @@ class CacheDataSource {
   Future<List<int>> getFavorites() => Hive.openBox<String>(favoritesBoxName)
       .then((box) => List<int>.from(box.keys));
 
-  Future<void> saveMoviesList(List<MovieShortDetailsCM> moviesList) =>
+  Future<void> upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
       Hive.openBox<List>(moviesListBoxName)
           .then((box) => box.put(0, moviesList));
 
-  Future<void> saveMovieDetails(MovieLongDetailsCM movieDetails) =>
+  Future<void> upsertMovieDetails(MovieLongDetailsCM movieDetails) =>
       Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
           .then((box) => box.put(movieDetails.id, movieDetails));
 
-  Future<void> saveFavoriteMovieId(int favoriteMovieId) =>
+  Future<void> upsertFavoriteMovieId(int favoriteMovieId) =>
       Hive.openBox<int>(favoritesBoxName)
           .then((box) => box.put(favoriteMovieId, favoriteMovieId));
 

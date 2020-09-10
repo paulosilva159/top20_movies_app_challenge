@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import '../../../generated/l10n.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator({

@@ -1,7 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../../../data/model/model.dart';
-
 abstract class MovieDetailsBodyState {}
 
 class Success implements MovieDetailsBodyState {

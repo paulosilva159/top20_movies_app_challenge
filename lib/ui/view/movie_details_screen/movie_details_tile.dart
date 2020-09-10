@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../generated/l10n.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
-import '../../../ui/components/indicators/favorite_indicator.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
 
 class MovieDetailsTile extends StatelessWidget {
   const MovieDetailsTile({@required this.movieDetails})

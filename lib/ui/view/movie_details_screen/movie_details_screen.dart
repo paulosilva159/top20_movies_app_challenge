@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../bloc/movie_details_bloc.dart';
+import 'package:tokenlab_challenge/bloc/movie_details_bloc.dart';
 
-import '../../../generated/l10n.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
 import 'movie_details_body.dart';
 

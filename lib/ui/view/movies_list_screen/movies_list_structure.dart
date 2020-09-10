@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/components/image_loader.dart';
-import '../../../ui/components/indicators/favorite_indicator.dart';
-import '../../../ui/components/movies_structure_type.dart';
-import '../../../ui/components/page_navigation.dart';
+import 'package:tokenlab_challenge/ui/components/image_loader.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
+import 'package:tokenlab_challenge/ui/components/page_navigation.dart';
 
 class MoviesListStructure extends StatelessWidget {
   const MoviesListStructure({

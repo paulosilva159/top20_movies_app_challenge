@@ -2,37 +2,36 @@ import 'model/model.dart';
 import 'source/source.dart';
 
 class MoviesRepository {
-  final RemoteDataSource _remoteDataSource = RemoteDataSource();
-  final CacheDataSource _cacheDataSource = CacheDataSource();
+  final MoviesRemoteDataSource _remoteDataSource = MoviesRemoteDataSource();
+  final MoviesCacheDataSource _cacheDataSource = MoviesCacheDataSource();
 
   Future getMovieDetails(int movieId) async {
     dynamic movieDetails;
 
-    try {
-      movieDetails = await _cacheDataSource.getMovieDetails(movieId);
-    } catch (error) {
-      if (error is RangeError) {
-        movieDetails = await _remoteDataSource.getMovieDetails(movieId);
-      } else {
-        rethrow;
-      }
-    }
-
+    await _cacheDataSource
+        .getMovieDetails(movieId)
+        .then((value) => movieDetails = value)
+        .catchError((error) async {
+      await _remoteDataSource
+          .getMovieDetails(movieId)
+          .then((value) => movieDetails = value);
+    });
     return movieDetails;
   }
 
   Future getMoviesList() async {
     dynamic moviesList;
 
-    try {
-      moviesList = await _cacheDataSource.getMoviesList();
-    } catch (error) {
+    await _cacheDataSource
+        .getMoviesList()
+        .then((value) => moviesList = value)
+        .catchError((error) async {
       if (error is RangeError) {
-        moviesList = await _remoteDataSource.getMoviesList();
-      } else {
-        rethrow;
+        await _remoteDataSource
+            .getMoviesList()
+            .then((value) => moviesList = value);
       }
-    }
+    });
 
     return moviesList;
   }
@@ -48,22 +47,20 @@ class MoviesRepository {
     return favoritesList;
   }
 
-  void saveMoviesList(List moviesList) {
-    _cacheDataSource.saveMoviesList(
-      moviesList
-          .map<MovieShortDetailsCM>(_movieShortDetailsToCacheModel)
-          .toList(),
+  void upsertMoviesList(List moviesList) {
+    _cacheDataSource.upsertMoviesList(
+      moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
     );
   }
 
-  void saveMovieDetails(dynamic movieDetails) {
-    _cacheDataSource.saveMovieDetails(
-      _movieLongDetailsToCacheModel(movieDetails),
+  void upsertMovieDetails(dynamic movieDetails) {
+    _cacheDataSource.upsertMovieDetails(
+      _toLongCacheModel(movieDetails),
     );
   }
 
-  void saveFavoriteMovieId(int movieId) {
-    _cacheDataSource.saveFavoriteMovieId(movieId);
+  void upsertFavoriteMovieId(int movieId) {
+    _cacheDataSource.upsertFavoriteMovieId(movieId);
   }
 
   void removeMoviesList() {
@@ -79,7 +76,7 @@ class MoviesRepository {
   }
 }
 
-MovieLongDetailsCM _movieLongDetailsToCacheModel(var movieLongDetails) =>
+MovieLongDetailsCM _toLongCacheModel(var movieLongDetails) =>
     MovieLongDetailsCM(
       id: movieLongDetails.id,
       tagline: movieLongDetails.tagline,
@@ -89,7 +86,7 @@ MovieLongDetailsCM _movieLongDetailsToCacheModel(var movieLongDetails) =>
       overview: movieLongDetails.overview,
     );
 
-MovieShortDetailsCM _movieShortDetailsToCacheModel(var movieShortDetails) =>
+MovieShortDetailsCM _toShortCacheModel(var movieShortDetails) =>
     MovieShortDetailsCM(
       id: movieShortDetails.id,
       title: movieShortDetails.title,

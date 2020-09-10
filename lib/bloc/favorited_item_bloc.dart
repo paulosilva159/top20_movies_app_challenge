@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
+
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 class SavedItemBloc {
@@ -9,7 +10,7 @@ class SavedItemBloc {
     _subscriptions
       ..add(_fetchFavorite().listen(_onNewStateSubject.add))
       ..add(_onFavoriteTapController.stream
-          .flatMap<bool>((_) => _toogleFavorite())
+          .flatMap<bool>((_) => _editFavorites())
           .listen(_onNewStateSubject.add));
   }
   final int movieId;
@@ -38,7 +39,7 @@ class SavedItemBloc {
     yield isFavorite;
   }
 
-  Stream<bool> _toogleFavorite() async* {
+  Stream<bool> _editFavorites() async* {
     bool isFavorite;
 
     try {
@@ -47,7 +48,7 @@ class SavedItemBloc {
           .then((value) => isFavorite = value.contains(movieId));
 
       if (!isFavorite) {
-        _repository.saveFavoriteMovieId(movieId);
+        _repository.upsertFavoriteMovieId(movieId);
       } else {
         _repository.removeFavoriteMovieId(movieId);
       }

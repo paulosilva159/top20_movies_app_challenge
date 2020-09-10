@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 
-import '../model/model.dart';
+import 'package:tokenlab_challenge/data/model/model.dart';
 
-class RemoteDataSource {
+class MoviesRemoteDataSource {
   static const String _baseUrl =
       'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies';
 
