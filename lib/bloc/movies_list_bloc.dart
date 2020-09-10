@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../data/repository.dart';
+import '../data/movies_repository.dart';
 
 import '../ui/view/movies_list_screen/movies_list_screen_state.dart';
 
@@ -22,7 +21,7 @@ class MoviesListBloc {
       );
   }
 
-  final _repository = Repository();
+  final _repository = MoviesRepository();
 
   final _subscriptions = CompositeSubscription();
 
@@ -49,10 +48,6 @@ class MoviesListBloc {
       );
     }
   }
-
-  bool get hasLoadMoviesListFromCache => _repository.hasLoadMoviesListFromCache;
-
-  void get onSaveTap => _repository.saveMoviesList(_moviesList);
 
   void dispose() {
     _onTryAgainController.close();

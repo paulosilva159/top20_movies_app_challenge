@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailsScreenTopTitle" : MessageLookupByLibrary.simpleMessage("Detalhes"),
     "detailsTileScore" : m0,
     "detailsTileVotesQtt" : m1,
+    "dioErrorMessage" : MessageLookupByLibrary.simpleMessage("Erro durante tentativa de obter dados"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Deu erro!"),
     "listSavedMessage" : MessageLookupByLibrary.simpleMessage("Lista salva"),
     "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Tente Novamente"),

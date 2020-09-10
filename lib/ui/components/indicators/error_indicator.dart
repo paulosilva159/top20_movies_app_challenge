@@ -23,13 +23,22 @@ class ErrorIndicator extends StatelessWidget {
               height: 10,
             ),
             if (error is DioError)
-              Text(
-                S.of(context).connectionErrorMessage,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
-              )
+              if (error.error is SocketException)
+                Text(
+                  S.of(context).connectionErrorMessage,
+                  style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                )
+              else
+                Text(
+                  S.of(context).dioErrorMessage,
+                  style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                )
             else
               Text(
                 S.of(context).genericErrorMessage,

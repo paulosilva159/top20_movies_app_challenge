@@ -1,26 +1,21 @@
 import 'model/model.dart';
 import 'source/source.dart';
 
-class Repository {
+class MoviesRepository {
   final RemoteDataSource _remoteDataSource = RemoteDataSource();
   final CacheDataSource _cacheDataSource = CacheDataSource();
-
-  bool hasLoadMovieDetailsFromCache = false;
-  bool hasLoadMoviesListFromCache = false;
 
   Future getMovieDetails(int movieId) async {
     dynamic movieDetails;
 
     try {
       movieDetails = await _cacheDataSource.getMovieDetails(movieId);
-      hasLoadMovieDetailsFromCache = true;
     } catch (error) {
-      hasLoadMovieDetailsFromCache = false;
       if (error is RangeError) {
         movieDetails = await _remoteDataSource.getMovieDetails(movieId);
+      } else {
+        rethrow;
       }
-
-      print(error);
     }
 
     return movieDetails;
@@ -31,11 +26,11 @@ class Repository {
 
     try {
       moviesList = await _cacheDataSource.getMoviesList();
-      hasLoadMoviesListFromCache = true;
     } catch (error) {
-      hasLoadMoviesListFromCache = false;
       if (error is RangeError) {
         moviesList = await _remoteDataSource.getMoviesList();
+      } else {
+        rethrow;
       }
     }
 
@@ -45,11 +40,10 @@ class Repository {
   Future<List<int>> getFavorites() async {
     List<int> favoritesList;
 
-    try {
-      favoritesList = await _cacheDataSource.getFavorites();
-    } catch (error) {
-      print(error);
-    }
+    await _cacheDataSource
+        .getFavorites()
+        .then((favorites) => favoritesList = favorites)
+        .catchError(print);
 
     return favoritesList;
   }
@@ -70,6 +64,14 @@ class Repository {
 
   void saveFavoriteMovieId(int movieId) {
     _cacheDataSource.saveFavoriteMovieId(movieId);
+  }
+
+  void removeMoviesList() {
+    _cacheDataSource.removeMoviesList();
+  }
+
+  void removeMovieDetails(MovieLongDetailsCM movieDetails) {
+    _cacheDataSource.removeMovieDetails(movieDetails);
   }
 
   void removeFavoriteMovieId(int movieId) {

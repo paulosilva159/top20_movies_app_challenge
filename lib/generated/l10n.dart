@@ -103,6 +103,16 @@ class S {
     );
   }
 
+  /// `Error while trying to obtain data`
+  String get dioErrorMessage {
+    return Intl.message(
+      'Error while trying to obtain data',
+      name: 'dioErrorMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Error!`
   String get genericErrorMessage {
     return Intl.message(

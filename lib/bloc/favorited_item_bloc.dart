@@ -2,26 +2,24 @@ import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
-import 'package:tokenlab_challenge/data/repository.dart';
+import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 class SavedItemBloc {
-  SavedItemBloc({
-    @required this.movieId,
-  }) : assert(movieId != null) {
+  SavedItemBloc({@required this.movieId}) : assert(movieId != null) {
     _subscriptions
       ..add(_fetchFavorite().listen(_onNewStateSubject.add))
-      ..add(_onFavoriteTapped.stream
+      ..add(_onFavoriteTapController.stream
           .flatMap<bool>((_) => _toogleFavorite())
           .listen(_onNewStateSubject.add));
   }
   final int movieId;
 
-  final _repository = Repository();
+  final _repository = MoviesRepository();
 
   final _subscriptions = CompositeSubscription();
 
-  final _onFavoriteTapped = StreamController<void>();
-  Sink<void> get onFavoriteTapped => _onFavoriteTapped.sink;
+  final _onFavoriteTapController = StreamController<void>();
+  Sink<void> get onFavoriteTap => _onFavoriteTapController.sink;
 
   final _onNewStateSubject = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get onNewState => _onNewStateSubject.stream;
@@ -60,10 +58,8 @@ class SavedItemBloc {
     yield !isFavorite;
   }
 
-  void get onSaveMovieIdTap => _repository.saveFavoriteMovieId(movieId);
-
   void dispose() {
-    _onFavoriteTapped.close();
+    _onFavoriteTapController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();
   }

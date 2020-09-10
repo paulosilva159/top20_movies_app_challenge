@@ -28,16 +28,17 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-        stream: _bloc.onNewState,
-        builder: (context, snapshot) => Scaffold(
-          appBar: AppBar(
-            title: Text(S.of(context).detailsScreenTopTitle),
-            centerTitle: true,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).detailsScreenTopTitle),
+          centerTitle: true,
+        ),
+        body: StreamBuilder<Object>(
+          stream: _bloc.onNewState,
+          builder: (context, snapshot) => MovieDetailsBody(
+            movieDetailsBodyState: snapshot,
+            onTryAgainTap: () => _bloc.onTryAgain.add(null),
           ),
-          body: MovieDetailsBody(
-              movieDetailsBodyState: snapshot,
-              onTryAgainTap: () => _bloc.onTryAgain.add(null)),
         ),
       );
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/bloc/saved_item_bloc.dart';
+import 'package:tokenlab_challenge/bloc/favorited_item_bloc.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 
 class FavoriteIndicator extends StatefulWidget {
-  const FavoriteIndicator({@required this.movieId}) : assert(movieId != null);
+  const FavoriteIndicator({@required this.movieId, Key key})
+      : assert(movieId != null),
+        super(key: key);
 
   final int movieId;
 
@@ -15,6 +17,12 @@ class _FavoriteIndicatorState extends State<FavoriteIndicator> {
   SavedItemBloc _bloc;
 
   @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     _bloc = SavedItemBloc(movieId: widget.movieId);
 
@@ -22,9 +30,12 @@ class _FavoriteIndicatorState extends State<FavoriteIndicator> {
   }
 
   dynamic _booleanCheck(bool state,
-      {var nullState, var trueState, var falseState}) {
+      {@required var nullState, var trueState, var falseState}) {
     if (state == null) {
       return nullState;
+    } else if (falseState == null || trueState == null) {
+      return falseState ?? trueState;
+      // TODO(paulovictor): checar uma melhor forma de fazer essa checagem
     } else if (state == true) {
       return trueState;
     } else {
@@ -48,8 +59,7 @@ class _FavoriteIndicatorState extends State<FavoriteIndicator> {
             onPressed: _booleanCheck(
               isFavoriteState,
               nullState: null,
-              trueState: () => _bloc.onFavoriteTapped.add(null),
-              falseState: () => _bloc.onFavoriteTapped.add(null),
+              trueState: () => _bloc.onFavoriteTap.add(null),
             ));
       });
 }

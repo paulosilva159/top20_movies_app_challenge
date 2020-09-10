@@ -11,36 +11,33 @@ class CacheDataSource {
       Hive.openBox<List>(moviesListBoxName)
           .then((box) => List<MovieShortDetailsCM>.from(box.getAt(0)));
 
-  Future<List<int>> getFavorites() => Hive.openBox<int>(favoritesBoxName)
-      .then((box) => List<int>.from(box.keys));
-
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
       Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
           .then((box) => box.getAt(movieId));
 
-  Future<void> saveMoviesList(List<MovieShortDetailsCM> moviesList) =>
-      Hive.isBoxOpen(moviesListBoxName)
-          ? Hive.box<List>(moviesListBoxName).putAll({0: moviesList})
-          : Hive.openBox<List>(moviesListBoxName)
-              .then((box) => box.putAll({0: moviesList}));
+  Future<List<int>> getFavorites() => Hive.openBox<String>(favoritesBoxName)
+      .then((box) => List<int>.from(box.keys));
 
-  Future<void> saveFavoriteMovieId(int favoriteMovieId) =>
-      Hive.isBoxOpen(favoritesBoxName)
-          ? Hive.box<int>(favoritesBoxName)
-              .put(favoriteMovieId, favoriteMovieId)
-          : Hive.openBox<int>(favoritesBoxName)
-              .then((box) => box.put(favoriteMovieId, favoriteMovieId));
+  Future<void> saveMoviesList(List<MovieShortDetailsCM> moviesList) =>
+      Hive.openBox<List>(moviesListBoxName)
+          .then((box) => box.put(0, moviesList));
 
   Future<void> saveMovieDetails(MovieLongDetailsCM movieDetails) =>
-      Hive.isBoxOpen(movieDetailsBoxName)
-          ? Hive.box<MovieLongDetailsCM>(movieDetailsBoxName)
-              .putAll({movieDetails.id: movieDetails})
-          : Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
-              .then((box) => box.putAll({movieDetails.id: movieDetails}));
+      Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
+          .then((box) => box.put(movieDetails.id, movieDetails));
+
+  Future<void> saveFavoriteMovieId(int favoriteMovieId) =>
+      Hive.openBox<int>(favoritesBoxName)
+          .then((box) => box.put(favoriteMovieId, favoriteMovieId));
+
+  Future<void> removeMoviesList() =>
+      Hive.openBox<List>(moviesListBoxName).then((box) => box.deleteAt(0));
+
+  Future<void> removeMovieDetails(MovieLongDetailsCM movieDetails) =>
+      Hive.openBox<MovieLongDetailsCM>(movieDetailsBoxName)
+          .then((box) => box.deleteAt(movieDetails.id));
 
   Future<void> removeFavoriteMovieId(int favoriteMovieId) =>
-      Hive.isBoxOpen(favoritesBoxName)
-          ? Hive.box<int>(favoritesBoxName).delete(favoriteMovieId)
-          : Hive.openBox<int>(favoritesBoxName)
-              .then((box) => box.delete(favoriteMovieId));
+      Hive.openBox<String>(favoritesBoxName)
+          .then((box) => box.delete(favoriteMovieId));
 }

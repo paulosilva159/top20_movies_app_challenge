@@ -1,2 +1,2 @@
-export 'cache/cache.dart';
-export 'remote/remote.dart';
+export 'cache/cache_model.dart';
+export 'remote/remote_model.dart';

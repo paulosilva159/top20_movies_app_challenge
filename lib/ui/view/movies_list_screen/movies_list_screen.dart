@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:tokenlab_challenge/ui/components/save_fab.dart';
 
 import '../../../bloc/movies_list_bloc.dart';
 
@@ -28,13 +27,9 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   final _bloc = MoviesListBloc();
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<Object>(
+  Widget build(BuildContext context) => StreamBuilder(
         stream: _bloc.onNewState,
         builder: (context, snapshot) => Scaffold(
-          floatingActionButton: SaveFAB(
-            isToSave: !_bloc.hasLoadMoviesListFromCache,
-            onSaveTap: () => _bloc.onSaveTap,
-          ),
           body: CustomScrollView(
             slivers: [
               SliverAppBar(

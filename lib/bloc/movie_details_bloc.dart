@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import '../data/repository.dart';
+import '../data/movies_repository.dart';
 
 import '../ui/view/movie_details_screen/movie_details_screen_state.dart';
 
@@ -41,7 +41,7 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-        movieDetails: await Repository().getMovieDetails(movieId),
+        movieDetails: await MoviesRepository().getMovieDetails(movieId),
       );
     } catch (error) {
       yield Error(

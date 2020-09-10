@@ -7,6 +7,7 @@
   "detailsScreenTopTitle": "Detalhes",
   "tryAgainMessage": "Tente Novamente",
   "connectionErrorMessage": "Verifique sua conexão!",
+  "dioErrorMessage": "Erro durante tentativa de obter dados",
   "genericErrorMessage": "Deu erro!",
   "bottomNavigationItemListTitle": "Lista",
   "bottomNavigationItemGridTitle": "Grade"
