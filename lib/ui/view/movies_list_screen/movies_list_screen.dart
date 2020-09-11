@@ -59,6 +59,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                     ? MovieStructureType.list
                     : MovieStructureType.grid,
                 onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                onFavoriteTapStreamSink: _bloc.onFavoriteTap,
               ),
             ],
           ),

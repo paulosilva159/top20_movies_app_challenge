@@ -18,6 +18,13 @@ class MoviesListBloc {
         _onTryAgainController.stream.flatMap((_) => _fetchMoviesList()).listen(
               (_onNewStateSubject.add),
             ),
+      )
+      ..add(
+        _onFavoriteTapController.stream
+            .flatMap(
+              _editFavorites,
+            )
+            .listen(_onNewStateSubject.add),
       );
   }
 
@@ -28,6 +35,9 @@ class MoviesListBloc {
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
 
+  final _onFavoriteTapController = StreamController<int>();
+  Sink<int> get onFavoriteTap => _onFavoriteTapController.sink;
+
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
 
@@ -37,6 +47,7 @@ class MoviesListBloc {
     try {
       yield Success(
         moviesList: await _repository.getMoviesList(),
+        favoritesList: await _repository.getFavoritesId(),
       );
     } catch (error) {
       yield Error(
@@ -45,7 +56,31 @@ class MoviesListBloc {
     }
   }
 
+  Stream<MoviesListBodyState> _editFavorites(int movieId) async* {
+    final stateData = _onNewStateSubject.value;
+
+    if (stateData is Success) {
+      if (stateData.favoritesList.contains(movieId)) {
+        _repository.removeFavoriteMovieId(movieId);
+      } else {
+        stateData.moviesList.forEach(
+          (movie) {
+            if (movie.id == movieId) {
+              _repository.upsertFavoriteMovieId(movie.id, movie.title);
+            }
+          },
+        );
+      }
+
+      yield Success(
+        moviesList: await _repository.getMoviesList(),
+        favoritesList: await _repository.getFavoritesId(),
+      );
+    }
+  }
+
   void dispose() {
+    _onFavoriteTapController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();

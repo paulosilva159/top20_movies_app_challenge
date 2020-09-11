@@ -27,9 +27,11 @@ class MoviesRepository {
         .then((value) => moviesList = value)
         .catchError((error) async {
       if (error is RangeError) {
-        await _remoteDataSource
-            .getMoviesList()
-            .then((value) => moviesList = value);
+        await _remoteDataSource.getMoviesList().then((value) {
+          upsertMoviesList(value);
+
+          moviesList = value;
+        });
       }
     });
 
