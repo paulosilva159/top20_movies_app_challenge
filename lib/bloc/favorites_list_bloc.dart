@@ -35,7 +35,7 @@ class FavoritesListBloc {
 
     try {
       yield Success(
-        favoritesId: await _repository.getFavorites(),
+        favorites: await _repository.getFavorites(),
       );
     } catch (error) {
       yield Error(

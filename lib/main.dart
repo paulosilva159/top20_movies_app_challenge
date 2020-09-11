@@ -11,6 +11,7 @@ import 'generated/l10n.dart';
 
 import 'routes/routes.dart';
 
+import 'ui/view/favorites_screen/favorites_list_screen.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_home_screen.dart';
 import 'ui/view/movies_list_screen/movies_list_screen.dart';
@@ -32,7 +33,7 @@ Future<void> main() async {
     )
     ..define(
       Routes.favorites,
-      handler: Handler(handlerFunc: (context, params) => Container()),
+      handler: Handler(handlerFunc: (context, params) => FavoritesListScreen()),
     )
     ..define(
       ':${Routes.movieStructureTypeParam}',

@@ -3,9 +3,9 @@ import 'package:meta/meta.dart';
 abstract class FavoritesListScreenState {}
 
 class Success implements FavoritesListScreenState {
-  Success({@required this.favoritesId}) : assert(favoritesId != null);
+  Success({@required this.favorites}) : assert(favorites != null);
 
-  final List<int> favoritesId;
+  final Map<int, String> favorites;
 }
 
 class Loading implements FavoritesListScreenState {}

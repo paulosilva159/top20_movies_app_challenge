@@ -36,9 +36,20 @@ class MoviesRepository {
     return moviesList;
   }
 
-  Future<List<int>> getFavorites() => _cacheDataSource
+  Future<List<int>> getFavoritesId() => _cacheDataSource
       .getFavorites()
       .then((favorites) => favorites.keys.toList());
+
+  Future<Map<int, String>> getFavorites() async {
+    Map<int, String> favorites;
+
+    await _cacheDataSource
+        .getFavorites()
+        .then((map) => favorites = map)
+        .catchError(print);
+
+    return favorites;
+  }
 
   void upsertMoviesList(List moviesList) {
     _cacheDataSource.upsertMoviesList(
