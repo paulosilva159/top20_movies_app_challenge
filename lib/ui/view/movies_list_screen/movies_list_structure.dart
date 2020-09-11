@@ -30,9 +30,8 @@ class _MoviesListStructureState extends State<MoviesListStructure> {
               movieName: widget.moviesList[index].title);
 
           return FlatButton(
-            onPressed: () {
-              pushPage(context, true, arguments: widget.moviesList[index].id);
-            },
+            onPressed: () =>
+                pushPage(context, true, arguments: widget.moviesList[index].id),
             child: Stack(
               children: [
                 Align(

@@ -19,7 +19,7 @@ class MoviesRepository {
     return movieDetails;
   }
 
-  Future getMoviesList() async {
+  Future<List> getMoviesList() async {
     dynamic moviesList;
 
     await _cacheDataSource
@@ -45,7 +45,7 @@ class MoviesRepository {
 
     await _cacheDataSource
         .getFavorites()
-        .then((map) => favorites = map)
+        .then((favoritesMap) => favorites = favoritesMap)
         .catchError(print);
 
     return favorites;
