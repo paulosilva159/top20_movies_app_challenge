@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 
 import 'movie_details_screen_state.dart';

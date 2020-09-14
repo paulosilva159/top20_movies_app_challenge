@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';

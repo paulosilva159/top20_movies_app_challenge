@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
 
 import 'package:tokenlab_challenge/ui/components/image_loader.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
@@ -70,7 +69,3 @@ class _MoviesListStructureState extends State<MoviesListStructure> {
                   crossAxisCount: 2),
             );
 }
-
-// final _bloc = FavoriteItemBloc(
-//     movieId: widget.moviesList[index].id,
-//     movieName: widget.moviesList[index].title);
