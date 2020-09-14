@@ -11,19 +11,14 @@ class MovieDetailsBloc {
   MovieDetailsBloc({
     @required this.movieId,
   }) : assert(movieId != null) {
-    _subscriptions
-      ..add(
-        _fetchMovieLongDetails().listen(
-          (_onNewStateSubject.add),
-        ),
-      )
-      ..add(
-        _onTryAgainController.stream
-            .flatMap((_) => _fetchMovieLongDetails())
-            .listen(
-              (_onNewStateSubject.add),
-            ),
-      );
+    _subscriptions.add(
+      Rx.merge([
+        _onTryAgainController.stream,
+        _onFocusChangeController.stream,
+      ]).flatMap((_) => _fetchMovieLongDetails()).listen(
+            _onNewStateSubject.add,
+          ),
+    );
   }
 
   final int movieId;
@@ -34,6 +29,9 @@ class MovieDetailsBloc {
 
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
+
+  final _onFocusChangeController = StreamController<void>();
+  Sink<void> get onFocusChange => _onFocusChangeController.sink;
 
   final _onNewStateSubject = BehaviorSubject<MovieDetailsBodyState>();
   Stream<MovieDetailsBodyState> get onNewState => _onNewStateSubject.stream;
@@ -55,6 +53,7 @@ class MovieDetailsBloc {
   }
 
   void dispose() {
+    _onFocusChangeController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();

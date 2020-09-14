@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focus_detector/focus_detector.dart';
 
 import 'package:tokenlab_challenge/bloc/movie_details_bloc.dart';
 
@@ -18,6 +19,7 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  final _focusDetectorKey = UniqueKey();
   MovieDetailsBloc _bloc;
 
   @override
@@ -28,16 +30,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).detailsScreenTopTitle),
-          centerTitle: true,
-        ),
-        body: StreamBuilder<Object>(
-          stream: _bloc.onNewState,
-          builder: (context, snapshot) => MovieDetailsBody(
-            movieDetailsBodyState: snapshot,
-            onTryAgainTap: () => _bloc.onTryAgain.add(null),
+  Widget build(BuildContext context) => FocusDetector(
+        key: _focusDetectorKey,
+        onFocusGained: () => _bloc.onFocusChange.add(null),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(S.of(context).detailsScreenTopTitle),
+            centerTitle: true,
+          ),
+          body: StreamBuilder<Object>(
+            stream: _bloc.onNewState,
+            builder: (context, snapshot) => MovieDetailsBody(
+              movieDetailsBodyState: snapshot,
+              onTryAgainTap: () => _bloc.onTryAgain.add(null),
+            ),
           ),
         ),
       );
