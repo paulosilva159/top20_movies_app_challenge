@@ -7,12 +7,12 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'data/model/model.dart';
-import 'package:tokenlab_challenge/routes/routes.dart';
-import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
 import 'generated/l10n.dart';
 
 import 'routes/routes.dart';
+
+import 'ui/components/movies_structure_type.dart';
 
 import 'ui/view/favorites_screen/favorites_list_screen.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
@@ -46,7 +46,7 @@ Future<void> main() async {
 
           return MoviesListScreen(
               movieStructureType: movieStructureType ==
-                      EnumToString.parse(MovieStructureType.list)
+                      EnumToString.convertToString(MovieStructureType.list)
                   ? MovieStructureType.list
                   : MovieStructureType.grid);
         },

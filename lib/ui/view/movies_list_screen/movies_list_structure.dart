@@ -10,16 +10,16 @@ class MoviesListStructure extends StatefulWidget {
       {@required this.moviesList,
       @required this.movieStructureType,
       @required this.favoritesList,
-      @required this.onFavoriteTapStreamSink,
+      @required this.onFavoriteTapCallback,
       Key key})
       : assert(moviesList != null),
         assert(movieStructureType != null),
         assert(favoritesList != null),
-        assert(onFavoriteTapStreamSink != null),
+        assert(onFavoriteTapCallback != null),
         super(key: key);
 
   final List<int> favoritesList;
-  final Sink<int> onFavoriteTapStreamSink;
+  final void Function(int movieId) onFavoriteTapCallback;
   final List moviesList;
   final MovieStructureType movieStructureType;
 
@@ -48,8 +48,8 @@ class _MoviesListStructureState extends State<MoviesListStructure> {
                   child: FavoriteIndicator(
                     isFavorite: widget.favoritesList
                         .contains(widget.moviesList[index].id),
-                    onFavoriteTap: () => widget.onFavoriteTapStreamSink
-                        .add(widget.moviesList[index].id),
+                    onFavoriteTap: () => widget
+                        .onFavoriteTapCallback(widget.moviesList[index].id),
                   )),
             ],
           ),

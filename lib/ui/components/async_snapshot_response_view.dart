@@ -7,7 +7,6 @@ class AsyncSnapshotResponseView<Loading, Error, Success>
     @required this.errorWidgetBuilder,
     @required this.successWidgetBuilder,
     @required this.snapshot,
-    this.onTryAgainTap,
     Key key,
   })  : assert(loadingWidgetBuilder != null),
         assert(errorWidgetBuilder != null),
@@ -19,7 +18,6 @@ class AsyncSnapshotResponseView<Loading, Error, Success>
         super(key: key);
 
   final AsyncSnapshot snapshot;
-  final GestureTapCallback onTryAgainTap;
   final Widget Function(BuildContext context, Success success)
       successWidgetBuilder;
   final Widget Function(BuildContext context, Error error) errorWidgetBuilder;

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:focus_detector/focus_detector.dart';
 
 import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
-import 'package:tokenlab_challenge/ui/components/asyncsnapshot_response_view.dart';
+import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/error_indicator.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/loading_indicator.dart';
-import 'package:tokenlab_challenge/ui/view/movies_list_screen/movie_list_structure.dart';
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 import 'package:tokenlab_challenge/bloc/movies_list_bloc.dart';
 
 import 'package:tokenlab_challenge/routes/routes.dart';
 
+import 'movies_list_structure.dart';
 
 class MoviesListScreen extends StatefulWidget {
   const MoviesListScreen({
@@ -61,25 +60,29 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
               ),
               StreamBuilder(
                 stream: _bloc.onNewState,
-                builder: (context, snapshot) => 
-              AsyncSnapshotResponseView<Loading, Error, Success>(
-                snapshot: snapshot,
-                successWidgetBuilder: (context, snapshot) =>
-                    MoviesListStructure(
-                  movieStructureType: widget.movieStructureType,
-                  moviesList: snapshot.movieList,
-                ),
-                errorWidgetBuilder: (context, snapshot) => SliverFillRemaining(
-                  child: ErrorIndicator(
-                    error: snapshot.error,
-                    onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                builder: (context, snapshot) =>
+                    AsyncSnapshotResponseView<Loading, Error, Success>(
+                  snapshot: snapshot,
+                  successWidgetBuilder: (context, snapshot) =>
+                      MoviesListStructure(
+                    onFavoriteTapCallback: _bloc.onFavoriteTap.add,
+                    movieStructureType: widget.movieStructureType,
+                    moviesList: snapshot.moviesList,
+                    favoritesList: snapshot.favoritesList,
+                  ),
+                  errorWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: ErrorIndicator(
+                      error: snapshot.error,
+                      onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                    ),
+                  ),
+                  loadingWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: LoadingIndicator(),
                   ),
                 ),
-                loadingWidgetBuilder: (context, snapshot) =>
-                    SliverFillRemaining(
-                  child: LoadingIndicator(),
-                ),
-              ),
+              )
             ],
           ),
         ),

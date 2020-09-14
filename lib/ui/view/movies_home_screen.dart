@@ -58,7 +58,8 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
                   icon: Icon(flow.iconData),
                 ),
                 navigatorKey: flow.navigatorKey,
-                initialRouteName: EnumToString.parse(flow.movieStructureType),
+                initialRouteName:
+                    EnumToString.convertToString(flow.movieStructureType),
               ),
             )
             .toList(),
