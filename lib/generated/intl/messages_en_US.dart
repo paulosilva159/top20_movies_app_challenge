@@ -33,8 +33,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailsTileVotesQtt" : m1,
     "dioErrorMessage" : MessageLookupByLibrary.simpleMessage("Error while trying to obtain data"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Error!"),
-    "listSavedMessage" : MessageLookupByLibrary.simpleMessage("List saved"),
-    "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Try Again"),
-    "wantToSaveListMessage" : MessageLookupByLibrary.simpleMessage("Want to save?")
+    "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Try Again")
   };
 }
