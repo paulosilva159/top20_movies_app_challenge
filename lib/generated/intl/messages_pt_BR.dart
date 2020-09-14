@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailsTileScore" : m0,
     "detailsTileVotesQtt" : m1,
     "dioErrorMessage" : MessageLookupByLibrary.simpleMessage("Erro durante tentativa de obter dados"),
+    "favoritesListScreenTitle" : MessageLookupByLibrary.simpleMessage("Favoritos"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Deu erro!"),
     "tryAgainMessage" : MessageLookupByLibrary.simpleMessage("Tente Novamente")
   };

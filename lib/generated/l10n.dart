@@ -53,6 +53,16 @@ class S {
     );
   }
 
+  /// `Favorites`
+  String get favoritesListScreenTitle {
+    return Intl.message(
+      'Favorites',
+      name: 'favoritesListScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Details`
   String get detailsScreenTopTitle {
     return Intl.message(
