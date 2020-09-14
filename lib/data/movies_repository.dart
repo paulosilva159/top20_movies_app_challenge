@@ -5,8 +5,8 @@ class MoviesRepository {
   final MoviesRemoteDataSource _remoteDataSource = MoviesRemoteDataSource();
   final MoviesCacheDataSource _cacheDataSource = MoviesCacheDataSource();
 
-  Future getMovieDetails(int movieId) async {
-    dynamic movieDetails;
+  Future<MovieLongDetailsCM> getMovieDetails(int movieId) async {
+    MovieLongDetailsCM movieDetails;
 
     await _cacheDataSource
         .getMovieDetails(movieId)
@@ -24,7 +24,7 @@ class MoviesRepository {
   }
 
   Future<List<MovieShortDetailsCM>> getMoviesList() async {
-    dynamic moviesList;
+    List<MovieShortDetailsCM> moviesList;
 
     await _cacheDataSource
         .getMoviesList()

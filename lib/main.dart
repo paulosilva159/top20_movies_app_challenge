@@ -39,10 +39,10 @@ Future<void> main() async {
       handler: Handler(handlerFunc: (context, params) => FavoritesListScreen()),
     )
     ..define(
-      ':${Routes.movieStructureTypeParam}',
+      Routes.home,
       handler: Handler(
         handlerFunc: (context, params) {
-          final movieStructureType = params[Routes.movieStructureTypeParam][0];
+          final movieStructureType = params['type'][0];
 
           return MoviesListScreen(
               movieStructureType: movieStructureType ==

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
+import 'package:tokenlab_challenge/routes/routes.dart';
 
 import 'package:tokenlab_challenge/ui/components/app_flow.dart';
 import 'package:tokenlab_challenge/ui/components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
@@ -49,19 +50,18 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
 
   @override
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
-        key: ValueKey(_userLocale),
-        navigationBarItems: _appFlows
-            .map(
-              (flow) => BottomNavigationTab(
-                bottomNavigationBarItem: BottomNavigationBarItem(
-                  title: Text(flow.title),
-                  icon: Icon(flow.iconData),
-                ),
-                navigatorKey: flow.navigatorKey,
-                initialRouteName:
-                    EnumToString.convertToString(flow.movieStructureType),
+      key: ValueKey(_userLocale),
+      navigationBarItems: _appFlows
+          .map(
+            (flow) => BottomNavigationTab(
+              bottomNavigationBarItem: BottomNavigationBarItem(
+                title: Text(flow.title),
+                icon: Icon(flow.iconData),
               ),
-            )
-            .toList(),
-      );
+              navigatorKey: flow.navigatorKey,
+              initialRouteName:
+                  Routes.moviesListByStructure(flow.movieStructureType),
+            ),
+          )
+          .toList());
 }

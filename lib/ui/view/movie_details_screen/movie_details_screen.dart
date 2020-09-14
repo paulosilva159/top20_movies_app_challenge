@@ -43,7 +43,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           title: Text(S.of(context).detailsScreenTopTitle),
           centerTitle: true,
         ),
-        body: StreamBuilder<Object>(
+        body: StreamBuilder<MovieDetailsBodyState>(
           stream: _bloc.onNewState,
           builder: (context, snapshot) =>
               AsyncSnapshotResponseView<Loading, Error, Success>(
