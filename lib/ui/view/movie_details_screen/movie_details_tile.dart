@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
+import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 
@@ -13,7 +14,7 @@ class MovieDetailsTile extends StatefulWidget {
   })  : assert(movieDetails != null),
         assert(isFavorite != null);
 
-  final dynamic movieDetails;
+  final MovieLongDetailsCM movieDetails;
   final bool isFavorite;
 
   @override

@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 
 abstract class MovieDetailsBodyState {}
 
@@ -7,7 +8,7 @@ class Success implements MovieDetailsBodyState {
       : assert(movieDetails != null),
         assert(isFavorite != null);
 
-  final dynamic movieDetails;
+  final MovieLongDetailsCM movieDetails;
   final bool isFavorite;
 }
 

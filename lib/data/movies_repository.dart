@@ -16,14 +16,14 @@ class MoviesRepository {
         await _remoteDataSource.getMovieDetails(movieId).then((details) {
           upsertMovieDetails(details);
 
-          movieDetails = details;
+          movieDetails = _toLongCacheModel(details);
         });
       }
     });
     return movieDetails;
   }
 
-  Future<List> getMoviesList() async {
+  Future<List<MovieShortDetailsCM>> getMoviesList() async {
     dynamic moviesList;
 
     await _cacheDataSource
@@ -34,7 +34,7 @@ class MoviesRepository {
         await _remoteDataSource.getMoviesList().then((value) {
           upsertMoviesList(value);
 
-          moviesList = value;
+          moviesList = value.map(_toShortCacheModel).toList();
         });
       }
     });
@@ -57,13 +57,13 @@ class MoviesRepository {
     return favorites;
   }
 
-  void upsertMoviesList(List moviesList) {
+  void upsertMoviesList(List<MovieShortDetailsRM> moviesList) {
     _cacheDataSource.upsertMoviesList(
       moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
     );
   }
 
-  void upsertMovieDetails(dynamic movieDetails) {
+  void upsertMovieDetails(MovieLongDetailsRM movieDetails) {
     _cacheDataSource.upsertMovieDetails(
       _toLongCacheModel(movieDetails),
     );
