@@ -1,8 +1,10 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tokenlab_challenge/routes/routes.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
 import 'generated/l10n.dart';
 
@@ -34,7 +36,11 @@ void main() {
         handlerFunc: (context, params) {
           final movieStructureType = params[Routes.movieStructureTypeParam][0];
 
-          return MoviesListScreen(movieStructureType: movieStructureType);
+          return MoviesListScreen(
+              movieStructureType: movieStructureType ==
+                      EnumToString.parse(MovieStructureType.list)
+                  ? MovieStructureType.list
+                  : MovieStructureType.grid);
         },
       ),
     )

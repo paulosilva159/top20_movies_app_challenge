@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'package:enum_to_string/enum_to_string.dart';
+import 'package:tokenlab_challenge/ui/components/asyncsnapshot_response_view.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/error_indicator.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/loading_indicator.dart';
+import 'package:tokenlab_challenge/ui/view/movies_list_screen/movie_list_structure.dart';
+import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 import '../../../bloc/movies_list_bloc.dart';
 
 import '../../../routes/routes.dart';
 
 import '../../../ui/components/movies_structure_type.dart';
-
-import 'movies_list_body.dart';
 
 class MoviesListScreen extends StatefulWidget {
   const MoviesListScreen({
@@ -17,7 +18,7 @@ class MoviesListScreen extends StatefulWidget {
   })  : assert(movieStructureType != null),
         super(key: key);
 
-  final String movieStructureType;
+  final MovieStructureType movieStructureType;
 
   @override
   _MoviesListScreenState createState() => _MoviesListScreenState();
@@ -52,13 +53,23 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   ),
                 ),
               ),
-              MoviesListBody(
-                moviesListScreenState: snapshot,
-                movieStructureType: widget.movieStructureType ==
-                        EnumToString.parse(MovieStructureType.list)
-                    ? MovieStructureType.list
-                    : MovieStructureType.grid,
-                onTryAgainTap: () => _bloc.onTryAgain.add(null),
+              AsyncSnapshotResponseView<Loading, Error, Success>(
+                snapshot: snapshot,
+                successWidgetBuilder: (context, snapshot) =>
+                    MoviesListStructure(
+                  movieStructureType: widget.movieStructureType,
+                  moviesList: snapshot.movieList,
+                ),
+                errorWidgetBuilder: (context, snapshot) => SliverFillRemaining(
+                  child: ErrorIndicator(
+                    error: snapshot.error,
+                    onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                  ),
+                ),
+                loadingWidgetBuilder: (context, snapshot) =>
+                    SliverFillRemaining(
+                  child: LoadingIndicator(),
+                ),
               ),
             ],
           ),
