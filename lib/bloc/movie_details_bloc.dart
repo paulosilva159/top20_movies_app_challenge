@@ -28,6 +28,8 @@ class MovieDetailsBloc {
 
   final int movieId;
 
+  final _repository = MoviesRepository();
+
   final _subscriptions = CompositeSubscription();
 
   final _onTryAgainController = StreamController<void>();
@@ -41,8 +43,10 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-        movieDetails: await MoviesRepository().getMovieDetails(movieId),
-      );
+          movieDetails: await _repository.getMovieDetails(movieId),
+          isFavorite: await _repository
+              .getFavoritesId()
+              .then((favoritesList) => favoritesList.contains(movieId)));
     } catch (error) {
       yield Error(
         error: error,

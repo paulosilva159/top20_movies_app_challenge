@@ -6,24 +6,22 @@ import 'package:meta/meta.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 class FavoriteItemBloc {
-  FavoriteItemBloc({@required this.movieId, @required this.movieName})
-      : assert(movieId != null),
-        assert(movieName != null) {
+  FavoriteItemBloc({@required this.movieId}) : assert(movieId != null) {
     _subscriptions
       ..add(_fetchFavorite().listen(_onNewStateSubject.add))
       ..add(_onFavoriteTapController.stream
-          .flatMap<bool>((_) => _editFavorites())
+          .flatMap<bool>(_editFavorites)
           .listen(_onNewStateSubject.add));
   }
+
   final int movieId;
-  final String movieName;
 
   final _repository = MoviesRepository();
 
   final _subscriptions = CompositeSubscription();
 
-  final _onFavoriteTapController = StreamController<void>();
-  Sink<void> get onFavoriteTap => _onFavoriteTapController.sink;
+  final _onFavoriteTapController = StreamController<String>();
+  Sink<String> get onFavoriteTap => _onFavoriteTapController.sink;
 
   final _onNewStateSubject = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get onNewState => _onNewStateSubject.stream;
@@ -39,7 +37,7 @@ class FavoriteItemBloc {
     yield isFavorite;
   }
 
-  Stream<bool> _editFavorites() async* {
+  Stream<bool> _editFavorites(String movieName) async* {
     bool isFavorite;
 
     await _repository.getFavoritesId().then((value) {

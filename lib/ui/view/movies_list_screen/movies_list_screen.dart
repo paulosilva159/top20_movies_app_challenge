@@ -27,32 +27,32 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   final _bloc = MoviesListBloc();
 
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-        stream: _bloc.onNewState,
-        builder: (context, snapshot) => Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(Routes.favorites);
-                    },
-                    icon: const Icon(Icons.favorite),
-                  )
-                ],
-                expandedHeight: 250,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: const Text('TMDb'),
-                  centerTitle: true,
-                  background: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Image.asset('lib/ui/assets/top-20.png'),
-                  ),
+  Widget build(BuildContext context) => Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(Routes.favorites);
+                  },
+                  icon: const Icon(Icons.favorite),
+                )
+              ],
+              expandedHeight: 250,
+              flexibleSpace: FlexibleSpaceBar(
+                title: const Text('TMDb'),
+                centerTitle: true,
+                background: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Image.asset('lib/ui/assets/top-20.png'),
                 ),
               ),
-              MoviesListBody(
+            ),
+            StreamBuilder(
+              stream: _bloc.onNewState,
+              builder: (context, snapshot) => MoviesListBody(
                 moviesListScreenSnapshot: snapshot,
                 movieStructureType: widget.movieStructureType ==
                         EnumToString.parse(MovieStructureType.list)
@@ -61,8 +61,8 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 onTryAgainTap: () => _bloc.onTryAgain.add(null),
                 onFavoriteTapStreamSink: _bloc.onFavoriteTap,
               ),
-            ],
-          ),
+            )
+          ],
         ),
       );
 

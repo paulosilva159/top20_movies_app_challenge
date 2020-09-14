@@ -28,6 +28,7 @@ class MovieDetailsBody extends StatelessWidget {
     } else {
       return MovieDetailsTile(
         movieDetails: stateData.movieDetails,
+        isFavorite: stateData.isFavorite,
       );
     }
   }
