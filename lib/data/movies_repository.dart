@@ -12,9 +12,13 @@ class MoviesRepository {
         .getMovieDetails(movieId)
         .then((value) => movieDetails = value)
         .catchError((error) async {
-      await _remoteDataSource
-          .getMovieDetails(movieId)
-          .then((value) => movieDetails = value);
+      if (error is RangeError) {
+        await _remoteDataSource.getMovieDetails(movieId).then((details) {
+          upsertMovieDetails(details);
+
+          movieDetails = details;
+        });
+      }
     });
     return movieDetails;
   }
