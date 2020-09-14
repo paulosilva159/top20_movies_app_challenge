@@ -32,7 +32,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => _bloc.onFocusChange.add(null),
+        onFocusGained: () => _bloc.onFocusGain.add(null),
         child: Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).detailsScreenTopTitle),

@@ -16,7 +16,7 @@ class FavoritesListBloc {
       ..add(
         Rx.merge([
           _onTryAgainController.stream,
-          _onFocusChangeController.stream,
+          _onFocusGainController.stream,
         ]).flatMap((_) => _fetchMoviesList()).listen(
               (_onNewStateSubject.add),
             ),
@@ -30,8 +30,8 @@ class FavoritesListBloc {
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
 
-  final _onFocusChangeController = StreamController<void>();
-  Sink<void> get onFocusChange => _onFocusChangeController.sink;
+  final _onFocusGainController = StreamController<void>();
+  Sink<void> get onFocusGain => _onFocusGainController.sink;
 
   final _onNewStateSubject = BehaviorSubject<FavoritesListScreenState>();
   Stream<FavoritesListScreenState> get onNewState => _onNewStateSubject.stream;
@@ -51,7 +51,7 @@ class FavoritesListBloc {
   }
 
   void dispose() {
-    _onFocusChangeController.close();
+    _onFocusGainController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();
