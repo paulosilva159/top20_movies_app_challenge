@@ -10,12 +10,10 @@ class MoviesListBloc {
   MoviesListBloc() {
     _subscriptions
       ..add(
-        _fetchMoviesList().listen(
-          (_onNewStateSubject.add),
-        ),
-      )
-      ..add(
-        _onTryAgainController.stream.flatMap((_) => _fetchMoviesList()).listen(
+        Rx.merge([
+          _onFocusChangeController.stream,
+          _onTryAgainController.stream,
+        ]).flatMap((_) => _fetchMoviesList()).listen(
               (_onNewStateSubject.add),
             ),
       )
@@ -29,8 +27,10 @@ class MoviesListBloc {
   }
 
   final _repository = MoviesRepository();
-
   final _subscriptions = CompositeSubscription();
+
+  final _onFocusChangeController = StreamController<void>();
+  Sink<void> get onFocusChange => _onFocusChangeController.sink;
 
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
@@ -80,6 +80,7 @@ class MoviesListBloc {
   }
 
   void dispose() {
+    _onFocusChangeController.close();
     _onFavoriteTapController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
