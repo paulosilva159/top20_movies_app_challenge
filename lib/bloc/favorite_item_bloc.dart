@@ -6,7 +6,9 @@ import 'package:meta/meta.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 class FavoriteItemBloc {
-  FavoriteItemBloc({@required this.movieId}) : assert(movieId != null) {
+  FavoriteItemBloc({@required this.repository, @required this.movieId})
+      : assert(movieId != null),
+        assert(repository != null) {
     _subscriptions
       ..add(_fetchFavorite().listen(_onNewStateSubject.add))
       ..add(_onFavoriteTapController.stream
@@ -16,7 +18,7 @@ class FavoriteItemBloc {
 
   final int movieId;
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
 
   final _subscriptions = CompositeSubscription();
 
@@ -29,7 +31,7 @@ class FavoriteItemBloc {
   Stream<bool> _fetchFavorite() async* {
     bool isFavorite;
 
-    await _repository
+    await repository
         .getFavoritesId()
         .then((value) => isFavorite = value.contains(movieId))
         .catchError(print);
@@ -40,13 +42,13 @@ class FavoriteItemBloc {
   Stream<bool> _editFavorites(String movieName) async* {
     bool isFavorite;
 
-    await _repository.getFavoritesId().then((value) {
+    await repository.getFavoritesId().then((value) {
       isFavorite = value.contains(movieId);
 
       if (!isFavorite) {
-        _repository.upsertFavoriteMovieId(movieId, movieName);
+        repository.upsertFavoriteMovieId(movieId, movieName);
       } else {
-        _repository.removeFavoriteMovieId(movieId);
+        repository.removeFavoriteMovieId(movieId);
       }
     }).catchError(print);
 

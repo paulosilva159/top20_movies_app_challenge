@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
@@ -7,7 +8,7 @@ import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 class MoviesListBloc {
-  MoviesListBloc() {
+  MoviesListBloc({@required this.repository}) : assert(repository != null) {
     _subscriptions
       ..add(
         Rx.merge([
@@ -26,7 +27,8 @@ class MoviesListBloc {
       );
   }
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
+
   final _subscriptions = CompositeSubscription();
 
   final _onFocusGainController = StreamController<void>();
@@ -46,8 +48,8 @@ class MoviesListBloc {
 
     try {
       yield Success(
-        moviesList: await _repository.getMoviesList(),
-        favoritesList: await _repository.getFavoritesId(),
+        moviesList: await repository.getMoviesList(),
+        favoritesList: await repository.getFavoritesId(),
       );
     } catch (error) {
       yield Error(
@@ -61,20 +63,20 @@ class MoviesListBloc {
 
     if (stateData is Success) {
       if (stateData.favoritesList.contains(movieId)) {
-        _repository.removeFavoriteMovieId(movieId);
+        repository.removeFavoriteMovieId(movieId);
       } else {
         stateData.moviesList.forEach(
           (movie) {
             if (movie.id == movieId) {
-              _repository.upsertFavoriteMovieId(movie.id, movie.title);
+              repository.upsertFavoriteMovieId(movie.id, movie.title);
             }
           },
         );
       }
 
       yield Success(
-        moviesList: await _repository.getMoviesList(),
-        favoritesList: await _repository.getFavoritesId(),
+        moviesList: await repository.getMoviesList(),
+        favoritesList: await repository.getFavoritesId(),
       );
     }
   }

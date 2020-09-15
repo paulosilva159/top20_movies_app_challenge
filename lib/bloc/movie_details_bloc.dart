@@ -9,8 +9,10 @@ import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_sc
 
 class MovieDetailsBloc {
   MovieDetailsBloc({
+    @required this.repository,
     @required this.movieId,
-  }) : assert(movieId != null) {
+  })  : assert(movieId != null),
+        assert(repository != null) {
     _subscriptions.add(
       Rx.merge([
         _onTryAgainController.stream,
@@ -23,7 +25,7 @@ class MovieDetailsBloc {
 
   final int movieId;
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
 
   final _subscriptions = CompositeSubscription();
 
@@ -41,8 +43,8 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-          movieDetails: await _repository.getMovieDetails(movieId),
-          isFavorite: await _repository
+          movieDetails: await repository.getMovieDetails(movieId),
+          isFavorite: await repository
               .getFavoritesId()
               .then((favoritesList) => favoritesList.contains(movieId)));
     } catch (error) {

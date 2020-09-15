@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';
 
 class FavoritesListBloc {
-  FavoritesListBloc() {
+  FavoritesListBloc({@required this.repository}) : assert(repository != null) {
     _subscriptions
       ..add(
         _fetchMoviesList().listen(
@@ -23,7 +24,7 @@ class FavoritesListBloc {
       );
   }
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
 
   final _subscriptions = CompositeSubscription();
 
@@ -41,7 +42,7 @@ class FavoritesListBloc {
 
     try {
       yield Success(
-        favorites: await _repository.getFavorites(),
+        favorites: await repository.getFavorites(),
       );
     } catch (error) {
       yield Error(

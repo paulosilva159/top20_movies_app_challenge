@@ -1,44 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
+import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 
 import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
 
 class MovieDetailsTile extends StatefulWidget {
-  const MovieDetailsTile({
-    @required this.movieDetails,
-    @required this.isFavorite,
-  })  : assert(movieDetails != null),
+  const MovieDetailsTile(
+      {@required this.movieDetails,
+      @required this.isFavorite,
+      @required this.bloc})
+      : assert(movieDetails != null),
+        assert(bloc != null),
         assert(isFavorite != null);
 
   final MovieLongDetailsCM movieDetails;
+  final FavoriteItemBloc bloc;
   final bool isFavorite;
+
+  static Widget create(bool isFavorite, MovieLongDetailsCM movieDetails) =>
+      ProxyProvider<MoviesRepository, FavoriteItemBloc>(
+        update: (context, moviesRepository, favoriteItemBloc) =>
+            FavoriteItemBloc(
+                repository: moviesRepository, movieId: movieDetails.id),
+        child: Consumer<FavoriteItemBloc>(
+          builder: (context, bloc, child) => MovieDetailsTile(
+            movieDetails: movieDetails,
+            isFavorite: isFavorite,
+            bloc: bloc,
+          ),
+        ),
+      );
 
   @override
   _MovieDetailsTileState createState() => _MovieDetailsTileState();
 }
 
 class _MovieDetailsTileState extends State<MovieDetailsTile> {
-  FavoriteItemBloc _bloc;
-
-  @override
-  void initState() {
-    _bloc = FavoriteItemBloc(movieId: widget.movieDetails.id);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) => ListView(
         children: [
           StreamBuilder<bool>(
-            stream: _bloc.onNewState,
+            stream: widget.bloc.onNewState,
             builder: (context, snapshot) => FavoriteIndicator(
                 onFavoriteTap: () =>
-                    _bloc.onFavoriteTap.add(widget.movieDetails.title),
+                    widget.bloc.onFavoriteTap.add(widget.movieDetails.title),
                 isFavorite: snapshot.data ?? widget.isFavorite),
           ),
           Padding(
@@ -85,7 +95,7 @@ class _MovieDetailsTileState extends State<MovieDetailsTile> {
 
   @override
   void dispose() {
-    _bloc.dispose();
+    widget.bloc.dispose();
     super.dispose();
   }
 }

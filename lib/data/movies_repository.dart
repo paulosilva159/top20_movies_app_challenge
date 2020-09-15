@@ -1,19 +1,26 @@
+import 'package:meta/meta.dart';
+
 import 'model/model.dart';
-import 'source/source.dart';
+import 'sources/sources.dart';
 
 class MoviesRepository {
-  final MoviesRemoteDataSource _remoteDataSource = MoviesRemoteDataSource();
-  final MoviesCacheDataSource _cacheDataSource = MoviesCacheDataSource();
+  MoviesRepository(
+      {@required this.remoteDataSource, @required this.cacheDataSource})
+      : assert(remoteDataSource != null),
+        assert(cacheDataSource != null);
+
+  final MoviesRemoteDataSource remoteDataSource;
+  final MoviesCacheDataSource cacheDataSource;
 
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) async {
     MovieLongDetailsCM movieDetails;
 
-    await _cacheDataSource
+    await cacheDataSource
         .getMovieDetails(movieId)
         .then((value) => movieDetails = value)
         .catchError((error) async {
       if (error is RangeError) {
-        await _remoteDataSource.getMovieDetails(movieId).then((details) {
+        await remoteDataSource.getMovieDetails(movieId).then((details) {
           upsertMovieDetails(details);
 
           movieDetails = _toLongCacheModel(details);
@@ -26,12 +33,12 @@ class MoviesRepository {
   Future<List<MovieShortDetailsCM>> getMoviesList() async {
     List<MovieShortDetailsCM> moviesList;
 
-    await _cacheDataSource
+    await cacheDataSource
         .getMoviesList()
         .then((value) => moviesList = value)
         .catchError((error) async {
       if (error is RangeError) {
-        await _remoteDataSource.getMoviesList().then((value) {
+        await remoteDataSource.getMoviesList().then((value) {
           upsertMoviesList(value);
 
           moviesList = value.map(_toShortCacheModel).toList();
@@ -42,14 +49,14 @@ class MoviesRepository {
     return moviesList;
   }
 
-  Future<List<int>> getFavoritesId() => _cacheDataSource
+  Future<List<int>> getFavoritesId() => cacheDataSource
       .getFavorites()
       .then((favorites) => favorites.keys.toList());
 
   Future<Map<int, String>> getFavorites() async {
     Map<int, String> favorites;
 
-    await _cacheDataSource
+    await cacheDataSource
         .getFavorites()
         .then((favoritesMap) => favorites = favoritesMap)
         .catchError(print);
@@ -58,31 +65,31 @@ class MoviesRepository {
   }
 
   void upsertMoviesList(List<MovieShortDetailsRM> moviesList) {
-    _cacheDataSource.upsertMoviesList(
+    cacheDataSource.upsertMoviesList(
       moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
     );
   }
 
   void upsertMovieDetails(MovieLongDetailsRM movieDetails) {
-    _cacheDataSource.upsertMovieDetails(
+    cacheDataSource.upsertMovieDetails(
       _toLongCacheModel(movieDetails),
     );
   }
 
   void upsertFavoriteMovieId(int movieId, String movieName) {
-    _cacheDataSource.upsertFavoriteMovieId(movieId, movieName);
+    cacheDataSource.upsertFavoriteMovieId(movieId, movieName);
   }
 
   void removeMoviesList() {
-    _cacheDataSource.removeMoviesList();
+    cacheDataSource.removeMoviesList();
   }
 
   void removeMovieDetails(MovieLongDetailsCM movieDetails) {
-    _cacheDataSource.removeMovieDetails(movieDetails);
+    cacheDataSource.removeMovieDetails(movieDetails);
   }
 
   void removeFavoriteMovieId(int movieId) {
-    _cacheDataSource.removeFavoriteMovieId(movieId);
+    cacheDataSource.removeFavoriteMovieId(movieId);
   }
 }
 
