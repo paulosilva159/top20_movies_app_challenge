@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tokenlab_challenge/data/model/model.dart';
 
 import 'package:tokenlab_challenge/ui/components/image_loader.dart';

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:focus_detector/focus_detector.dart';
 
+import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/error_indicator.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/loading_indicator.dart';
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 import 'package:tokenlab_challenge/bloc/movies_list_bloc.dart';

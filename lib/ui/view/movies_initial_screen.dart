@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:enum_to_string/enum_to_string.dart';
-
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/routes/routes.dart';
 
@@ -11,12 +9,12 @@ import 'package:tokenlab_challenge/ui/components/bottom_navigation_scaffold/adap
 import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
 import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
-class MoviesHomeScreen extends StatefulWidget {
+class MoviesInitialScreen extends StatefulWidget {
   @override
-  _MoviesHomeScreenState createState() => _MoviesHomeScreenState();
+  _MoviesInitialScreenState createState() => _MoviesInitialScreenState();
 }
 
-class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
+class _MoviesInitialScreenState extends State<MoviesInitialScreen> {
   Locale _userLocale;
   List<AppFlow> _appFlows;
 
