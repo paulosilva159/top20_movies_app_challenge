@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
+
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 

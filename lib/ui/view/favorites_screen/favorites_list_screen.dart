@@ -4,8 +4,8 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:tokenlab_challenge/bloc/favorites_list_bloc.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
-import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 
+import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 import 'package:tokenlab_challenge/ui/components/page_navigation.dart';
 import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';

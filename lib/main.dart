@@ -1,6 +1,6 @@
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
@@ -11,15 +11,15 @@ import 'package:tokenlab_challenge/providers/global_providers.dart';
 import 'bloc/favorites_list_bloc.dart';
 import 'bloc/movie_details_bloc.dart';
 import 'bloc/movies_list_bloc.dart';
-import 'data/model/model.dart';
 
+import 'data/model/model.dart';
 import 'data/movies_repository.dart';
+
 import 'generated/l10n.dart';
 
 import 'routes/routes.dart';
 
 import 'ui/components/movies_structure_type.dart';
-
 import 'ui/view/favorites_screen/favorites_list_screen.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_initial_screen.dart';

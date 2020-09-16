@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
+
 import 'package:tokenlab_challenge/routes/routes.dart';
 
 import 'package:tokenlab_challenge/ui/components/app_flow.dart';
