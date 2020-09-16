@@ -35,6 +35,10 @@ class MoviesCacheDataSource {
           .then((box) => box.deleteAt(movieDetails.id));
 
   Future<void> removeFavoriteMovieId(int favoriteMovieId) =>
-      Hive.openBox(favoritesBoxName).then(
-          (box) => box.delete(box.values.toList().indexOf(favoriteMovieId)));
+      Hive.openBox(favoritesBoxName)
+          .then((box) => box.toMap().forEach((key, value) {
+                if (value == favoriteMovieId) {
+                  box.delete(key);
+                }
+              }));
 }
