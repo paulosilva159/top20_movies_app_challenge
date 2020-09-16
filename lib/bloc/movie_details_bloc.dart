@@ -43,7 +43,7 @@ class MovieDetailsBloc {
       yield Success(
           movieDetails: await _repository.getMovieDetails(movieId),
           isFavorite: await _repository
-              .getFavoritesId()
+              .getFavorites()
               .then((favoritesList) => favoritesList.contains(movieId)));
     } catch (error) {
       yield Error(

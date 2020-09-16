@@ -30,6 +30,7 @@ class MoviesRepository {
         .getMoviesList()
         .then((value) => moviesList = value)
         .catchError((error) async {
+      print(error);
       if (error is RangeError) {
         await _remoteDataSource.getMoviesList().then((value) {
           upsertMoviesList(value);
@@ -42,48 +43,37 @@ class MoviesRepository {
     return moviesList;
   }
 
-  Future<List<int>> getFavoritesId() => _cacheDataSource
-      .getFavorites()
-      .then((favorites) => favorites.keys.toList());
-
-  Future<Map<int, String>> getFavorites() async {
-    Map<int, String> favorites;
+  Future<List<int>> getFavorites() async {
+    List<int> favorites;
 
     await _cacheDataSource
         .getFavorites()
-        .then((favoritesMap) => favorites = favoritesMap)
+        .then((favoritesId) => favorites = favoritesId)
         .catchError(print);
 
     return favorites;
   }
 
-  void upsertMoviesList(List<MovieShortDetailsRM> moviesList) {
-    _cacheDataSource.upsertMoviesList(
-      moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
-    );
-  }
+  Future<void> upsertMoviesList(List<MovieShortDetailsRM> moviesList) =>
+      _cacheDataSource.upsertMoviesList(
+        moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
+      );
 
-  void upsertMovieDetails(MovieLongDetailsRM movieDetails) {
-    _cacheDataSource.upsertMovieDetails(
-      _toLongCacheModel(movieDetails),
-    );
-  }
+  Future<void> upsertMovieDetails(MovieLongDetailsRM movieDetails) =>
+      _cacheDataSource.upsertMovieDetails(
+        _toLongCacheModel(movieDetails),
+      );
 
-  void upsertFavoriteMovieId(int movieId, String movieName) {
-    _cacheDataSource.upsertFavoriteMovieId(movieId, movieName);
-  }
+  Future<void> upsertFavoriteMovieId(int movieId) =>
+      _cacheDataSource.upsertFavoriteMovieId(movieId);
 
-  void removeMoviesList() {
-    _cacheDataSource.removeMoviesList();
-  }
+  Future<void> removeMoviesList() => _cacheDataSource.removeMoviesList();
 
-  void removeMovieDetails(MovieLongDetailsCM movieDetails) {
-    _cacheDataSource.removeMovieDetails(movieDetails);
-  }
+  Future<void> removeMovieDetails(MovieLongDetailsCM movieDetails) =>
+      _cacheDataSource.removeMovieDetails(movieDetails);
 
-  void removeFavoriteMovieId(int movieId) {
-    _cacheDataSource.removeFavoriteMovieId(movieId);
-  }
+  Future<void> removeFavoriteMovieId(int movieId) =>
+      _cacheDataSource.removeFavoriteMovieId(movieId);
 }
 
 MovieLongDetailsCM _toLongCacheModel(var movieLongDetails) =>

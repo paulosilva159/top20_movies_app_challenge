@@ -5,6 +5,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';
 
+import 'package:tokenlab_challenge/data/model/model.dart';
+
 class FavoritesListBloc {
   FavoritesListBloc() {
     _subscriptions
@@ -39,9 +41,22 @@ class FavoritesListBloc {
   Stream<FavoritesListScreenState> _fetchMoviesList() async* {
     yield Loading();
 
+    List<MovieShortDetailsCM> favoritesList;
+
+    await Future.wait([_repository.getFavorites(), _repository.getMoviesList()])
+        .then(
+      (futureList) {
+        final favoritesId = List<int>.from(futureList[0]);
+
+        favoritesList = List<MovieShortDetailsCM>.from(futureList[1])
+            .where((movie) => favoritesId.contains(movie.id))
+            .toList();
+      },
+    );
+
     try {
       yield Success(
-        favorites: await _repository.getFavorites(),
+        favorites: favoritesList,
       );
     } catch (error) {
       yield Error(

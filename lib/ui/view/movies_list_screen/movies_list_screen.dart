@@ -64,7 +64,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   snapshot: snapshot,
                   successWidgetBuilder: (context, snapshot) =>
                       MoviesListStructure(
-                    onFavoriteTapCallback: _bloc.onFavoriteTap.add,
+                    onFavoriteTap: _bloc.onFavoriteTap.add,
                     movieStructureType: widget.movieStructureType,
                     moviesList: snapshot.moviesList,
                     favoritesList: snapshot.favoritesList,

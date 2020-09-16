@@ -37,8 +37,8 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
                     LoadingIndicator(),
                 successWidgetBuilder: (context, stateData) => ListView.builder(
                   itemBuilder: (context, index) {
-                    final id = stateData.favorites.keys.toList()[index];
-                    final title = stateData.favorites.values.toList()[index];
+                    final id = stateData.favorites[index].id;
+                    final title = stateData.favorites[index].title;
 
                     return ListTile(
                       leading: Text('#$id'),

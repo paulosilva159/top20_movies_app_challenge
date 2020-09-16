@@ -30,8 +30,8 @@ class FavoriteItemBloc {
     bool isFavorite;
 
     await _repository
-        .getFavoritesId()
-        .then((value) => isFavorite = value.contains(movieId))
+        .getFavorites()
+        .then((favorites) => isFavorite = favorites.contains(movieId))
         .catchError(print);
 
     yield isFavorite;
@@ -40,11 +40,11 @@ class FavoriteItemBloc {
   Stream<bool> _editFavorites(String movieName) async* {
     bool isFavorite;
 
-    await _repository.getFavoritesId().then((value) {
-      isFavorite = value.contains(movieId);
+    await _repository.getFavorites().then((favorites) {
+      isFavorite = favorites.contains(movieId);
 
       if (!isFavorite) {
-        _repository.upsertFavoriteMovieId(movieId, movieName);
+        _repository.upsertFavoriteMovieId(movieId);
       } else {
         _repository.removeFavoriteMovieId(movieId);
       }
