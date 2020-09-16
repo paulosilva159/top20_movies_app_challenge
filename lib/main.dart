@@ -35,7 +35,7 @@ Future<void> main() async {
 
   Router.appRouter
     ..define(
-      Routes.initial,
+      Routes.home,
       handler: Handler(
         handlerFunc: (context, params) => MoviesInitialScreen(),
       ),
@@ -56,10 +56,10 @@ Future<void> main() async {
       ),
     )
     ..define(
-      Routes.home,
+      Routes.moviesList,
       handler: Handler(
         handlerFunc: (context, params) {
-          final movieStructureType = params['type'][0];
+          final movieStructureType = params[Routes.moviesListQueryParam][0];
 
           return ProxyProvider<MoviesRepository, MoviesListBloc>(
             update: (context, moviesRepository, moviesListBloc) =>
