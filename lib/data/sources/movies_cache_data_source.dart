@@ -8,39 +8,37 @@ class MoviesCacheDataSource {
   static const String _favoritesBoxName = 'favoritesBox';
 
   Future<List<MovieShortDetailsCM>> getMoviesList() =>
-      Hive.openBox<List>(_moviesListBoxName)
+      Hive.openBox(_moviesListBoxName)
           .then((box) => List<MovieShortDetailsCM>.from(box.getAt(0)));
 
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
-      Hive.openBox<MovieLongDetailsCM>(_movieDetailsBoxName)
-          .then((box) => box.getAt(movieId));
+      Hive.openBox(_movieDetailsBoxName).then((box) => box.getAt(movieId));
 
-  Future<Map<int, String>> getFavorites() =>
-      Hive.openBox<String>(_favoritesBoxName)
-          .then((box) => Map<int, String>.from(box.toMap()))
-          .catchError(print);
+  Future<List<int>> getFavorites() =>
+      Hive.openBox(_favoritesBoxName).then((box) => List<int>.from(box.values));
 
   Future<void> upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
-      Hive.openBox<List>(_moviesListBoxName)
-          .then((box) => box.put(0, moviesList));
+      Hive.openBox(_moviesListBoxName).then((box) => box.add(moviesList));
 
   Future<void> upsertMovieDetails(MovieLongDetailsCM movieDetails) =>
-      Hive.openBox<MovieLongDetailsCM>(_movieDetailsBoxName)
+      Hive.openBox(_movieDetailsBoxName)
           .then((box) => box.put(movieDetails.id, movieDetails));
 
-  Future<void> upsertFavoriteMovieId(
-          int favoriteMovieId, String favoriteMovieName) =>
-      Hive.openBox<String>(_favoritesBoxName)
-          .then((box) => box.put(favoriteMovieId, favoriteMovieName));
+  Future<void> upsertFavoriteMovieId(int favoriteMovieId) =>
+      Hive.openBox(_favoritesBoxName).then((box) => box.add(favoriteMovieId));
 
   Future<void> removeMoviesList() =>
-      Hive.openBox<List>(_moviesListBoxName).then((box) => box.deleteAt(0));
+      Hive.openBox(_moviesListBoxName).then((box) => box.deleteAt(0));
 
   Future<void> removeMovieDetails(MovieLongDetailsCM movieDetails) =>
-      Hive.openBox<MovieLongDetailsCM>(_movieDetailsBoxName)
+      Hive.openBox(_movieDetailsBoxName)
           .then((box) => box.deleteAt(movieDetails.id));
 
   Future<void> removeFavoriteMovieId(int favoriteMovieId) =>
-      Hive.openBox<String>(_favoritesBoxName)
-          .then((box) => box.delete(favoriteMovieId));
+      Hive.openBox(_favoritesBoxName)
+          .then((box) => box.toMap().forEach((key, value) {
+                if (value == favoriteMovieId) {
+                  box.delete(key);
+                }
+              }));
 }

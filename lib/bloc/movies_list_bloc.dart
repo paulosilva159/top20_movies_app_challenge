@@ -49,7 +49,7 @@ class MoviesListBloc {
     try {
       yield Success(
         moviesList: await repository.getMoviesList(),
-        favoritesList: await repository.getFavoritesId(),
+        favoritesList: await repository.getFavorites(),
       );
     } catch (error) {
       yield Error(
@@ -63,12 +63,12 @@ class MoviesListBloc {
 
     if (stateData is Success) {
       if (stateData.favoritesList.contains(movieId)) {
-        repository.removeFavoriteMovieId(movieId);
+        await repository.removeFavoriteMovieId(movieId);
       } else {
         stateData.moviesList.forEach(
           (movie) {
             if (movie.id == movieId) {
-              repository.upsertFavoriteMovieId(movie.id, movie.title);
+              repository.upsertFavoriteMovieId(movie.id);
             }
           },
         );
@@ -76,7 +76,7 @@ class MoviesListBloc {
 
       yield Success(
         moviesList: await repository.getMoviesList(),
-        favoritesList: await repository.getFavoritesId(),
+        favoritesList: await repository.getFavorites(),
       );
     }
   }

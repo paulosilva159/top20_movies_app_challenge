@@ -14,14 +14,14 @@ class MoviesListStructure extends StatelessWidget {
     @required this.moviesList,
     @required this.movieStructureType,
     @required this.favoritesList,
-    @required this.onFavoriteTapCallback,
+    @required this.onFavoriteTap,
   })  : assert(moviesList != null),
         assert(movieStructureType != null),
         assert(favoritesList != null),
-        assert(onFavoriteTapCallback != null);
+        assert(onFavoriteTap != null);
 
   final List<int> favoritesList;
-  final IntCallback onFavoriteTapCallback;
+  final IntCallback onFavoriteTap;
   final List<MovieShortDetailsCM> moviesList;
   final MovieStructureType movieStructureType;
 
@@ -44,8 +44,7 @@ class MoviesListStructure extends StatelessWidget {
                   alignment: Alignment.topRight,
                   child: FavoriteIndicator(
                     isFavorite: favoritesList.contains(moviesList[index].id),
-                    onFavoriteTap: () =>
-                        onFavoriteTapCallback(moviesList[index].id),
+                    onFavoriteTap: () => onFavoriteTap(moviesList[index].id),
                   )),
             ],
           ),
