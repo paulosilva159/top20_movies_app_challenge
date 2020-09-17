@@ -5,8 +5,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';
 
-import 'package:tokenlab_challenge/data/model/model.dart';
-
 class FavoritesListBloc {
   FavoritesListBloc() {
     _subscriptions
