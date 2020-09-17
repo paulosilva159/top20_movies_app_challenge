@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
@@ -11,9 +10,12 @@ class MovieDetailsTile extends StatefulWidget {
   const MovieDetailsTile({
     @required this.movieDetails,
     @required this.isFavorite,
+    @required this.onFavoriteTap,
   })  : assert(movieDetails != null),
+        assert(onFavoriteTap != null),
         assert(isFavorite != null);
 
+  final VoidCallback onFavoriteTap;
   final MovieLongDetailsCM movieDetails;
   final bool isFavorite;
 
@@ -22,25 +24,12 @@ class MovieDetailsTile extends StatefulWidget {
 }
 
 class _MovieDetailsTileState extends State<MovieDetailsTile> {
-  FavoriteItemBloc _bloc;
-
-  @override
-  void initState() {
-    _bloc = FavoriteItemBloc(movieId: widget.movieDetails.id);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) => ListView(
         children: [
-          StreamBuilder<bool>(
-            stream: _bloc.onNewState,
-            builder: (context, snapshot) => FavoriteIndicator(
-                onFavoriteTap: () =>
-                    _bloc.onFavoriteTap.add(widget.movieDetails.title),
-                isFavorite: snapshot.data ?? widget.isFavorite),
-          ),
+          FavoriteIndicator(
+              onFavoriteTap: widget.onFavoriteTap,
+              isFavorite: widget.isFavorite),
           Padding(
             padding: const EdgeInsets.all(15),
             child:
@@ -85,7 +74,6 @@ class _MovieDetailsTileState extends State<MovieDetailsTile> {
 
   @override
   void dispose() {
-    _bloc.dispose();
     super.dispose();
   }
 }

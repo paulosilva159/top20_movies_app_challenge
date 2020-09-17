@@ -41,22 +41,9 @@ class FavoritesListBloc {
   Stream<FavoritesListScreenState> _fetchMoviesList() async* {
     yield Loading();
 
-    List<MovieShortDetailsCM> favoritesList;
-
-    await Future.wait([_repository.getFavorites(), _repository.getMoviesList()])
-        .then(
-      (futureList) {
-        final favoritesId = List<int>.from(futureList[0]);
-
-        favoritesList = List<MovieShortDetailsCM>.from(futureList[1])
-            .where((movie) => favoritesId.contains(movie.id))
-            .toList();
-      },
-    );
-
     try {
       yield Success(
-        favorites: favoritesList,
+        favorites: await _repository.getFavorites(),
       );
     } catch (error) {
       yield Error(

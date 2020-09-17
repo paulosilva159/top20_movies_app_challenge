@@ -14,8 +14,9 @@ class MoviesCacheDataSource {
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
       Hive.openBox(movieDetailsBoxName).then((box) => box.getAt(movieId));
 
-  Future<List<int>> getFavorites() =>
-      Hive.openBox(favoritesBoxName).then((box) => List<int>.from(box.values));
+  Future<List<int>> getFavorites() => Hive.openBox(favoritesBoxName)
+      .then((box) => List<int>.from(box.values))
+      .catchError((error) => []);
 
   Future<void> upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
       Hive.openBox(moviesListBoxName).then((box) => box.add(moviesList));
