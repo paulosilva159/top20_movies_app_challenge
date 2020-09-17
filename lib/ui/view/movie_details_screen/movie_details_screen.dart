@@ -48,6 +48,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               AsyncSnapshotResponseView<Loading, Error, Success>(
             snapshot: snapshot,
             successWidgetBuilder: (context, snapshot) => MovieDetailsTile(
+              onFavoriteTap: () => _bloc.onFavoriteTap.add(null),
               isFavorite: snapshot.isFavorite,
               movieDetails: snapshot.movieDetails,
             ),

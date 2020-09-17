@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
+import 'package:tokenlab_challenge/data/model/cache/movie_short_details_cm.dart';
 
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
@@ -35,8 +36,8 @@ class MoviesListBloc {
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
 
-  final _onFavoriteTapController = StreamController<int>();
-  Sink<int> get onFavoriteTap => _onFavoriteTapController.sink;
+  final _onFavoriteTapController = StreamController<MovieShortDetailsCM>();
+  Sink<MovieShortDetailsCM> get onFavoriteTap => _onFavoriteTapController.sink;
 
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
@@ -56,14 +57,15 @@ class MoviesListBloc {
     }
   }
 
-  Stream<MoviesListBodyState> _editFavorites(int movieId) async* {
+  Stream<MoviesListBodyState> _editFavorites(
+      MovieShortDetailsCM movieDetails) async* {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
-      if (stateData.favoritesList.contains(movieId)) {
-        await _repository.removeFavoriteMovieId(movieId);
+      if (stateData.favoritesList.contains(movieDetails)) {
+        await _repository.removeFavoriteMovieId(movieDetails.id);
       } else {
-        await _repository.upsertFavoriteMovieId(movieId);
+        await _repository.upsertFavoriteMovieId(movieDetails.id);
       }
 
       yield Success(

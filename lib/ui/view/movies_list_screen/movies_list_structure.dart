@@ -7,7 +7,7 @@ import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.d
 import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 import 'package:tokenlab_challenge/ui/components/page_navigation.dart';
 
-typedef IntCallback = void Function(int);
+typedef MovieShortDetailsCallback = void Function(MovieShortDetailsCM);
 
 class MoviesListStructure extends StatelessWidget {
   const MoviesListStructure({
@@ -20,8 +20,8 @@ class MoviesListStructure extends StatelessWidget {
         assert(favoritesList != null),
         assert(onFavoriteTap != null);
 
-  final List<int> favoritesList;
-  final IntCallback onFavoriteTap;
+  final List<MovieShortDetailsCM> favoritesList;
+  final MovieShortDetailsCallback onFavoriteTap;
   final List<MovieShortDetailsCM> moviesList;
   final MovieStructureType movieStructureType;
 
@@ -43,8 +43,8 @@ class MoviesListStructure extends StatelessWidget {
               Align(
                   alignment: Alignment.topRight,
                   child: FavoriteIndicator(
-                    isFavorite: favoritesList.contains(moviesList[index].id),
-                    onFavoriteTap: () => onFavoriteTap(moviesList[index].id),
+                    isFavorite: favoritesList.contains(moviesList[index]),
+                    onFavoriteTap: () => onFavoriteTap(moviesList[index]),
                   )),
             ],
           ),

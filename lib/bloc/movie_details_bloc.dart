@@ -11,14 +11,18 @@ class MovieDetailsBloc {
   MovieDetailsBloc({
     @required this.movieId,
   }) : assert(movieId != null) {
-    _subscriptions.add(
-      Rx.merge([
-        _onTryAgainController.stream,
-        _onFocusGainController.stream,
-      ]).flatMap((_) => _fetchMovieLongDetails()).listen(
-            _onNewStateSubject.add,
-          ),
-    );
+    _subscriptions
+      ..add(
+        Rx.merge([
+          _onTryAgainController.stream,
+          _onFocusGainController.stream,
+        ])
+            .flatMap((_) => _fetchMovieLongDetails())
+            .listen(_onNewStateSubject.add),
+      )
+      ..add(_onFavoriteTapController.stream
+          .flatMap((_) => _editFavorites())
+          .listen(_onNewStateSubject.add));
   }
 
   final int movieId;
@@ -33,6 +37,9 @@ class MovieDetailsBloc {
   final _onFocusGainController = StreamController<void>();
   Sink<void> get onFocusGain => _onFocusGainController.sink;
 
+  final _onFavoriteTapController = StreamController<void>();
+  Sink<void> get onFavoriteTap => _onFavoriteTapController.sink;
+
   final _onNewStateSubject = BehaviorSubject<MovieDetailsBodyState>();
   Stream<MovieDetailsBodyState> get onNewState => _onNewStateSubject.stream;
 
@@ -41,10 +48,14 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-          movieDetails: await _repository.getMovieDetails(movieId),
-          isFavorite: await _repository
-              .getFavorites()
-              .then((favoritesList) => favoritesList.contains(movieId)));
+        movieDetails: await _repository.getMovieDetails(movieId),
+        isFavorite: await _repository.getFavorites().then(
+              (favoritesList) => favoritesList.contains(
+                favoritesList.firstWhere((movie) => movie.id == movieId,
+                    orElse: () => null),
+              ),
+            ),
+      );
     } catch (error) {
       yield Error(
         error: error,
@@ -52,7 +63,28 @@ class MovieDetailsBloc {
     }
   }
 
+  Stream<MovieDetailsBodyState> _editFavorites() async* {
+    final stateData = _onNewStateSubject.value;
+
+    if (stateData is Success) {
+      if (stateData.isFavorite) {
+        await _repository.removeFavoriteMovieId(movieId);
+      } else {
+        await _repository.upsertFavoriteMovieId(movieId);
+      }
+
+      yield Success(
+        movieDetails: await _repository.getMovieDetails(movieId),
+        isFavorite: await _repository.getFavorites().then((favoritesList) =>
+            favoritesList.contains(favoritesList.firstWhere(
+                (movie) => movie.id == movieId,
+                orElse: () => null))),
+      );
+    }
+  }
+
   void dispose() {
+    _onFavoriteTapController.close();
     _onFocusGainController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();

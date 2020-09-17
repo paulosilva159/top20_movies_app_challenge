@@ -10,7 +10,7 @@ class Success implements MoviesListBodyState {
         assert(favoritesList != null);
 
   final List<MovieShortDetailsCM> moviesList;
-  final List<int> favoritesList;
+  final List<MovieShortDetailsCM> favoritesList;
 }
 
 class Loading implements MoviesListBodyState {}
