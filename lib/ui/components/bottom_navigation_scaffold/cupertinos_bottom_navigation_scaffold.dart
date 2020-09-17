@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:fluro/fluro.dart';
 
-import '../bottom_navigator_tab.dart';
+import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
 
 class CupertinoBottomNavigationScaffold extends StatelessWidget {
   const CupertinoBottomNavigationScaffold({

@@ -1,21 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:enum_to_string/enum_to_string.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
+import 'package:tokenlab_challenge/routes/routes.dart';
 
-import '../../generated/l10n.dart';
+import 'package:tokenlab_challenge/ui/components/app_flow.dart';
+import 'package:tokenlab_challenge/ui/components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
+import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
 
-import '../components/app_flow.dart';
-import '../components/bottom_navigation_scaffold/adaptive_bottom_navigation_scaffold.dart';
-import '../components/bottom_navigator_tab.dart';
-import '../components/movies_structure_type.dart';
-
-class MoviesHomeScreen extends StatefulWidget {
+class MoviesInitialScreen extends StatefulWidget {
   @override
-  _MoviesHomeScreenState createState() => _MoviesHomeScreenState();
+  _MoviesInitialScreenState createState() => _MoviesInitialScreenState();
 }
 
-class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
+class _MoviesInitialScreenState extends State<MoviesInitialScreen> {
   Locale _userLocale;
   List<AppFlow> _appFlows;
 
@@ -58,7 +57,8 @@ class _MoviesHomeScreenState extends State<MoviesHomeScreen> {
                   icon: Icon(flow.iconData),
                 ),
                 navigatorKey: flow.navigatorKey,
-                initialRouteName: EnumToString.parse(flow.movieStructureType),
+                initialRouteName:
+                    Routes.moviesListByStructure(flow.movieStructureType),
               ),
             )
             .toList(),

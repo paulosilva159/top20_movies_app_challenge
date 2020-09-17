@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/ui/components/asyncsnapshot_response_view.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/error_indicator.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/loading_indicator.dart';
-import 'package:tokenlab_challenge/ui/view/movies_list_screen/movie_list_structure.dart';
+
+import 'package:focus_detector/focus_detector.dart';
+
+import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
+import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
+import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
-import '../../../bloc/movies_list_bloc.dart';
+import 'package:tokenlab_challenge/bloc/movies_list_bloc.dart';
 
-import '../../../routes/routes.dart';
+import 'package:tokenlab_challenge/routes/routes.dart';
 
-import '../../../ui/components/movies_structure_type.dart';
+import 'movies_list_structure.dart';
 
 class MoviesListScreen extends StatefulWidget {
   const MoviesListScreen({
@@ -26,11 +28,13 @@ class MoviesListScreen extends StatefulWidget {
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
   final _bloc = MoviesListBloc();
+  final _focusDetectorKey = UniqueKey();
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<Object>(
-        stream: _bloc.onNewState,
-        builder: (context, snapshot) => Scaffold(
+  Widget build(BuildContext context) => FocusDetector(
+        key: _focusDetectorKey,
+        onFocusGained: () => _bloc.onFocusGain.add(null),
+        child: Scaffold(
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -40,7 +44,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(Routes.favorites);
                     },
-                    icon: const Icon(Icons.vertical_align_top),
+                    icon: const Icon(Icons.favorite),
                   )
                 ],
                 expandedHeight: 250,
@@ -53,24 +57,31 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   ),
                 ),
               ),
-              AsyncSnapshotResponseView<Loading, Error, Success>(
-                snapshot: snapshot,
-                successWidgetBuilder: (context, snapshot) =>
-                    MoviesListStructure(
-                  movieStructureType: widget.movieStructureType,
-                  moviesList: snapshot.movieList,
-                ),
-                errorWidgetBuilder: (context, snapshot) => SliverFillRemaining(
-                  child: ErrorIndicator(
-                    error: snapshot.error,
-                    onTryAgainTap: () => _bloc.onTryAgain.add(null),
+              StreamBuilder(
+                stream: _bloc.onNewState,
+                builder: (context, snapshot) =>
+                    AsyncSnapshotResponseView<Loading, Error, Success>(
+                  snapshot: snapshot,
+                  successWidgetBuilder: (context, snapshot) =>
+                      MoviesListStructure(
+                    onFavoriteTap: _bloc.onFavoriteTap.add,
+                    movieStructureType: widget.movieStructureType,
+                    moviesList: snapshot.moviesList,
+                    favoritesList: snapshot.favoritesList,
+                  ),
+                  errorWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: ErrorIndicator(
+                      error: snapshot.error,
+                      onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                    ),
+                  ),
+                  loadingWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: LoadingIndicator(),
                   ),
                 ),
-                loadingWidgetBuilder: (context, snapshot) =>
-                    SliverFillRemaining(
-                  child: LoadingIndicator(),
-                ),
-              ),
+              )
             ],
           ),
         ),

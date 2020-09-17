@@ -1,13 +1,16 @@
 import 'package:meta/meta.dart';
 
-import '../../../data/model/model.dart';
+import 'package:tokenlab_challenge/data/model/model.dart';
 
 abstract class MoviesListBodyState {}
 
 class Success implements MoviesListBodyState {
-  Success({@required this.movieList}) : assert(movieList != null);
+  Success({@required this.moviesList, @required this.favoritesList})
+      : assert(moviesList != null),
+        assert(favoritesList != null);
 
-  final List<MovieShortDetails> movieList;
+  final List<MovieShortDetailsCM> moviesList;
+  final List<MovieShortDetailsCM> favoritesList;
 }
 
 class Loading implements MoviesListBodyState {}

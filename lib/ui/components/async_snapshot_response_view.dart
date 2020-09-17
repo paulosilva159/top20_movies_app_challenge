@@ -7,7 +7,6 @@ class AsyncSnapshotResponseView<Loading, Error, Success>
     @required this.errorWidgetBuilder,
     @required this.successWidgetBuilder,
     @required this.snapshot,
-    this.onTryAgainTap,
     Key key,
   })  : assert(loadingWidgetBuilder != null),
         assert(errorWidgetBuilder != null),
@@ -19,7 +18,6 @@ class AsyncSnapshotResponseView<Loading, Error, Success>
         super(key: key);
 
   final AsyncSnapshot snapshot;
-  final GestureTapCallback onTryAgainTap;
   final Widget Function(BuildContext context, Success success)
       successWidgetBuilder;
   final Widget Function(BuildContext context, Error error) errorWidgetBuilder;
@@ -31,11 +29,20 @@ class AsyncSnapshotResponseView<Loading, Error, Success>
     final snapshotData = snapshot.data;
 
     if (snapshotData == null || snapshotData is Loading) {
-      return loadingWidgetBuilder(context, snapshotData);
+      return loadingWidgetBuilder(
+        context,
+        snapshotData,
+      );
     } else if (snapshotData is Error) {
-      return errorWidgetBuilder(context, snapshotData);
+      return errorWidgetBuilder(
+        context,
+        snapshotData,
+      );
     } else if (snapshotData is Success) {
-      return successWidgetBuilder(context, snapshotData);
+      return successWidgetBuilder(
+        context,
+        snapshotData,
+      );
     }
 
     throw UnknownStateTypeException();

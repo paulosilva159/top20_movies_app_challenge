@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 
-import '../bottom_navigator_tab.dart';
+import 'package:tokenlab_challenge/ui/components/bottom_navigator_tab.dart';
+
 import 'cupertinos_bottom_navigation_scaffold.dart';
 import 'materials_bottom_navigation_scaffold.dart';
 
@@ -31,9 +32,11 @@ class _AdaptiveBottomNavigationScaffoldState
     }
 
     if (Platform.isAndroid) {
-      setState(() {
-        _currentlySelectedIndex = newIndex;
-      });
+      setState(
+        () {
+          _currentlySelectedIndex = newIndex;
+        },
+      );
     } else {
       _currentlySelectedIndex = newIndex;
     }

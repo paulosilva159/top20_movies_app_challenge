@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/model/model.dart';
-import '../../../generated/l10n.dart';
+import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 
-class MovieDetailsTile extends StatelessWidget {
-  const MovieDetailsTile({@required this.movieDetails})
-      : assert(movieDetails != null);
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
-  final MovieLongDetails movieDetails;
+import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
 
+class MovieDetailsTile extends StatefulWidget {
+  const MovieDetailsTile({
+    @required this.movieDetails,
+    @required this.isFavorite,
+    @required this.onFavoriteTap,
+  })  : assert(movieDetails != null),
+        assert(onFavoriteTap != null),
+        assert(isFavorite != null);
+
+  final VoidCallback onFavoriteTap;
+  final MovieLongDetailsCM movieDetails;
+  final bool isFavorite;
+
+  @override
+  _MovieDetailsTileState createState() => _MovieDetailsTileState();
+}
+
+class _MovieDetailsTileState extends State<MovieDetailsTile> {
   @override
   Widget build(BuildContext context) => ListView(
         children: [
+          FavoriteIndicator(
+              onFavoriteTap: widget.onFavoriteTap,
+              isFavorite: widget.isFavorite),
           Padding(
             padding: const EdgeInsets.all(15),
-            child: Text('${movieDetails.title} #${movieDetails.id}'),
+            child:
+                Text('${widget.movieDetails.title} #${widget.movieDetails.id}'),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
             child: Text(
-              movieDetails.tagline,
+              widget.movieDetails.tagline,
               textAlign: TextAlign.center,
             ),
           ),
@@ -28,15 +47,17 @@ class MovieDetailsTile extends StatelessWidget {
             children: [
               RichText(
                 text: TextSpan(
-                  text:
-                      S.of(context).detailsTileScore(movieDetails.voteAverage),
+                  text: S
+                      .of(context)
+                      .detailsTileScore(widget.movieDetails.voteAverage),
                   style: const TextStyle(color: Colors.black),
                 ),
               ),
               RichText(
                 text: TextSpan(
-                  text:
-                      S.of(context).detailsTileVotesQtt(movieDetails.voteCount),
+                  text: S
+                      .of(context)
+                      .detailsTileVotesQtt(widget.movieDetails.voteCount),
                   style: const TextStyle(color: Colors.black),
                 ),
               ),
@@ -45,9 +66,14 @@ class MovieDetailsTile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: Text(
-              movieDetails.overview,
+              widget.movieDetails.overview,
             ),
           ),
         ],
       );
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

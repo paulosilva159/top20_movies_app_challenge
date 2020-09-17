@@ -53,6 +53,16 @@ class S {
     );
   }
 
+  /// `Favorites`
+  String get favoritesListScreenTitle {
+    return Intl.message(
+      'Favorites',
+      name: 'favoritesListScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Details`
   String get detailsScreenTopTitle {
     return Intl.message(
@@ -78,6 +88,16 @@ class S {
     return Intl.message(
       'Verify your connection!',
       name: 'connectionErrorMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error while trying to obtain data`
+  String get dioErrorMessage {
+    return Intl.message(
+      'Error while trying to obtain data',
+      name: 'dioErrorMessage',
       desc: '',
       args: [],
     );

@@ -3,42 +3,50 @@ import 'package:flutter/material.dart';
 
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tokenlab_challenge/routes/routes.dart';
-import 'package:tokenlab_challenge/ui/components/movies_structure_type.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'data/model/model.dart';
 
 import 'generated/l10n.dart';
 
+import 'routes/routes.dart';
+
+import 'ui/components/movies_structure_type.dart';
+
+import 'ui/view/favorites_screen/favorites_list_screen.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
-import 'ui/view/movies_home_screen.dart';
+import 'ui/view/movies_initial_screen.dart';
 import 'ui/view/movies_list_screen/movies_list_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Hive
+    ..init((await getApplicationDocumentsDirectory()).path)
+    ..registerAdapter<MovieLongDetailsCM>(MovieLongDetailsCMAdapter())
+    ..registerAdapter<MovieShortDetailsCM>(MovieShortDetailsCMAdapter());
+
   Router.appRouter
     ..define(
-      Routes.initial,
+      Routes.home,
       handler: Handler(
-        handlerFunc: (context, params) => MoviesHomeScreen(),
+        handlerFunc: (context, params) => MoviesInitialScreen(),
       ),
     )
     ..define(
       Routes.favorites,
-      handler: Handler(
-        handlerFunc: (context, params) => Container(
-          child: const Center(
-            child: Text('Favs'),
-          ),
-        ),
-      ),
+      handler: Handler(handlerFunc: (context, params) => FavoritesListScreen()),
     )
     ..define(
-      ':${Routes.movieStructureTypeParam}',
+      Routes.moviesList,
       handler: Handler(
         handlerFunc: (context, params) {
-          final movieStructureType = params[Routes.movieStructureTypeParam][0];
+          final movieStructureType = params[Routes.moviesListQueryParam][0];
 
           return MoviesListScreen(
               movieStructureType: movieStructureType ==
-                      EnumToString.parse(MovieStructureType.list)
+                      EnumToString.convertToString(MovieStructureType.list)
                   ? MovieStructureType.list
                   : MovieStructureType.grid);
         },

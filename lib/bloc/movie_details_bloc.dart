@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import '../data/dio/dio_client.dart';
+import 'package:tokenlab_challenge/data/movies_repository.dart';
 
-import '../ui/view/movie_details_screen/movie_details_screen_state.dart';
+import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_screen_state.dart';
 
 class MovieDetailsBloc {
   MovieDetailsBloc({
@@ -13,25 +13,40 @@ class MovieDetailsBloc {
   }) : assert(movieId != null) {
     _subscriptions
       ..add(
-        _fetchMovieLongDetails().listen(
-          (_onNewStateSubject.add),
-        ),
+        Rx.merge(
+          [
+            _onTryAgainController.stream,
+            _onFocusGainController.stream,
+          ],
+        )
+            .flatMap(
+              (_) => _fetchMovieLongDetails(),
+            )
+            .listen(_onNewStateSubject.add),
       )
       ..add(
-        _onTryAgainController.stream
-            .flatMap((_) => _fetchMovieLongDetails())
-            .listen(
-              (_onNewStateSubject.add),
-            ),
+        _onFavoriteTapController.stream
+            .flatMap(
+              (_) => _editFavorites(),
+            )
+            .listen(_onNewStateSubject.add),
       );
   }
 
   final int movieId;
 
+  final _repository = MoviesRepository();
+
   final _subscriptions = CompositeSubscription();
 
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
+
+  final _onFocusGainController = StreamController<void>();
+  Sink<void> get onFocusGain => _onFocusGainController.sink;
+
+  final _onFavoriteTapController = StreamController<void>();
+  Sink<void> get onFavoriteTap => _onFavoriteTapController.sink;
 
   final _onNewStateSubject = BehaviorSubject<MovieDetailsBodyState>();
   Stream<MovieDetailsBodyState> get onNewState => _onNewStateSubject.stream;
@@ -41,16 +56,44 @@ class MovieDetailsBloc {
 
     try {
       yield Success(
-        movieDetails: await DioClient().getMovieDetails(movieId),
+        movieDetails: await _repository.getMovieDetails(movieId),
+        isFavorite: await _repository.getFavorites().then(
+              (favoritesList) => favoritesList.contains(
+                favoritesList.firstWhere((movie) => movie.id == movieId,
+                    orElse: () => null),
+              ),
+            ),
       );
     } catch (error) {
       yield Error(
-        error: error.error,
+        error: error,
+      );
+    }
+  }
+
+  Stream<MovieDetailsBodyState> _editFavorites() async* {
+    final stateData = _onNewStateSubject.value;
+
+    if (stateData is Success) {
+      if (stateData.isFavorite) {
+        await _repository.removeFavoriteMovieId(movieId);
+      } else {
+        await _repository.upsertFavoriteMovieId(movieId);
+      }
+
+      yield Success(
+        movieDetails: await _repository.getMovieDetails(movieId),
+        isFavorite: await _repository.getFavorites().then((favoritesList) =>
+            favoritesList.contains(favoritesList.firstWhere(
+                (movie) => movie.id == movieId,
+                orElse: () => null))),
       );
     }
   }
 
   void dispose() {
+    _onFavoriteTapController.close();
+    _onFocusGainController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
     _subscriptions.dispose();

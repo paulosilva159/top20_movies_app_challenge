@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_challenge/ui/components/asyncsnapshot_response_view.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/error_indicator.dart';
-import 'package:tokenlab_challenge/ui/components/indicators/loading_indicator.dart';
+import 'package:focus_detector/focus_detector.dart';
+
+import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
+import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_tile.dart';
 
-import '../../../bloc/movie_details_bloc.dart';
+import 'package:tokenlab_challenge/bloc/movie_details_bloc.dart';
 
-import '../../../generated/l10n.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
 import 'movie_details_screen_state.dart';
 
@@ -22,6 +23,7 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  final _focusDetectorKey = UniqueKey();
   MovieDetailsBloc _bloc;
 
   @override
@@ -32,16 +34,22 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-        stream: _bloc.onNewState,
-        builder: (context, snapshot) => Scaffold(
-          appBar: AppBar(
-            title: Text(S.of(context).detailsScreenTopTitle),
-            centerTitle: true,
-          ),
-          body: AsyncSnapshotResponseView<Loading, Error, Success>(
+  Widget build(BuildContext context) => FocusDetector(
+      key: _focusDetectorKey,
+      onFocusGained: () => _bloc.onFocusGain.add(null),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).detailsScreenTopTitle),
+          centerTitle: true,
+        ),
+        body: StreamBuilder<MovieDetailsBodyState>(
+          stream: _bloc.onNewState,
+          builder: (context, snapshot) =>
+              AsyncSnapshotResponseView<Loading, Error, Success>(
             snapshot: snapshot,
             successWidgetBuilder: (context, snapshot) => MovieDetailsTile(
+              onFavoriteTap: () => _bloc.onFavoriteTap.add(null),
+              isFavorite: snapshot.isFavorite,
               movieDetails: snapshot.movieDetails,
             ),
             errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
@@ -51,7 +59,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
           ),
         ),
-      );
+      ));
 
   @override
   void dispose() {

@@ -1,2 +1,2 @@
-export './movie_long_details.dart';
-export './movie_short_details.dart';
+export 'cache/cache_model.dart';
+export 'remote/remote_model.dart';

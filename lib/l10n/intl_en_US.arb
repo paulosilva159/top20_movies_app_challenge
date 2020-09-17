@@ -2,9 +2,11 @@
   "@@locale": "en_US",
   "detailsTileVotesQtt": "{voteQuantity}: Votes",
   "detailsTileScore": "{score}: Score",
+  "favoritesListScreenTitle": "Favorites",
   "detailsScreenTopTitle": "Details",
   "tryAgainMessage": "Try Again",
   "connectionErrorMessage": "Verify your connection!",
+  "dioErrorMessage": "Error while trying to obtain data",
   "genericErrorMessage": "Error!",
   "bottomNavigationItemListTitle": "List",
   "bottomNavigationItemGridTitle": "Grid"
