@@ -32,7 +32,7 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
             centerTitle: true,
           ),
           body: StreamBuilder<FavoritesListScreenState>(
-            stream: bloc.onNewState,
+            stream: widget.bloc.onNewState,
             builder: (context, snapshot) =>
                 AsyncSnapshotResponseView<Loading, Error, Success>(
               snapshot: snapshot,
@@ -55,7 +55,7 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
               ),
               errorWidgetBuilder: (context, stateData) => ErrorIndicator(
                 error: stateData.error,
-                onTryAgainTap: () => bloc.onTryAgain.add(null),
+                onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
               ),
             ),
           ),

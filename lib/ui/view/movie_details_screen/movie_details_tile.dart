@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
-import 'package:tokenlab_challenge/data/movies_repository.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 
@@ -20,20 +18,6 @@ class MovieDetailsTile extends StatefulWidget {
   final VoidCallback onFavoriteTap;
   final MovieLongDetailsCM movieDetails;
   final bool isFavorite;
-
-  static Widget create(bool isFavorite, MovieLongDetailsCM movieDetails) =>
-      ProxyProvider<MoviesRepository, FavoriteItemBloc>(
-        update: (context, moviesRepository, favoriteItemBloc) =>
-            FavoriteItemBloc(
-                repository: moviesRepository, movieId: movieDetails.id),
-        child: Consumer<FavoriteItemBloc>(
-          builder: (context, bloc, child) => MovieDetailsTile(
-            movieDetails: movieDetails,
-            isFavorite: isFavorite,
-            bloc: bloc,
-          ),
-        ),
-      );
 
   @override
   _MovieDetailsTileState createState() => _MovieDetailsTileState();
