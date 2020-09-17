@@ -12,72 +12,39 @@ class MoviesRepository {
   final MoviesRemoteDataSource remoteDataSource;
   final MoviesCacheDataSource cacheDataSource;
 
-  Future<MovieLongDetailsCM> getMovieDetails(int movieId) async {
-    MovieLongDetailsCM movieDetails;
+  Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
+      cacheDataSource.getMovieDetails(movieId).catchError((error) =>
+          remoteDataSource.getMovieDetails(movieId).then(_toLongCacheModel)
+            ..then(_upsertMovieDetails));
 
-    await cacheDataSource
-        .getMovieDetails(movieId)
-        .then((value) => movieDetails = value)
-        .catchError((error) async {
-      if (error is RangeError) {
-        await remoteDataSource.getMovieDetails(movieId).then((details) {
-          upsertMovieDetails(details);
+  Future<List<MovieShortDetailsCM>> getMoviesList() =>
+      cacheDataSource.getMoviesList().catchError((error) => remoteDataSource
+          .getMoviesList()
+          .then((movies) => movies.map(_toShortCacheModel).toList())
+            ..then(_upsertMoviesList));
 
-          movieDetails = _toLongCacheModel(details);
-        });
-      }
-    });
-    return movieDetails;
-  }
+  Future<List<MovieShortDetailsCM>> getFavorites() => Future.wait([
+        cacheDataSource.getFavorites(),
+        cacheDataSource.getMoviesList(),
+      ]).then(
+        (futureList) {
+          final favoritesId = List<int>.from(futureList[0]);
+          final moviesList = List<MovieShortDetailsCM>.from(futureList[1]);
 
-  Future<List<MovieShortDetailsCM>> getMoviesList() async {
-    List<MovieShortDetailsCM> moviesList;
-
-    await cacheDataSource
-        .getMoviesList()
-        .then((value) => moviesList = value)
-        .catchError((error) async {
-      print(error);
-      if (error is RangeError) {
-        await remoteDataSource.getMoviesList().then((value) {
-          upsertMoviesList(value);
-
-          moviesList = value.map(_toShortCacheModel).toList();
-        });
-      }
-    });
-
-    return moviesList;
-  }
-
-  Future<List<int>> getFavorites() async {
-    List<int> favorites;
-
-    await cacheDataSource
-        .getFavorites()
-        .then((favoritesId) => favorites = favoritesId)
-        .catchError(print);
-
-    return favorites;
-  }
-
-  Future<void> upsertMoviesList(List<MovieShortDetailsRM> moviesList) =>
-      cacheDataSource.upsertMoviesList(
-        moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
+          return moviesList
+              .where((movie) => favoritesId.contains(movie.id))
+              .toList();
+        },
       );
 
-  Future<void> upsertMovieDetails(MovieLongDetailsRM movieDetails) =>
-      cacheDataSource.upsertMovieDetails(
-        _toLongCacheModel(movieDetails),
-      );
+  Future<void> _upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
+      cacheDataSource.upsertMoviesList(moviesList);
+
+  Future<void> _upsertMovieDetails(MovieLongDetailsCM movieDetails) =>
+      cacheDataSource.upsertMovieDetails(movieDetails);
 
   Future<void> upsertFavoriteMovieId(int movieId) =>
       cacheDataSource.upsertFavoriteMovieId(movieId);
-
-  Future<void> removeMoviesList() => cacheDataSource.removeMoviesList();
-
-  Future<void> removeMovieDetails(MovieLongDetailsCM movieDetails) =>
-      cacheDataSource.removeMovieDetails(movieDetails);
 
   Future<void> removeFavoriteMovieId(int movieId) =>
       cacheDataSource.removeFavoriteMovieId(movieId);

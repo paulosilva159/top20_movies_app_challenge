@@ -18,30 +18,31 @@ class ImageLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Image(
-      fit: boxFit ?? BoxFit.fitHeight,
-      image: NetworkImage(url),
-      loadingBuilder: (context, child, loadingProgress) =>
-          loadingProgress == null
-              ? child
-              : Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes
-                        : null,
+        fit: boxFit ?? BoxFit.fitHeight,
+        image: NetworkImage(url),
+        loadingBuilder: (context, child, loadingProgress) =>
+            loadingProgress == null
+                ? child
+                : Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                          : null,
+                    ),
                   ),
-                ),
-      errorBuilder: (context, exception, stackTrace) => fallbackUrl == null
-          ? _ImagePlaceholder(
-              title: title,
-              titleStyle: titleStyle,
-            )
-          : ImageLoader(
-              url: fallbackUrl,
-              title: title,
-              boxFit: boxFit,
-              titleStyle: titleStyle,
-            ));
+        errorBuilder: (context, exception, stackTrace) => fallbackUrl == null
+            ? _ImagePlaceholder(
+                title: title,
+                titleStyle: titleStyle,
+              )
+            : ImageLoader(
+                url: fallbackUrl,
+                title: title,
+                boxFit: boxFit,
+                titleStyle: titleStyle,
+              ),
+      );
 }
 
 class _ImagePlaceholder extends StatelessWidget {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tokenlab_challenge/bloc/favorite_item_bloc.dart';
-
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 
@@ -11,16 +9,16 @@ import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/favorite_indicator.dart';
 
 class MovieDetailsTile extends StatefulWidget {
-  const MovieDetailsTile(
-      {@required this.movieDetails,
-      @required this.isFavorite,
-      @required this.bloc})
-      : assert(movieDetails != null),
-        assert(bloc != null),
+  const MovieDetailsTile({
+    @required this.movieDetails,
+    @required this.isFavorite,
+    @required this.onFavoriteTap,
+  })  : assert(movieDetails != null),
+        assert(onFavoriteTap != null),
         assert(isFavorite != null);
 
+  final VoidCallback onFavoriteTap;
   final MovieLongDetailsCM movieDetails;
-  final FavoriteItemBloc bloc;
   final bool isFavorite;
 
   static Widget create(bool isFavorite, MovieLongDetailsCM movieDetails) =>
@@ -45,13 +43,9 @@ class _MovieDetailsTileState extends State<MovieDetailsTile> {
   @override
   Widget build(BuildContext context) => ListView(
         children: [
-          StreamBuilder<bool>(
-            stream: widget.bloc.onNewState,
-            builder: (context, snapshot) => FavoriteIndicator(
-                onFavoriteTap: () =>
-                    widget.bloc.onFavoriteTap.add(widget.movieDetails.title),
-                isFavorite: snapshot.data ?? widget.isFavorite),
-          ),
+          FavoriteIndicator(
+              onFavoriteTap: widget.onFavoriteTap,
+              isFavorite: widget.isFavorite),
           Padding(
             padding: const EdgeInsets.all(15),
             child:
@@ -96,7 +90,6 @@ class _MovieDetailsTileState extends State<MovieDetailsTile> {
 
   @override
   void dispose() {
-    widget.bloc.dispose();
     super.dispose();
   }
 }

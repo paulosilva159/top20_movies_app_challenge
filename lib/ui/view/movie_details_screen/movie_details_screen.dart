@@ -26,7 +26,6 @@ class MovieDetailsScreen extends StatefulWidget {
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   final _focusDetectorKey = UniqueKey();
-  MovieDetailsBloc bloc;
 
   @override
   Widget build(BuildContext context) => FocusDetector(
@@ -42,9 +41,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           builder: (context, snapshot) =>
               AsyncSnapshotResponseView<Loading, Error, Success>(
             snapshot: snapshot,
-            successWidgetBuilder: (context, snapshot) =>
-                MovieDetailsTile.create(
-                    snapshot.isFavorite, snapshot.movieDetails),
+            successWidgetBuilder: (context, snapshot) => MovieDetailsTile(
+              onFavoriteTap: () => widget.bloc.onFavoriteTap.add(null),
+              isFavorite: snapshot.isFavorite,
+              movieDetails: snapshot.movieDetails,
+            ),
             errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
               error: snapshot.error,
               onTryAgainTap: () => widget.bloc.onTryAgain.add(null),

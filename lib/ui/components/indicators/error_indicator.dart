@@ -27,29 +27,34 @@ class ErrorIndicator extends StatelessWidget {
                 Text(
                   S.of(context).connectionErrorMessage,
                   style: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 )
               else
                 Text(
                   S.of(context).dioErrorMessage,
                   style: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 )
             else
               Text(
                 S.of(context).genericErrorMessage,
                 style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12),
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             RaisedButton(
               onPressed: onTryAgainTap,
-              child: Text(S.of(context).tryAgainMessage),
+              child: Text(
+                S.of(context).tryAgainMessage,
+              ),
             ),
           ],
         ),
