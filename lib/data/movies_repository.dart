@@ -6,20 +6,15 @@ class MoviesRepository {
   final MoviesCacheDataSource _cacheDataSource = MoviesCacheDataSource();
 
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
-      _cacheDataSource.getMovieDetails(movieId).catchError(
-          (error) => _remoteDataSource.getMovieDetails(movieId).then((details) {
-                _upsertMovieDetails(details);
+      _cacheDataSource.getMovieDetails(movieId).catchError((error) =>
+          _remoteDataSource.getMovieDetails(movieId).then(_toLongCacheModel)
+            ..then(_upsertMovieDetails));
 
-                return _toLongCacheModel(details);
-              }));
-
-  Future<List<MovieShortDetailsCM>> getMoviesList() => _cacheDataSource
-      .getMoviesList()
-      .catchError((error) => _remoteDataSource.getMoviesList().then((value) {
-            _upsertMoviesList(value);
-
-            return value.map(_toShortCacheModel).toList();
-          }));
+  Future<List<MovieShortDetailsCM>> getMoviesList() =>
+      _cacheDataSource.getMoviesList().catchError((error) => _remoteDataSource
+          .getMoviesList()
+          .then((movies) => movies.map(_toShortCacheModel).toList())
+            ..then(_upsertMoviesList));
 
   Future<List<MovieShortDetailsCM>> getFavorites() => Future.wait([
         _cacheDataSource.getFavorites(),
@@ -35,15 +30,11 @@ class MoviesRepository {
         },
       );
 
-  Future<void> _upsertMoviesList(List<MovieShortDetailsRM> moviesList) =>
-      _cacheDataSource.upsertMoviesList(
-        moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
-      );
+  Future<void> _upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
+      _cacheDataSource.upsertMoviesList(moviesList);
 
-  Future<void> _upsertMovieDetails(MovieLongDetailsRM movieDetails) =>
-      _cacheDataSource.upsertMovieDetails(
-        _toLongCacheModel(movieDetails),
-      );
+  Future<void> _upsertMovieDetails(MovieLongDetailsCM movieDetails) =>
+      _cacheDataSource.upsertMovieDetails(movieDetails);
 
   Future<void> upsertFavoriteMovieId(int movieId) =>
       _cacheDataSource.upsertFavoriteMovieId(movieId);
