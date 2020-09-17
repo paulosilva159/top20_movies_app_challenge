@@ -8,7 +8,7 @@ class MoviesRepository {
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
       _cacheDataSource.getMovieDetails(movieId).catchError(
           (error) => _remoteDataSource.getMovieDetails(movieId).then((details) {
-                upsertMovieDetails(details);
+                _upsertMovieDetails(details);
 
                 return _toLongCacheModel(details);
               }));
@@ -16,7 +16,7 @@ class MoviesRepository {
   Future<List<MovieShortDetailsCM>> getMoviesList() => _cacheDataSource
       .getMoviesList()
       .catchError((error) => _remoteDataSource.getMoviesList().then((value) {
-            upsertMoviesList(value);
+            _upsertMoviesList(value);
 
             return value.map(_toShortCacheModel).toList();
           }));
@@ -35,23 +35,18 @@ class MoviesRepository {
         },
       );
 
-  Future<void> upsertMoviesList(List<MovieShortDetailsRM> moviesList) =>
+  Future<void> _upsertMoviesList(List<MovieShortDetailsRM> moviesList) =>
       _cacheDataSource.upsertMoviesList(
         moviesList.map<MovieShortDetailsCM>(_toShortCacheModel).toList(),
       );
 
-  Future<void> upsertMovieDetails(MovieLongDetailsRM movieDetails) =>
+  Future<void> _upsertMovieDetails(MovieLongDetailsRM movieDetails) =>
       _cacheDataSource.upsertMovieDetails(
         _toLongCacheModel(movieDetails),
       );
 
   Future<void> upsertFavoriteMovieId(int movieId) =>
       _cacheDataSource.upsertFavoriteMovieId(movieId);
-
-  Future<void> removeMoviesList() => _cacheDataSource.removeMoviesList();
-
-  Future<void> removeMovieDetails(MovieLongDetailsCM movieDetails) =>
-      _cacheDataSource.removeMovieDetails(movieDetails);
 
   Future<void> removeFavoriteMovieId(int movieId) =>
       _cacheDataSource.removeFavoriteMovieId(movieId);
