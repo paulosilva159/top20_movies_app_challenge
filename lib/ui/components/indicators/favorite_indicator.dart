@@ -9,8 +9,9 @@ class FavoriteIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IconButton(
-      icon: isFavorite
-          ? const Icon(Icons.favorite, color: Colors.pinkAccent)
-          : const Icon(Icons.favorite_border),
-      onPressed: onFavoriteTap);
+        icon: isFavorite
+            ? const Icon(Icons.favorite, color: Colors.pinkAccent)
+            : const Icon(Icons.favorite_border),
+        onPressed: onFavoriteTap,
+      );
 }

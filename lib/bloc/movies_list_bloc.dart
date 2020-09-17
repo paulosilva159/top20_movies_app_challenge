@@ -11,10 +11,16 @@ class MoviesListBloc {
   MoviesListBloc() {
     _subscriptions
       ..add(
-        Rx.merge([
-          _onFocusGainController.stream,
-          _onTryAgainController.stream,
-        ]).flatMap((_) => _fetchMoviesList()).listen(
+        Rx.merge(
+          [
+            _onFocusGainController.stream,
+            _onTryAgainController.stream,
+          ],
+        )
+            .flatMap(
+              (_) => _fetchMoviesList(),
+            )
+            .listen(
               (_onNewStateSubject.add),
             ),
       )

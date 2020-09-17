@@ -13,16 +13,24 @@ class MovieDetailsBloc {
   }) : assert(movieId != null) {
     _subscriptions
       ..add(
-        Rx.merge([
-          _onTryAgainController.stream,
-          _onFocusGainController.stream,
-        ])
-            .flatMap((_) => _fetchMovieLongDetails())
+        Rx.merge(
+          [
+            _onTryAgainController.stream,
+            _onFocusGainController.stream,
+          ],
+        )
+            .flatMap(
+              (_) => _fetchMovieLongDetails(),
+            )
             .listen(_onNewStateSubject.add),
       )
-      ..add(_onFavoriteTapController.stream
-          .flatMap((_) => _editFavorites())
-          .listen(_onNewStateSubject.add));
+      ..add(
+        _onFavoriteTapController.stream
+            .flatMap(
+              (_) => _editFavorites(),
+            )
+            .listen(_onNewStateSubject.add),
+      );
   }
 
   final int movieId;

@@ -18,7 +18,7 @@ class MoviesRepository {
 
   Future<List<MovieShortDetailsCM>> getFavorites() => Future.wait([
         _cacheDataSource.getFavorites(),
-        _cacheDataSource.getMoviesList()
+        _cacheDataSource.getMoviesList(),
       ]).then(
         (futureList) {
           final favoritesId = List<int>.from(futureList[0]);

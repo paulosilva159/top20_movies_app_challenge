@@ -14,10 +14,16 @@ class FavoritesListBloc {
         ),
       )
       ..add(
-        Rx.merge([
-          _onTryAgainController.stream,
-          _onFocusGainController.stream,
-        ]).flatMap((_) => _fetchMoviesList()).listen(
+        Rx.merge(
+          [
+            _onTryAgainController.stream,
+            _onFocusGainController.stream,
+          ],
+        )
+            .flatMap(
+              (_) => _fetchMoviesList(),
+            )
+            .listen(
               (_onNewStateSubject.add),
             ),
       );

@@ -48,18 +48,19 @@ class _MoviesInitialScreenState extends State<MoviesInitialScreen> {
 
   @override
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
-      key: ValueKey(_userLocale),
-      navigationBarItems: _appFlows
-          .map(
-            (flow) => BottomNavigationTab(
-              bottomNavigationBarItem: BottomNavigationBarItem(
-                title: Text(flow.title),
-                icon: Icon(flow.iconData),
+        key: ValueKey(_userLocale),
+        navigationBarItems: _appFlows
+            .map(
+              (flow) => BottomNavigationTab(
+                bottomNavigationBarItem: BottomNavigationBarItem(
+                  title: Text(flow.title),
+                  icon: Icon(flow.iconData),
+                ),
+                navigatorKey: flow.navigatorKey,
+                initialRouteName:
+                    Routes.moviesListByStructure(flow.movieStructureType),
               ),
-              navigatorKey: flow.navigatorKey,
-              initialRouteName:
-                  Routes.moviesListByStructure(flow.movieStructureType),
-            ),
-          )
-          .toList());
+            )
+            .toList(),
+      );
 }

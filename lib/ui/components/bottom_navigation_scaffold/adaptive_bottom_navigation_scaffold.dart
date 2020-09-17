@@ -32,9 +32,11 @@ class _AdaptiveBottomNavigationScaffoldState
     }
 
     if (Platform.isAndroid) {
-      setState(() {
-        _currentlySelectedIndex = newIndex;
-      });
+      setState(
+        () {
+          _currentlySelectedIndex = newIndex;
+        },
+      );
     } else {
       _currentlySelectedIndex = newIndex;
     }

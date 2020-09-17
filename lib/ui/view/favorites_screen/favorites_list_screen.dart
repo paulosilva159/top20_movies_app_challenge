@@ -24,39 +24,39 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
         key: _focusDetectorKey,
         onFocusGained: () => _bloc.onFocusGain.add(null),
         child: Scaffold(
-            appBar: AppBar(
-              title: Text(S.of(context).favoritesListScreenTitle),
-              centerTitle: true,
-            ),
-            body: StreamBuilder<FavoritesListScreenState>(
-              stream: _bloc.onNewState,
-              builder: (context, snapshot) =>
-                  AsyncSnapshotResponseView<Loading, Error, Success>(
-                snapshot: snapshot,
-                loadingWidgetBuilder: (context, stateData) =>
-                    LoadingIndicator(),
-                successWidgetBuilder: (context, stateData) => ListView.builder(
-                  itemBuilder: (context, index) {
-                    final id = stateData.favorites[index].id;
-                    final title = stateData.favorites[index].title;
+          appBar: AppBar(
+            title: Text(S.of(context).favoritesListScreenTitle),
+            centerTitle: true,
+          ),
+          body: StreamBuilder<FavoritesListScreenState>(
+            stream: _bloc.onNewState,
+            builder: (context, snapshot) =>
+                AsyncSnapshotResponseView<Loading, Error, Success>(
+              snapshot: snapshot,
+              loadingWidgetBuilder: (context, stateData) => LoadingIndicator(),
+              successWidgetBuilder: (context, stateData) => ListView.builder(
+                itemBuilder: (context, index) {
+                  final id = stateData.favorites[index].id;
+                  final title = stateData.favorites[index].title;
 
-                    return ListTile(
-                      leading: Text('#$id'),
-                      title: Text(
-                        '$title',
-                        textAlign: TextAlign.center,
-                      ),
-                      onTap: () => pushPage(context, true, arguments: id),
-                    );
-                  },
-                  itemCount: stateData.favorites.length,
-                ),
-                errorWidgetBuilder: (context, stateData) => ErrorIndicator(
-                  error: stateData.error,
-                  onTryAgainTap: () => _bloc.onTryAgain.add(null),
-                ),
+                  return ListTile(
+                    leading: Text('#$id'),
+                    title: Text(
+                      '$title',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () => pushPage(context, true, arguments: id),
+                  );
+                },
+                itemCount: stateData.favorites.length,
               ),
-            )),
+              errorWidgetBuilder: (context, stateData) => ErrorIndicator(
+                error: stateData.error,
+                onTryAgainTap: () => _bloc.onTryAgain.add(null),
+              ),
+            ),
+          ),
+        ),
       );
 
   @override
