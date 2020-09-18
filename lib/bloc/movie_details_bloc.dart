@@ -56,14 +56,16 @@ class MovieDetailsBloc {
     yield Loading();
 
     try {
-      yield Success(
-        movieDetails: await repository.getMovieDetails(movieId),
-        isFavorite: await repository.getFavorites().then(
-              (favoritesList) => favoritesList.contains(
-                favoritesList.firstWhere((movie) => movie.id == movieId,
-                    orElse: () => null),
-              ),
-            ),
+      yield await Future.wait(
+        [
+          repository.getMovieDetails(movieId),
+          repository.getIsFavoriteFromId(movieId),
+        ],
+      ).then(
+        (data) => Success(
+          movieDetails: data[0],
+          isFavorite: data[1],
+        ),
       );
     } catch (error) {
       yield Error(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tokenlab_challenge/data/model/model.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/data/model/cache/movie_short_details_cm.dart';
@@ -54,9 +55,14 @@ class MoviesListBloc {
     yield Loading();
 
     try {
-      yield Success(
-        moviesList: await repository.getMoviesList(),
-        favoritesList: await repository.getFavorites(),
+      yield await Future.wait([
+        repository.getMoviesList(),
+        repository.getFavorites(),
+      ]).then(
+        (lists) => Success(
+          moviesList: lists[0],
+          favoritesList: lists[1],
+        ),
       );
     } catch (error) {
       yield Error(
@@ -76,9 +82,14 @@ class MoviesListBloc {
         await repository.upsertFavoriteMovieId(movieDetails.id);
       }
 
-      yield Success(
-        moviesList: await repository.getMoviesList(),
-        favoritesList: await repository.getFavorites(),
+      yield await Future.wait([
+        repository.getMoviesList(),
+        repository.getFavorites(),
+      ]).then(
+        (lists) => Success(
+          moviesList: lists[0],
+          favoritesList: lists[1],
+        ),
       );
     }
   }
