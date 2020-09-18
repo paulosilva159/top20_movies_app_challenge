@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,24 +8,19 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/favorites_list_bloc.dart';
-import 'bloc/movie_details_bloc.dart';
-import 'bloc/movies_list_bloc.dart';
-
-import 'data/model/model.dart';
-import 'data/movies_repository.dart';
+import 'data/cache/data_source/movies_cache_data_source.dart';
+import 'data/cache/model/cache_model.dart';
+import 'data/remote/data_source/movies_remote_data_source.dart';
+import 'data/repository/movies_repository.dart';
 
 import 'generated/l10n.dart';
 
-import 'providers/global_providers.dart';
-
-import 'routes/routes.dart';
-
-import 'ui/components/movies_structure_type.dart';
-import 'ui/view/favorites_screen/favorites_list_screen.dart';
-import 'ui/view/movie_details_screen/movie_details_screen.dart';
-import 'ui/view/movies_initial_screen.dart';
-import 'ui/view/movies_list_screen/movies_list_screen.dart';
+import 'presentation/common/movies_structure_type.dart';
+import 'presentation/common/routes.dart';
+import 'presentation/main_content_screen.dart';
+import 'presentation/movies/details/movie_details_screen.dart';
+import 'presentation/movies/favorites/favorites_list_screen.dart';
+import 'presentation/movies/list/movies_list_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,17 +40,7 @@ Future<void> main() async {
     ..define(
       Routes.favorites,
       handler: Handler(
-        handlerFunc: (context, params) =>
-            ProxyProvider<MoviesRepository, FavoritesListBloc>(
-          update: (context, moviesRepository, favoritesListBloc) =>
-              FavoritesListBloc(repository: moviesRepository),
-          child: Consumer<FavoritesListBloc>(
-            builder: (context, bloc, child) => FavoritesListScreen(
-              bloc: bloc,
-            ),
-          ),
-        ),
-      ),
+          handlerFunc: (context, params) => FavoritesListScreen.create()),
     )
     ..define(
       Routes.moviesList,
@@ -62,18 +48,11 @@ Future<void> main() async {
         handlerFunc: (context, params) {
           final movieStructureType = params[Routes.moviesListQueryParam][0];
 
-          return ProxyProvider<MoviesRepository, MoviesListBloc>(
-            update: (context, moviesRepository, moviesListBloc) =>
-                MoviesListBloc(repository: moviesRepository),
-            child: Consumer<MoviesListBloc>(
-              builder: (context, bloc, child) => MoviesListScreen(
-                bloc: bloc,
-                movieStructureType: movieStructureType ==
-                        EnumToString.convertToString(MovieStructureType.list)
-                    ? MovieStructureType.list
-                    : MovieStructureType.grid,
-              ),
-            ),
+          return MoviesListScreen.create(
+            movieStructureType ==
+                    EnumToString.convertToString(MovieStructureType.list)
+                ? MovieStructureType.list
+                : MovieStructureType.grid,
           );
         },
       ),
@@ -84,16 +63,7 @@ Future<void> main() async {
         handlerFunc: (context, params) {
           final id = int.parse(params[Routes.movieDetailsIdParam][0]);
 
-          return ProxyProvider<MoviesRepository, MovieDetailsBloc>(
-            update: (context, moviesRepository, movieDetailsBloc) =>
-                MovieDetailsBloc(repository: moviesRepository, movieId: id),
-            child: Consumer<MovieDetailsBloc>(
-              builder: (context, bloc, child) => MovieDetailsScreen(
-                movieId: id,
-                bloc: bloc,
-              ),
-            ),
-          );
+          return MovieDetailsScreen.create(id);
         },
       ),
     );
@@ -104,7 +74,26 @@ Future<void> main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
-        providers: globalProviders,
+        providers: [
+          Provider(
+            create: (_) => Dio(),
+          ),
+          Provider(
+            create: (_) => MoviesCacheDataSource(),
+          ),
+          ProxyProvider<Dio, MoviesRemoteDataSource>(
+            update: (context, dio, moviesRemoteDataSource) =>
+                MoviesRemoteDataSource(dio: dio),
+          ),
+          ProxyProvider2<MoviesRemoteDataSource, MoviesCacheDataSource,
+              MoviesRepository>(
+            update: (context, moviesRemoteDataSource, moviesCacheDataSource,
+                    moviesRepository) =>
+                MoviesRepository(
+                    remoteDataSource: moviesRemoteDataSource,
+                    cacheDataSource: moviesCacheDataSource),
+          )
+        ],
         child: MaterialApp(
           localizationsDelegates: const [
             S.delegate,

@@ -33,7 +33,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/ui/assets/top-20.png
+    - lib/presentation/common/assets/top-20.png
 
 flutter_intl:
   main_locale: en_US
