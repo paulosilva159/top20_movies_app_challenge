@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
+
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
+
+import 'package:domain/model/model.dart';
 
 import 'movie_details_bloc.dart';
 import 'movie_details_screen_state.dart';
@@ -54,7 +56,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             snapshot: snapshot,
             successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
               onFavoriteTap: () => widget.bloc.onFavoriteTap.add(null),
-              isFavorite: snapshot.isFavorite,
               movieDetails: snapshot.movieDetails,
             ),
             errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
@@ -76,21 +77,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 class _MovieDetailsTile extends StatelessWidget {
   const _MovieDetailsTile({
     @required this.movieDetails,
-    @required this.isFavorite,
     @required this.onFavoriteTap,
   })  : assert(movieDetails != null),
-        assert(onFavoriteTap != null),
-        assert(isFavorite != null);
+        assert(onFavoriteTap != null);
 
   final VoidCallback onFavoriteTap;
-  final MovieLongDetailsCM movieDetails;
-  final bool isFavorite;
+  final MovieLongDetails movieDetails;
 
   @override
   Widget build(BuildContext context) => ListView(
         children: [
           FavoriteIndicator(
-              onFavoriteTap: onFavoriteTap, isFavorite: isFavorite),
+              onFavoriteTap: onFavoriteTap,
+              isFavorite: movieDetails.isFavorite),
           Padding(
             padding: const EdgeInsets.all(15),
             child: Text('${movieDetails.title} #${movieDetails.id}'),

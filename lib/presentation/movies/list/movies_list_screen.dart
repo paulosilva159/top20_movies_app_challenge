@@ -4,7 +4,6 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
 
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/image_loader.dart';
@@ -12,6 +11,8 @@ import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dar
 import 'package:tokenlab_challenge/presentation/common/movies_structure_type.dart';
 import 'package:tokenlab_challenge/presentation/common/page_navigation.dart';
 import 'package:tokenlab_challenge/presentation/common/routes.dart';
+
+import 'package:domain/model/model.dart';
 
 import 'movies_list_bloc.dart';
 import 'movies_list_screen_state.dart';
@@ -66,7 +67,8 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   centerTitle: true,
                   background: Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Image.asset('lib/ui/assets/top-20.png'),
+                    child: Image.asset(
+                        'lib/presentation/common/assets/top-20.png'),
                   ),
                 ),
               ),
@@ -80,7 +82,6 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                     onFavoriteTap: widget.bloc.onFavoriteTap.add,
                     movieStructureType: widget.movieStructureType,
                     moviesList: snapshot.moviesList,
-                    favoritesList: snapshot.favoritesList,
                   ),
                   errorWidgetBuilder: (context, snapshot) =>
                       SliverFillRemaining(
@@ -107,22 +108,19 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   }
 }
 
-typedef MovieShortDetailsCallback = void Function(MovieShortDetailsCM);
+typedef MovieShortDetailsCallback = void Function(MovieShortDetails);
 
 class _MoviesListStructure extends StatelessWidget {
   const _MoviesListStructure({
     @required this.moviesList,
     @required this.movieStructureType,
-    @required this.favoritesList,
     @required this.onFavoriteTap,
   })  : assert(moviesList != null),
         assert(movieStructureType != null),
-        assert(favoritesList != null),
         assert(onFavoriteTap != null);
 
-  final List<MovieShortDetailsCM> favoritesList;
   final MovieShortDetailsCallback onFavoriteTap;
-  final List<MovieShortDetailsCM> moviesList;
+  final List<MovieShortDetails> moviesList;
   final MovieStructureType movieStructureType;
 
   SliverChildBuilderDelegate _buildSliverChildDelegate(BuildContext context) =>
@@ -143,7 +141,7 @@ class _MoviesListStructure extends StatelessWidget {
               Align(
                   alignment: Alignment.topRight,
                   child: FavoriteIndicator(
-                    isFavorite: favoritesList.contains(moviesList[index]),
+                    isFavorite: moviesList[index].isFavorite,
                     onFavoriteTap: () => onFavoriteTap(moviesList[index]),
                   )),
             ],

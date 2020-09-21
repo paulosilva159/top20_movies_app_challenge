@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
+import 'package:tokenlab_challenge/data/cache/model/movies_cache_model.dart';
 
 class MoviesCacheDataSource {
   final String _moviesListBoxName = 'moviesListBox';

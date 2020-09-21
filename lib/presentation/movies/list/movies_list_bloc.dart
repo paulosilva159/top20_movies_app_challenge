@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
+
+import 'package:domain/model/model.dart';
 
 import 'movies_list_screen_state.dart';
 
@@ -44,8 +45,8 @@ class MoviesListBloc {
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
 
-  final _onFavoriteTapController = StreamController<MovieShortDetailsCM>();
-  Sink<MovieShortDetailsCM> get onFavoriteTap => _onFavoriteTapController.sink;
+  final _onFavoriteTapController = StreamController<MovieShortDetails>();
+  Sink<MovieShortDetails> get onFavoriteTap => _onFavoriteTapController.sink;
 
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
@@ -54,15 +55,11 @@ class MoviesListBloc {
     yield Loading();
 
     try {
-      yield await Future.wait([
-        repository.getMoviesList(),
-        repository.getFavorites(),
-      ]).then(
-        (lists) => Success(
-          moviesList: lists[0],
-          favoritesList: lists[1],
-        ),
-      );
+      yield await repository.getMoviesList().then(
+            (moviesList) => Success(
+              moviesList: moviesList,
+            ),
+          );
     } catch (error) {
       yield Error(
         error: error,
@@ -71,25 +68,23 @@ class MoviesListBloc {
   }
 
   Stream<MoviesListBodyState> _editFavorites(
-      MovieShortDetailsCM movieDetails) async* {
+      MovieShortDetails movieDetails) async* {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
-      if (stateData.favoritesList.contains(movieDetails)) {
+      if (stateData.moviesList
+          .where((movie) => movie.isFavorite)
+          .contains(movieDetails)) {
         await repository.removeFavoriteMovieId(movieDetails.id);
       } else {
         await repository.upsertFavoriteMovieId(movieDetails.id);
       }
 
-      yield await Future.wait([
-        repository.getMoviesList(),
-        repository.getFavorites(),
-      ]).then(
-        (lists) => Success(
-          moviesList: lists[0],
-          favoritesList: lists[1],
-        ),
-      );
+      yield await repository.getMoviesList().then(
+            (moviesList) => Success(
+              moviesList: moviesList,
+            ),
+          );
     }
   }
 

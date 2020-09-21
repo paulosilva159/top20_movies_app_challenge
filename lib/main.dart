@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:dio/dio.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,19 +7,17 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'data/cache/data_source/movies_cache_data_source.dart';
-import 'data/cache/model/cache_model.dart';
-import 'data/remote/data_source/movies_remote_data_source.dart';
-import 'data/repository/movies_repository.dart';
+import 'package:tokenlab_challenge/data/cache/model/movies_cache_model.dart';
+import 'package:tokenlab_challenge/data/provider/movie_data_provider.dart';
 
-import 'generated/l10n.dart';
+import 'package:tokenlab_challenge/generated/l10n.dart';
 
-import 'presentation/common/movies_structure_type.dart';
-import 'presentation/common/routes.dart';
-import 'presentation/main_content_screen.dart';
-import 'presentation/movies/details/movie_details_screen.dart';
-import 'presentation/movies/favorites/favorites_list_screen.dart';
-import 'presentation/movies/list/movies_list_screen.dart';
+import 'package:tokenlab_challenge/presentation/common/movies_structure_type.dart';
+import 'package:tokenlab_challenge/presentation/common/routes.dart';
+import 'package:tokenlab_challenge/presentation/main_content_screen.dart';
+import 'package:tokenlab_challenge/presentation/movies/details/movie_details_screen.dart';
+import 'package:tokenlab_challenge/presentation/movies/favorites/favorites_list_screen.dart';
+import 'package:tokenlab_challenge/presentation/movies/list/movies_list_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,26 +71,7 @@ Future<void> main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
-        providers: [
-          Provider(
-            create: (_) => Dio(),
-          ),
-          Provider(
-            create: (_) => MoviesCacheDataSource(),
-          ),
-          ProxyProvider<Dio, MoviesRemoteDataSource>(
-            update: (context, dio, moviesRemoteDataSource) =>
-                MoviesRemoteDataSource(dio: dio),
-          ),
-          ProxyProvider2<MoviesRemoteDataSource, MoviesCacheDataSource,
-              MoviesRepository>(
-            update: (context, moviesRemoteDataSource, moviesCacheDataSource,
-                    moviesRepository) =>
-                MoviesRepository(
-                    remoteDataSource: moviesRemoteDataSource,
-                    cacheDataSource: moviesCacheDataSource),
-          )
-        ],
+        providers: movieDataProvider,
         child: MaterialApp(
           localizationsDelegates: const [
             S.delegate,

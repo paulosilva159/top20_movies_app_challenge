@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
+import 'package:domain/model/model.dart';
 
 abstract class FavoritesListScreenState {}
 
@@ -9,7 +9,7 @@ class Success implements FavoritesListScreenState {
     @required this.favorites,
   }) : assert(favorites != null);
 
-  final List<MovieShortDetailsCM> favorites;
+  final List<MovieShortDetails> favorites;
 }
 
 class Loading implements FavoritesListScreenState {}

@@ -1,8 +1,12 @@
 import 'package:meta/meta.dart';
 
 import 'package:tokenlab_challenge/data/cache/data_source/movies_cache_data_source.dart';
-import 'package:tokenlab_challenge/data/cache/model/cache_model.dart';
+import 'package:tokenlab_challenge/data/cache/model/movies_cache_model.dart';
 import 'package:tokenlab_challenge/data/remote/data_source/movies_remote_data_source.dart';
+import 'package:tokenlab_challenge/data/mapper/remote_to_cache.dart';
+import 'package:tokenlab_challenge/data/mapper/cache_to_domain.dart';
+
+import 'package:domain/model/model.dart';
 
 class MoviesRepository {
   MoviesRepository(
@@ -13,105 +17,184 @@ class MoviesRepository {
   final MoviesRemoteDataSource remoteDataSource;
   final MoviesCacheDataSource cacheDataSource;
 
-  Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
-      cacheDataSource.getMovieDetails(movieId).catchError(
-            (error) => remoteDataSource
+  Future<MovieLongDetails> getMovieDetails(int movieId) =>
+      cacheDataSource.getFavorites().then(
+            (favoritesIdList) => cacheDataSource
                 .getMovieDetails(movieId)
-                .then(_toLongCacheModel)
                 .then(
-                  (cacheModel) =>
-                      _upsertMovieDetails(cacheModel).then((_) => cacheModel),
+                  (movie) => movie.toDomainModel(
+                    favoritesIdList.contains(movieId),
+                  ),
+                )
+                .catchError(
+                  (error) => remoteDataSource
+                      .getMovieDetails(movieId)
+                      .then(
+                        (movie) => _upsertMovieDetails(
+                          movie.toCacheModel(),
+                        ).then(
+                          (_) => movie.toCacheModel(),
+                        ),
+                      )
+                      .then(
+                        (cacheModel) => cacheModel.toDomainModel(
+                          favoritesIdList.contains(movieId),
+                        ),
+                      ),
                 ),
           );
 
-  Future<MovieLongDetailsCM> getMovieDetails2(int movieId) => remoteDataSource
-      .getMovieDetails(movieId)
-      .then(_toLongCacheModel)
-      .then(
-        (cacheModel) => _upsertMovieDetails(cacheModel).then((_) => cacheModel),
-      )
-      .catchError(
-        (error) => cacheDataSource.getMovieDetails(movieId),
-      );
-
-  Future<MovieLongDetailsCM> getMovieDetails3(int movieId) async {
-    MovieLongDetailsCM movieDetails;
-
-    try {
-      movieDetails = await cacheDataSource.getMovieDetails(movieId);
-    } catch (error) {
-      movieDetails =
-          _toLongCacheModel(await remoteDataSource.getMovieDetails(movieId));
-
-      await _upsertMovieDetails(movieDetails);
-    }
-
-    return movieDetails;
-  }
-
-  Future<MovieLongDetailsCM> getMovieDetails4(int movieId) async {
-    MovieLongDetailsCM movieDetails;
-
-    try {
-      movieDetails =
-          _toLongCacheModel(await remoteDataSource.getMovieDetails(movieId));
-
-      await _upsertMovieDetails(movieDetails);
-    } catch (error) {
-      movieDetails = await cacheDataSource.getMovieDetails(movieId);
-    }
-
-    return movieDetails;
-  }
-
-  Future<List<MovieShortDetailsCM>> getMoviesList() =>
-      cacheDataSource.getMoviesList().catchError(
-            (error) => remoteDataSource
-                .getMoviesList()
+  Future<MovieLongDetails> getMovieDetails2(int movieId) =>
+      cacheDataSource.getFavorites().then(
+            (favoritesIdList) => remoteDataSource
+                .getMovieDetails(movieId)
                 .then(
-                  (movies) => movies.map(_toShortCacheModel).toList(),
+                  (movie) => _upsertMovieDetails(
+                    movie.toCacheModel(),
+                  ).then(
+                    (_) => movie.toCacheModel(),
+                  ),
                 )
                 .then(
-                  (cacheListModel) => _upsertMoviesList(cacheListModel)
-                      .then((_) => cacheListModel),
+                  (cacheModel) => cacheModel.toDomainModel(
+                    favoritesIdList.contains(movieId),
+                  ),
+                )
+                .catchError(
+                  (error) => cacheDataSource.getMovieDetails(movieId).then(
+                        (movie) => movie.toDomainModel(
+                          favoritesIdList.contains(movieId),
+                        ),
+                      ),
                 ),
           );
 
-  Future<List<MovieShortDetailsCM>> getMoviesList2() => remoteDataSource
-      .getMoviesList()
+  Future<MovieLongDetails> getMovieDetails3(int movieId) async {
+    MovieLongDetailsCM movieDetails;
+
+    try {
+      movieDetails = await cacheDataSource.getMovieDetails(movieId);
+    } catch (error) {
+      movieDetails =
+          (await remoteDataSource.getMovieDetails(movieId)).toCacheModel();
+
+      await _upsertMovieDetails(movieDetails);
+    }
+
+    return movieDetails.toDomainModel(
+        (await cacheDataSource.getFavorites()).contains(movieId));
+  }
+
+  Future<MovieLongDetails> getMovieDetails4(int movieId) async {
+    MovieLongDetailsCM movieDetails;
+
+    try {
+      movieDetails =
+          (await remoteDataSource.getMovieDetails(movieId)).toCacheModel();
+
+      await _upsertMovieDetails(movieDetails);
+    } catch (error) {
+      movieDetails = await cacheDataSource.getMovieDetails(movieId);
+    }
+
+    return movieDetails.toDomainModel(
+        (await cacheDataSource.getFavorites()).contains(movieId));
+  }
+
+  Future<List<MovieShortDetails>> getMoviesList() => cacheDataSource
+      .getFavorites()
       .then(
-        (movies) => movies.map(_toShortCacheModel).toList(),
-      )
-      .then(
-        (cacheListModel) =>
-            _upsertMoviesList(cacheListModel).then((_) => cacheListModel),
-      )
-      .catchError(
-        (error) => cacheDataSource.getMoviesList(),
+        (favoritesIdList) => cacheDataSource
+            .getMoviesList()
+            .then(
+              (movies) => movies
+                  .map(
+                    (movie) =>
+                        movie.toDomainModel(favoritesIdList.contains(movie.id)),
+                  )
+                  .toList(),
+            )
+            .catchError((error) => remoteDataSource
+                .getMoviesList()
+                .then(
+                  (movies) => _upsertMoviesList(
+                          movies.map((movie) => movie.toCacheModel()).toList())
+                      .then(
+                    (_) => movies.map((movie) => movie.toCacheModel()).toList(),
+                  ),
+                )
+                .then(
+                  (movies) => movies
+                      .map(
+                        (movie) => movie
+                            .toDomainModel(favoritesIdList.contains(movie.id)),
+                      )
+                      .toList(),
+                )),
       );
 
-  Future<List<MovieShortDetailsCM>> getMoviesList3() async {
+  Future<List<MovieShortDetails>> getMoviesList2() => cacheDataSource
+      .getFavorites()
+      .then(
+        (favoritesIdList) => remoteDataSource
+            .getMoviesList()
+            .then(
+              (movies) => _upsertMoviesList(
+                      movies.map((movie) => movie.toCacheModel()).toList())
+                  .then(
+                (_) => movies.map((movie) => movie.toCacheModel()).toList(),
+              ),
+            )
+            .then(
+              (movies) => movies
+                  .map(
+                    (movie) =>
+                        movie.toDomainModel(favoritesIdList.contains(movie.id)),
+                  )
+                  .toList(),
+            )
+            .catchError((error) => cacheDataSource.getMoviesList().then(
+                  (movies) => movies
+                      .map(
+                        (movie) => movie
+                            .toDomainModel(favoritesIdList.contains(movie.id)),
+                      )
+                      .toList(),
+                )),
+      );
+
+  Future<List<MovieShortDetails>> getMoviesList3() async {
     List<MovieShortDetailsCM> moviesList;
+    final favoritesIdList = await cacheDataSource.getFavorites();
 
     try {
       moviesList = await cacheDataSource.getMoviesList();
     } catch (error) {
       moviesList = (await remoteDataSource.getMoviesList())
-          .map(_toShortCacheModel)
+          .map(
+            (movie) => movie.toCacheModel(),
+          )
           .toList();
 
       await _upsertMoviesList(moviesList);
     }
 
-    return moviesList;
+    return moviesList.map(
+      (movie) => movie.toDomainModel(
+        favoritesIdList.contains(movie.id),
+      ),
+    );
   }
 
-  Future<List<MovieShortDetailsCM>> getMoviesList4() async {
+  Future<List<MovieShortDetails>> getMoviesList4() async {
     List<MovieShortDetailsCM> moviesList;
+    final favoritesIdList = await cacheDataSource.getFavorites();
 
     try {
       moviesList = (await remoteDataSource.getMoviesList())
-          .map(_toShortCacheModel)
+          .map(
+            (movie) => movie.toCacheModel(),
+          )
           .toList();
 
       await _upsertMoviesList(moviesList);
@@ -119,10 +202,14 @@ class MoviesRepository {
       moviesList = await cacheDataSource.getMoviesList();
     }
 
-    return moviesList;
+    return moviesList.map(
+      (movie) => movie.toDomainModel(
+        favoritesIdList.contains(movie.id),
+      ),
+    );
   }
 
-  Future<List<MovieShortDetailsCM>> getFavorites() => Future.wait([
+  Future<List<MovieShortDetails>> getFavorites() => Future.wait([
         cacheDataSource.getFavorites(),
         cacheDataSource.getMoviesList(),
       ]).then(
@@ -132,9 +219,12 @@ class MoviesRepository {
 
           return moviesList
               .where((movie) => favoritesId.contains(movie.id))
+              .map((movie) => movie.toDomainModel(
+                    favoritesId.contains(movie.id),
+                  ))
               .toList();
         },
-      ).catchError((error) => <MovieShortDetailsCM>[]);
+      ).catchError((error) => <MovieShortDetails>[]);
 
   Future<bool> getIsFavoriteFromId(int movieId) =>
       cacheDataSource.getFavorites().then(
@@ -153,20 +243,3 @@ class MoviesRepository {
   Future<void> removeFavoriteMovieId(int movieId) =>
       cacheDataSource.removeFavoriteMovieId(movieId);
 }
-
-MovieLongDetailsCM _toLongCacheModel(var movieLongDetails) =>
-    MovieLongDetailsCM(
-      id: movieLongDetails.id,
-      tagline: movieLongDetails.tagline,
-      title: movieLongDetails.title,
-      voteAverage: movieLongDetails.voteAverage,
-      voteCount: movieLongDetails.voteCount,
-      overview: movieLongDetails.overview,
-    );
-
-MovieShortDetailsCM _toShortCacheModel(var movieShortDetails) =>
-    MovieShortDetailsCM(
-      id: movieShortDetails.id,
-      title: movieShortDetails.title,
-      posterUrl: movieShortDetails.posterUrl,
-    );

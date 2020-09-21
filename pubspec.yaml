@@ -19,6 +19,8 @@ dependencies:
     sdk: flutter
   intl: 0.16.1
   dio: ^3.0.10
+  domain:
+    path: ./domain
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.3

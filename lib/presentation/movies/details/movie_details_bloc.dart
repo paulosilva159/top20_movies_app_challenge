@@ -56,17 +56,11 @@ class MovieDetailsBloc {
     yield Loading();
 
     try {
-      yield await Future.wait(
-        [
-          repository.getMovieDetails(movieId),
-          repository.getIsFavoriteFromId(movieId),
-        ],
-      ).then(
-        (data) => Success(
-          movieDetails: data[0],
-          isFavorite: data[1],
-        ),
-      );
+      yield await repository.getMovieDetails(movieId).then(
+            (movie) => Success(
+              movieDetails: movie,
+            ),
+          );
     } catch (error) {
       yield Error(
         error: error,
@@ -78,19 +72,17 @@ class MovieDetailsBloc {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
-      if (stateData.isFavorite) {
+      if (stateData.movieDetails.isFavorite) {
         await repository.removeFavoriteMovieId(movieId);
       } else {
         await repository.upsertFavoriteMovieId(movieId);
       }
 
-      yield Success(
-        movieDetails: await repository.getMovieDetails(movieId),
-        isFavorite: await repository.getFavorites().then((favoritesList) =>
-            favoritesList.contains(favoritesList.firstWhere(
-                (movie) => movie.id == movieId,
-                orElse: () => null))),
-      );
+      yield await repository.getMovieDetails(movieId).then(
+            (movie) => Success(
+              movieDetails: movie,
+            ),
+          );
     }
   }
 
