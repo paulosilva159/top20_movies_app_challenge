@@ -1,9 +1,11 @@
+import 'package:domain/use_case/favorite_movie_uc.dart';
+import 'package:domain/use_case/get_movie_details_uc.dart';
+import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
@@ -13,18 +15,27 @@ import 'package:domain/model/model.dart';
 import 'movie_details_bloc.dart';
 import 'movie_details_screen_state.dart';
 
-class MovieDetailsScreen extends StatefulWidget {
-  const MovieDetailsScreen({@required this.movieId, @required this.bloc})
+class MovieDetailsScreen extends StatelessWidget {
+  MovieDetailsScreen({@required this.movieId, @required this.bloc})
       : assert(movieId != null),
         assert(bloc != null);
 
   final int movieId;
   final MovieDetailsBloc bloc;
 
-  static Widget create(int id) =>
-      ProxyProvider<MoviesRepository, MovieDetailsBloc>(
-        update: (context, moviesRepository, movieDetailsBloc) =>
-            MovieDetailsBloc(repository: moviesRepository, movieId: id),
+  final _focusDetectorKey = UniqueKey();
+
+  static Widget create(int id) => ProxyProvider3<GetMovieDetailsUC,
+          FavoriteMovieUC, UnfavoriteMovieUC, MovieDetailsBloc>(
+        update: (context, getMovieDetails, favoriteMovie, unfavoriteMovie,
+                movieDetailsBloc) =>
+            movieDetailsBloc ??
+            MovieDetailsBloc(
+                getMovieDetails: getMovieDetails,
+                favoriteMovie: favoriteMovie,
+                unfavoriteMovie: unfavoriteMovie,
+                movieId: id),
+        dispose: (context, bloc) => bloc.dispose(),
         child: Consumer<MovieDetailsBloc>(
           builder: (context, bloc, child) => MovieDetailsScreen(
             movieId: id,
@@ -34,44 +45,32 @@ class MovieDetailsScreen extends StatefulWidget {
       );
 
   @override
-  _MovieDetailsScreenState createState() => _MovieDetailsScreenState();
-}
-
-class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  final _focusDetectorKey = UniqueKey();
-
-  @override
   Widget build(BuildContext context) => FocusDetector(
-      key: _focusDetectorKey,
-      onFocusGained: () => widget.bloc.onFocusGain.add(null),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).detailsScreenTopTitle),
-          centerTitle: true,
-        ),
-        body: StreamBuilder<MovieDetailsBodyState>(
-          stream: widget.bloc.onNewState,
-          builder: (context, snapshot) =>
-              AsyncSnapshotResponseView<Loading, Error, Success>(
-            snapshot: snapshot,
-            successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
-              onFavoriteTap: () => widget.bloc.onFavoriteTap.add(null),
-              movieDetails: snapshot.movieDetails,
+        key: _focusDetectorKey,
+        onFocusGained: () => bloc.onFocusGain.add(null),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(S.of(context).detailsScreenTopTitle),
+            centerTitle: true,
+          ),
+          body: StreamBuilder<MovieDetailsBodyState>(
+            stream: bloc.onNewState,
+            builder: (context, snapshot) =>
+                AsyncSnapshotResponseView<Loading, Error, Success>(
+              snapshot: snapshot,
+              successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
+                onFavoriteTap: () => bloc.onFavoriteTap.add(null),
+                movieDetails: snapshot.movieDetails,
+              ),
+              errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
+                type: snapshot.type,
+                onTryAgainTap: () => bloc.onTryAgain.add(null),
+              ),
+              loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
             ),
-            errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
-              type: snapshot.type,
-              onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
-            ),
-            loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
           ),
         ),
-      ));
-
-  @override
-  void dispose() {
-    widget.bloc.dispose();
-    super.dispose();
-  }
+      );
 }
 
 class _MovieDetailsTile extends StatelessWidget {

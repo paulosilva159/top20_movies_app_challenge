@@ -1,9 +1,8 @@
+import 'package:domain/use_case/get_favorites_list_uc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
-
-import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
@@ -13,14 +12,19 @@ import 'package:tokenlab_challenge/presentation/common/page_navigation.dart';
 import 'favorites_list_bloc.dart';
 import 'favorites_list_screen_state.dart';
 
-class FavoritesListScreen extends StatefulWidget {
-  const FavoritesListScreen({@required this.bloc}) : assert(bloc != null);
+class FavoritesListScreen extends StatelessWidget {
+  FavoritesListScreen({@required this.bloc}) : assert(bloc != null);
 
   final FavoritesListBloc bloc;
 
-  static Widget create() => ProxyProvider<MoviesRepository, FavoritesListBloc>(
-        update: (context, moviesRepository, favoritesListBloc) =>
-            FavoritesListBloc(repository: moviesRepository),
+  final _focusDetectorKey = UniqueKey();
+
+  static Widget create() =>
+      ProxyProvider<GetFavoritesListUC, FavoritesListBloc>(
+        update: (context, getFavoritesList, favoritesListBloc) =>
+            favoritesListBloc ??
+            FavoritesListBloc(getFavoritesList: getFavoritesList),
+        dispose: (context, bloc) => bloc.dispose(),
         child: Consumer<FavoritesListBloc>(
           builder: (context, bloc, child) => FavoritesListScreen(
             bloc: bloc,
@@ -29,23 +33,16 @@ class FavoritesListScreen extends StatefulWidget {
       );
 
   @override
-  _FavoritesListScreenState createState() => _FavoritesListScreenState();
-}
-
-class _FavoritesListScreenState extends State<FavoritesListScreen> {
-  final _focusDetectorKey = UniqueKey();
-
-  @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => widget.bloc.onFocusGain.add(null),
+        onFocusGained: () => bloc.onFocusGain.add(null),
         child: Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).favoritesListScreenTitle),
             centerTitle: true,
           ),
           body: StreamBuilder<FavoritesListScreenState>(
-            stream: widget.bloc.onNewState,
+            stream: bloc.onNewState,
             builder: (context, snapshot) =>
                 AsyncSnapshotResponseView<Loading, Error, Success>(
               snapshot: snapshot,
@@ -68,16 +65,10 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
               ),
               errorWidgetBuilder: (context, stateData) => ErrorIndicator(
                 type: stateData.type,
-                onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
+                onTryAgainTap: () => bloc.onTryAgain.add(null),
               ),
             ),
           ),
         ),
       );
-
-  @override
-  void dispose() {
-    widget.bloc.dispose();
-    super.dispose();
-  }
 }

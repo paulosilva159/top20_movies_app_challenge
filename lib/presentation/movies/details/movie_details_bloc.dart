@@ -1,26 +1,28 @@
 import 'dart:async';
 
+import 'package:domain/use_case/favorite_movie_uc.dart';
+import 'package:domain/use_case/get_movie_details_uc.dart';
+import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'movie_details_screen_state.dart';
 
 class MovieDetailsBloc {
   MovieDetailsBloc({
-    @required this.repository,
+    @required this.getMovieDetails,
+    @required this.favoriteMovie,
+    @required this.unfavoriteMovie,
     @required this.movieId,
-  }) : assert(movieId != null) {
+  })  : assert(getMovieDetails != null),
+        assert(favoriteMovie != null),
+        assert(unfavoriteMovie != null),
+        assert(movieId != null) {
     _subscriptions
       ..add(
-        Rx.merge(
-          [
-            _onTryAgainController.stream,
-            _onFocusGainController.stream,
-          ],
-        )
+        Rx.merge([_onTryAgainController.stream, _onFocusGainController.stream])
             .flatMap(
               (_) => _fetchMovieLongDetails(),
             )
@@ -37,7 +39,9 @@ class MovieDetailsBloc {
 
   final int movieId;
 
-  final MoviesRepository repository;
+  final GetMovieDetailsUC getMovieDetails;
+  final FavoriteMovieUC favoriteMovie;
+  final UnfavoriteMovieUC unfavoriteMovie;
 
   final _subscriptions = CompositeSubscription();
 
@@ -57,13 +61,19 @@ class MovieDetailsBloc {
     yield Loading();
 
     try {
-      yield await repository.getMovieDetails(movieId).then(
+      yield await getMovieDetails
+          .getFuture(
+            params: GetMovieDetailsUCParams(movieId),
+          )
+          .then(
             (movie) => Success(
               movieDetails: movie,
             ),
           );
     } catch (error) {
-      yield Error(type: mapToGenericErrorType(error));
+      yield Error(
+        type: mapToGenericErrorType(error),
+      );
     }
   }
 
@@ -72,12 +82,20 @@ class MovieDetailsBloc {
 
     if (stateData is Success) {
       if (stateData.movieDetails.isFavorite) {
-        await repository.unfavoriteMovie(movieId);
+        await unfavoriteMovie.getFuture(
+          params: UnfavoriteMovieUCParams(movieId),
+        );
       } else {
-        await repository.favoriteMovie(movieId);
+        await favoriteMovie.getFuture(
+          params: FavoriteMovieUCParams(movieId),
+        );
       }
 
-      yield await repository.getMovieDetails(movieId).then(
+      yield await getMovieDetails
+          .getFuture(
+            params: GetMovieDetailsUCParams(movieId),
+          )
+          .then(
             (movie) => Success(
               movieDetails: movie,
             ),

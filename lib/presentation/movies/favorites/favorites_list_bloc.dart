@@ -1,38 +1,30 @@
 import 'dart:async';
 
+import 'package:domain/use_case/get_favorites_list_uc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'favorites_list_screen_state.dart';
 
 class FavoritesListBloc {
-  FavoritesListBloc({@required this.repository}) : assert(repository != null) {
+  FavoritesListBloc({@required this.getFavoritesList})
+      : assert(getFavoritesList != null) {
     _subscriptions
       ..add(
-        _fetchMoviesList().listen(
-          (_onNewStateSubject.add),
-        ),
+        _fetchMoviesList().listen(_onNewStateSubject.add),
       )
       ..add(
-        Rx.merge(
-          [
-            _onTryAgainController.stream,
-            _onFocusGainController.stream,
-          ],
-        )
+        Rx.merge([_onTryAgainController.stream, _onFocusGainController.stream])
             .flatMap(
               (_) => _fetchMoviesList(),
             )
-            .listen(
-              (_onNewStateSubject.add),
-            ),
+            .listen(_onNewStateSubject.add),
       );
   }
 
-  final MoviesRepository repository;
+  final GetFavoritesListUC getFavoritesList;
 
   final _subscriptions = CompositeSubscription();
 
@@ -50,7 +42,7 @@ class FavoritesListBloc {
 
     try {
       yield Success(
-        favorites: await repository.getFavoritesList(),
+        favorites: await getFavoritesList.getFuture(),
       );
     } catch (error) {
       yield Error(

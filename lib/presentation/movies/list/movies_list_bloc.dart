@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:domain/use_case/favorite_movie_uc.dart';
+import 'package:domain/use_case/get_movies_list_uc.dart';
+import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-
-import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 
 import 'package:domain/model/model.dart';
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
@@ -11,32 +12,31 @@ import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 import 'movies_list_screen_state.dart';
 
 class MoviesListBloc {
-  MoviesListBloc({@required this.repository}) : assert(repository != null) {
+  MoviesListBloc({
+    @required this.getMoviesList,
+    @required this.favoriteMovie,
+    @required this.unfavoriteMovie,
+  })  : assert(getMoviesList != null),
+        assert(favoriteMovie != null),
+        assert(unfavoriteMovie != null) {
     _subscriptions
       ..add(
-        Rx.merge(
-          [
-            _onFocusGainController.stream,
-            _onTryAgainController.stream,
-          ],
-        )
+        Rx.merge([_onFocusGainController.stream, _onTryAgainController.stream])
             .flatMap(
               (_) => _fetchMoviesList(),
             )
-            .listen(
-              (_onNewStateSubject.add),
-            ),
+            .listen(_onNewStateSubject.add),
       )
       ..add(
         _onFavoriteTapController.stream
-            .flatMap(
-              _editFavorites,
-            )
+            .flatMap(_toogleFavoriteState)
             .listen(_onNewStateSubject.add),
       );
   }
 
-  final MoviesRepository repository;
+  final GetMoviesListUC getMoviesList;
+  final FavoriteMovieUC favoriteMovie;
+  final UnfavoriteMovieUC unfavoriteMovie;
 
   final _subscriptions = CompositeSubscription();
 
@@ -56,7 +56,7 @@ class MoviesListBloc {
     yield Loading();
 
     try {
-      yield await repository.getMoviesList().then(
+      yield await getMoviesList.getFuture().then(
             (moviesList) => Success(
               moviesList: moviesList,
             ),
@@ -68,7 +68,7 @@ class MoviesListBloc {
     }
   }
 
-  Stream<MoviesListBodyState> _editFavorites(
+  Stream<MoviesListBodyState> _toogleFavoriteState(
       MovieShortDetails movieDetails) async* {
     final stateData = _onNewStateSubject.value;
 
@@ -76,12 +76,16 @@ class MoviesListBloc {
       if (stateData.moviesList
           .where((movie) => movie.isFavorite)
           .contains(movieDetails)) {
-        await repository.unfavoriteMovie(movieDetails.id);
+        await unfavoriteMovie.getFuture(
+          params: UnfavoriteMovieUCParams(movieDetails.id),
+        );
       } else {
-        await repository.favoriteMovie(movieDetails.id);
+        await favoriteMovie.getFuture(
+          params: FavoriteMovieUCParams(movieDetails.id),
+        );
       }
 
-      yield await repository.getMoviesList().then(
+      yield await getMoviesList.getFuture().then(
             (moviesList) => Success(
               moviesList: moviesList,
             ),

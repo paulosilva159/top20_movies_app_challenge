@@ -5,8 +5,9 @@ import 'package:domain/logger.dart';
 import 'package:domain/model/model.dart';
 import 'package:domain/use_case/use_case.dart';
 
-class GetMovieUC extends UseCase<MovieLongDetails, GetMovieDetailsUCParams> {
-  GetMovieUC({@required this.repository, @required ErrorLogger logger})
+class GetMovieDetailsUC
+    extends UseCase<MovieLongDetails, GetMovieDetailsUCParams> {
+  GetMovieDetailsUC({@required this.repository, @required ErrorLogger logger})
       : assert(repository != null),
         assert(logger != null),
         super(logger: logger);
