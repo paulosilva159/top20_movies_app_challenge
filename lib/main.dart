@@ -18,6 +18,7 @@ import 'package:tokenlab_challenge/presentation/main_content_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/details/movie_details_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/favorites/favorites_list_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/list/movies_list_screen.dart';
+import 'package:tokenlab_challenge/use_case_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,7 +72,11 @@ Future<void> main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
-        providers: movieDataProvider,
+        providers: [
+          ...moviesDataProvider,
+          logProvider,
+          ...useCaseProviders,
+        ],
         child: MaterialApp(
           localizationsDelegates: const [
             S.delegate,

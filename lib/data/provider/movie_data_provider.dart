@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:domain/data_repository/movie_data_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -6,14 +7,14 @@ import 'package:tokenlab_challenge/data/cache/data_source/movies_cache_data_sour
 import 'package:tokenlab_challenge/data/remote/data_source/movies_remote_data_source.dart';
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 
-List<SingleChildWidget> movieDataProvider = [
+List<SingleChildWidget> moviesDataProvider = [
   ..._movieRemoteProvider,
   _movieCacheProvider,
   _movieRepositoryProvider,
 ];
 
 SingleChildWidget _movieRepositoryProvider = ProxyProvider2<
-    MoviesRemoteDataSource, MoviesCacheDataSource, MoviesRepository>(
+    MoviesRemoteDataSource, MoviesCacheDataSource, MovieDataRepository>(
   update: (context, moviesRemoteDataSource, moviesCacheDataSource,
           moviesRepository) =>
       MoviesRepository(
