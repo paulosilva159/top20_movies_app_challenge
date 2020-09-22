@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/data/cache/model/movies_cache_model.dart';
-import 'package:tokenlab_challenge/data/provider/movie_data_provider.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 
@@ -18,7 +17,7 @@ import 'package:tokenlab_challenge/presentation/main_content_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/details/movie_details_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/favorites/favorites_list_screen.dart';
 import 'package:tokenlab_challenge/presentation/movies/list/movies_list_screen.dart';
-import 'package:tokenlab_challenge/use_case_providers.dart';
+import 'package:tokenlab_challenge/global_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,11 +71,7 @@ Future<void> main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MultiProvider(
-        providers: [
-          ...moviesDataProvider,
-          logProvider,
-          ...useCaseProviders,
-        ],
+        providers: globalProviders,
         child: MaterialApp(
           localizationsDelegates: const [
             S.delegate,

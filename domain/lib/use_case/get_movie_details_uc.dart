@@ -12,7 +12,7 @@ class GetMovieDetailsUC
         assert(logger != null),
         super(logger: logger);
 
-  final MovieDataRepository repository;
+  final MoviesDataRepository repository;
 
   @override
   Future<MovieLongDetails> getRawFuture(

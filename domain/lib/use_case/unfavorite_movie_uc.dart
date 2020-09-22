@@ -10,11 +10,11 @@ class UnfavoriteMovieUC extends UseCase<void, UnfavoriteMovieUCParams> {
         assert(logger != null),
         super(logger: logger);
 
-  final MovieDataRepository repository;
+  final MoviesDataRepository repository;
 
   @override
   Future<void> getRawFuture({UnfavoriteMovieUCParams params}) =>
-      repository.favoriteMovie(params.movieId);
+      repository.unfavoriteMovie(params.movieId);
 }
 
 class UnfavoriteMovieUCParams {

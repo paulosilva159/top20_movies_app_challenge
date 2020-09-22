@@ -11,7 +11,7 @@ class GetMoviesListUC extends UseCase<List<MovieShortDetails>, void> {
         assert(logger != null),
         super(logger: logger);
 
-  final MovieDataRepository repository;
+  final MoviesDataRepository repository;
 
   @override
   Future<List<MovieShortDetails>> getRawFuture({void params}) =>

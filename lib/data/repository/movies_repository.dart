@@ -10,7 +10,7 @@ import 'package:tokenlab_challenge/data/mapper/cache_to_domain.dart';
 
 import 'package:domain/model/model.dart';
 
-class MoviesRepository extends MovieDataRepository {
+class MoviesRepository extends MoviesDataRepository {
   MoviesRepository(
       {@required this.remoteDataSource, @required this.cacheDataSource})
       : assert(remoteDataSource != null),

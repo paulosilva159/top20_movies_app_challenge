@@ -31,7 +31,7 @@ class MovieDetailsBloc {
       ..add(
         _onFavoriteTapController.stream
             .flatMap(
-              (_) => _editFavorites(),
+              (_) => _toogleFavoriteState(),
             )
             .listen(_onNewStateSubject.add),
       );
@@ -77,7 +77,7 @@ class MovieDetailsBloc {
     }
   }
 
-  Stream<MovieDetailsBodyState> _editFavorites() async* {
+  Stream<MovieDetailsBodyState> _toogleFavoriteState() async* {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {

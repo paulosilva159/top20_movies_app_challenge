@@ -10,7 +10,7 @@ class FavoriteMovieUC extends UseCase<void, FavoriteMovieUCParams> {
         assert(logger != null),
         super(logger: logger);
 
-  final MovieDataRepository repository;
+  final MoviesDataRepository repository;
 
   @override
   Future<void> getRawFuture({FavoriteMovieUCParams params}) =>

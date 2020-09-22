@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:domain/model/model.dart';
 
-abstract class MovieDataRepository {
-  const MovieDataRepository();
+abstract class MoviesDataRepository {
+  const MoviesDataRepository();
 
   Future<List<MovieShortDetails>> getMoviesList();
 
