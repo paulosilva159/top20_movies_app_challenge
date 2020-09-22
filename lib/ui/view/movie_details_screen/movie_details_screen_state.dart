@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+
 import 'package:tokenlab_challenge/data/model/cache/cache_model.dart';
 
 abstract class MovieDetailsBodyState {}

@@ -1,19 +1,26 @@
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+import 'bloc/favorites_list_bloc.dart';
+import 'bloc/movie_details_bloc.dart';
+import 'bloc/movies_list_bloc.dart';
 
 import 'data/model/model.dart';
+import 'data/movies_repository.dart';
 
 import 'generated/l10n.dart';
+
+import 'providers/global_providers.dart';
 
 import 'routes/routes.dart';
 
 import 'ui/components/movies_structure_type.dart';
-
 import 'ui/view/favorites_screen/favorites_list_screen.dart';
 import 'ui/view/movie_details_screen/movie_details_screen.dart';
 import 'ui/view/movies_initial_screen.dart';
@@ -36,7 +43,18 @@ Future<void> main() async {
     )
     ..define(
       Routes.favorites,
-      handler: Handler(handlerFunc: (context, params) => FavoritesListScreen()),
+      handler: Handler(
+        handlerFunc: (context, params) =>
+            ProxyProvider<MoviesRepository, FavoritesListBloc>(
+          update: (context, moviesRepository, favoritesListBloc) =>
+              FavoritesListBloc(repository: moviesRepository),
+          child: Consumer<FavoritesListBloc>(
+            builder: (context, bloc, child) => FavoritesListScreen(
+              bloc: bloc,
+            ),
+          ),
+        ),
+      ),
     )
     ..define(
       Routes.moviesList,
@@ -44,11 +62,19 @@ Future<void> main() async {
         handlerFunc: (context, params) {
           final movieStructureType = params[Routes.moviesListQueryParam][0];
 
-          return MoviesListScreen(
-              movieStructureType: movieStructureType ==
-                      EnumToString.convertToString(MovieStructureType.list)
-                  ? MovieStructureType.list
-                  : MovieStructureType.grid);
+          return ProxyProvider<MoviesRepository, MoviesListBloc>(
+            update: (context, moviesRepository, moviesListBloc) =>
+                MoviesListBloc(repository: moviesRepository),
+            child: Consumer<MoviesListBloc>(
+              builder: (context, bloc, child) => MoviesListScreen(
+                bloc: bloc,
+                movieStructureType: movieStructureType ==
+                        EnumToString.convertToString(MovieStructureType.list)
+                    ? MovieStructureType.list
+                    : MovieStructureType.grid,
+              ),
+            ),
+          );
         },
       ),
     )
@@ -58,8 +84,15 @@ Future<void> main() async {
         handlerFunc: (context, params) {
           final id = int.parse(params[Routes.movieDetailsIdParam][0]);
 
-          return MovieDetailsScreen(
-            id: id,
+          return ProxyProvider<MoviesRepository, MovieDetailsBloc>(
+            update: (context, moviesRepository, movieDetailsBloc) =>
+                MovieDetailsBloc(repository: moviesRepository, movieId: id),
+            child: Consumer<MovieDetailsBloc>(
+              builder: (context, bloc, child) => MovieDetailsScreen(
+                movieId: id,
+                bloc: bloc,
+              ),
+            ),
           );
         },
       ),
@@ -70,21 +103,24 @@ Future<void> main() async {
 
 class App extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        theme: ThemeData(
-          textTheme: const TextTheme(
-            headline1: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget build(BuildContext context) => MultiProvider(
+        providers: globalProviders,
+        child: MaterialApp(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData(
+            textTheme: const TextTheme(
+              headline1: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
+          onGenerateRoute: (settings) => Router.appRouter
+              .matchRoute(context, settings.name, routeSettings: settings)
+              .route,
         ),
-        onGenerateRoute: (settings) => Router.appRouter
-            .matchRoute(context, settings.name, routeSettings: settings)
-            .route,
       );
 }

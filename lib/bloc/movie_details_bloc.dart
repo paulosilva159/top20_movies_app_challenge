@@ -9,6 +9,7 @@ import 'package:tokenlab_challenge/ui/view/movie_details_screen/movie_details_sc
 
 class MovieDetailsBloc {
   MovieDetailsBloc({
+    @required this.repository,
     @required this.movieId,
   }) : assert(movieId != null) {
     _subscriptions
@@ -35,7 +36,7 @@ class MovieDetailsBloc {
 
   final int movieId;
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
 
   final _subscriptions = CompositeSubscription();
 
@@ -55,14 +56,16 @@ class MovieDetailsBloc {
     yield Loading();
 
     try {
-      yield Success(
-        movieDetails: await _repository.getMovieDetails(movieId),
-        isFavorite: await _repository.getFavorites().then(
-              (favoritesList) => favoritesList.contains(
-                favoritesList.firstWhere((movie) => movie.id == movieId,
-                    orElse: () => null),
-              ),
-            ),
+      yield await Future.wait(
+        [
+          repository.getMovieDetails(movieId),
+          repository.getIsFavoriteFromId(movieId),
+        ],
+      ).then(
+        (data) => Success(
+          movieDetails: data[0],
+          isFavorite: data[1],
+        ),
       );
     } catch (error) {
       yield Error(
@@ -76,14 +79,14 @@ class MovieDetailsBloc {
 
     if (stateData is Success) {
       if (stateData.isFavorite) {
-        await _repository.removeFavoriteMovieId(movieId);
+        await repository.removeFavoriteMovieId(movieId);
       } else {
-        await _repository.upsertFavoriteMovieId(movieId);
+        await repository.upsertFavoriteMovieId(movieId);
       }
 
       yield Success(
-        movieDetails: await _repository.getMovieDetails(movieId),
-        isFavorite: await _repository.getFavorites().then((favoritesList) =>
+        movieDetails: await repository.getMovieDetails(movieId),
+        isFavorite: await repository.getFavorites().then((favoritesList) =>
             favoritesList.contains(favoritesList.firstWhere(
                 (movie) => movie.id == movieId,
                 orElse: () => null))),

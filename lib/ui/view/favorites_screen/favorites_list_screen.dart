@@ -4,32 +4,35 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:tokenlab_challenge/bloc/favorites_list_bloc.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
-import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 
+import 'package:tokenlab_challenge/ui/components/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/ui/components/indicators/indicators.dart';
 import 'package:tokenlab_challenge/ui/components/page_navigation.dart';
 import 'package:tokenlab_challenge/ui/view/favorites_screen/favorites_list_screen_state.dart';
 
 class FavoritesListScreen extends StatefulWidget {
+  const FavoritesListScreen({@required this.bloc}) : assert(bloc != null);
+
+  final FavoritesListBloc bloc;
+
   @override
   _FavoritesListScreenState createState() => _FavoritesListScreenState();
 }
 
 class _FavoritesListScreenState extends State<FavoritesListScreen> {
-  final _bloc = FavoritesListBloc();
   final _focusDetectorKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => _bloc.onFocusGain.add(null),
+        onFocusGained: () => widget.bloc.onFocusGain.add(null),
         child: Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).favoritesListScreenTitle),
             centerTitle: true,
           ),
           body: StreamBuilder<FavoritesListScreenState>(
-            stream: _bloc.onNewState,
+            stream: widget.bloc.onNewState,
             builder: (context, snapshot) =>
                 AsyncSnapshotResponseView<Loading, Error, Success>(
               snapshot: snapshot,
@@ -52,7 +55,7 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
               ),
               errorWidgetBuilder: (context, stateData) => ErrorIndicator(
                 error: stateData.error,
-                onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
               ),
             ),
           ),
@@ -61,7 +64,7 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
 
   @override
   void dispose() {
-    _bloc.dispose();
+    widget.bloc.dispose();
     super.dispose();
   }
 }

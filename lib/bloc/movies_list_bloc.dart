@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tokenlab_challenge/data/model/model.dart';
 
 import 'package:tokenlab_challenge/data/movies_repository.dart';
 import 'package:tokenlab_challenge/data/model/cache/movie_short_details_cm.dart';
@@ -8,7 +10,7 @@ import 'package:tokenlab_challenge/data/model/cache/movie_short_details_cm.dart'
 import 'package:tokenlab_challenge/ui/view/movies_list_screen/movies_list_screen_state.dart';
 
 class MoviesListBloc {
-  MoviesListBloc() {
+  MoviesListBloc({@required this.repository}) : assert(repository != null) {
     _subscriptions
       ..add(
         Rx.merge(
@@ -33,7 +35,8 @@ class MoviesListBloc {
       );
   }
 
-  final _repository = MoviesRepository();
+  final MoviesRepository repository;
+
   final _subscriptions = CompositeSubscription();
 
   final _onFocusGainController = StreamController<void>();
@@ -52,9 +55,14 @@ class MoviesListBloc {
     yield Loading();
 
     try {
-      yield Success(
-        moviesList: await _repository.getMoviesList(),
-        favoritesList: await _repository.getFavorites(),
+      yield await Future.wait([
+        repository.getMoviesList(),
+        repository.getFavorites(),
+      ]).then(
+        (lists) => Success(
+          moviesList: lists[0],
+          favoritesList: lists[1],
+        ),
       );
     } catch (error) {
       yield Error(
@@ -69,14 +77,19 @@ class MoviesListBloc {
 
     if (stateData is Success) {
       if (stateData.favoritesList.contains(movieDetails)) {
-        await _repository.removeFavoriteMovieId(movieDetails.id);
+        await repository.removeFavoriteMovieId(movieDetails.id);
       } else {
-        await _repository.upsertFavoriteMovieId(movieDetails.id);
+        await repository.upsertFavoriteMovieId(movieDetails.id);
       }
 
-      yield Success(
-        moviesList: await _repository.getMoviesList(),
-        favoritesList: await _repository.getFavorites(),
+      yield await Future.wait([
+        repository.getMoviesList(),
+        repository.getFavorites(),
+      ]).then(
+        (lists) => Success(
+          moviesList: lists[0],
+          favoritesList: lists[1],
+        ),
       );
     }
   }

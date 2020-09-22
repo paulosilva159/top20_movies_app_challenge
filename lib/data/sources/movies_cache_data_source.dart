@@ -16,20 +16,16 @@ class MoviesCacheDataSource {
 
   Future<MovieLongDetailsCM> getMovieDetails(int movieId) =>
       Hive.openBox(_movieDetailsBoxName).then(
-        (box) => box.getAt(movieId),
+        (box) => box.get(movieId) ?? Exception(),
       );
 
-  Future<List<int>> getFavorites() => Hive.openBox(_favoritesBoxName)
-      .then(
+  Future<List<int>> getFavorites() => Hive.openBox(_favoritesBoxName).then(
         (box) => List<int>.from(box.values),
-      )
-      .catchError(
-        (error) => [],
       );
 
   Future<void> upsertMoviesList(List<MovieShortDetailsCM> moviesList) =>
       Hive.openBox(_moviesListBoxName).then(
-        (box) => box.add(moviesList),
+        (box) => box.add(moviesList) ?? Exception(),
       );
 
   Future<void> upsertMovieDetails(MovieLongDetailsCM movieDetails) =>
@@ -53,3 +49,5 @@ class MoviesCacheDataSource {
         ),
       );
 }
+
+// class NullException implements Exception {}

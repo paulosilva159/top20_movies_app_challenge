@@ -16,24 +16,24 @@ import 'movies_list_structure.dart';
 class MoviesListScreen extends StatefulWidget {
   const MoviesListScreen({
     @required this.movieStructureType,
-    Key key,
+    @required this.bloc,
   })  : assert(movieStructureType != null),
-        super(key: key);
+        assert(bloc != null);
 
   final MovieStructureType movieStructureType;
+  final MoviesListBloc bloc;
 
   @override
   _MoviesListScreenState createState() => _MoviesListScreenState();
 }
 
 class _MoviesListScreenState extends State<MoviesListScreen> {
-  final _bloc = MoviesListBloc();
   final _focusDetectorKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => _bloc.onFocusGain.add(null),
+        onFocusGained: () => widget.bloc.onFocusGain.add(null),
         child: Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -58,13 +58,13 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                 ),
               ),
               StreamBuilder(
-                stream: _bloc.onNewState,
+                stream: widget.bloc.onNewState,
                 builder: (context, snapshot) =>
                     AsyncSnapshotResponseView<Loading, Error, Success>(
                   snapshot: snapshot,
                   successWidgetBuilder: (context, snapshot) =>
                       MoviesListStructure(
-                    onFavoriteTap: _bloc.onFavoriteTap.add,
+                    onFavoriteTap: widget.bloc.onFavoriteTap.add,
                     movieStructureType: widget.movieStructureType,
                     moviesList: snapshot.moviesList,
                     favoritesList: snapshot.favoritesList,
@@ -73,7 +73,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                       SliverFillRemaining(
                     child: ErrorIndicator(
                       error: snapshot.error,
-                      onTryAgainTap: () => _bloc.onTryAgain.add(null),
+                      onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
                     ),
                   ),
                   loadingWidgetBuilder: (context, snapshot) =>
@@ -89,7 +89,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
 
   @override
   void dispose() {
-    _bloc.dispose();
+    widget.bloc.dispose();
     super.dispose();
   }
 }
