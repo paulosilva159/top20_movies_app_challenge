@@ -1,18 +1,18 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:domain/exceptions.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator({
-    @required this.error,
+    @required this.type,
     @required this.onTryAgainTap,
-  })  : assert(error != null),
+  })  : assert(type != null),
         assert(onTryAgainTap != null);
 
-  final dynamic error;
+  final GenericErrorType type;
   final VoidCallback onTryAgainTap;
 
   @override
@@ -22,25 +22,15 @@ class ErrorIndicator extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            if (error is DioError)
-              if (error.error is SocketException)
-                Text(
-                  S.of(context).connectionErrorMessage,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )
-              else
-                Text(
-                  S.of(context).dioErrorMessage,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )
+            if (type is NoConnectionException)
+              Text(
+                S.of(context).connectionErrorMessage,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              )
             else
               Text(
                 S.of(context).genericErrorMessage,

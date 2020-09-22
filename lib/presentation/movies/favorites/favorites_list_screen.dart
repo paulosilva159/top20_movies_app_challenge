@@ -67,7 +67,7 @@ class _FavoritesListScreenState extends State<FavoritesListScreen> {
                 itemCount: stateData.favorites.length,
               ),
               errorWidgetBuilder: (context, stateData) => ErrorIndicator(
-                error: stateData.error,
+                type: stateData.type,
                 onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
               ),
             ),

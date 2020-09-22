@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'favorites_list_screen_state.dart';
 
@@ -49,11 +50,11 @@ class FavoritesListBloc {
 
     try {
       yield Success(
-        favorites: await repository.getFavorites(),
+        favorites: await repository.getFavoritesList(),
       );
     } catch (error) {
       yield Error(
-        error: error,
+        type: mapToGenericErrorType(error),
       );
     }
   }

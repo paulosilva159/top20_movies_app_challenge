@@ -4,6 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'movie_details_screen_state.dart';
 
@@ -62,9 +63,7 @@ class MovieDetailsBloc {
             ),
           );
     } catch (error) {
-      yield Error(
-        error: error,
-      );
+      yield Error(type: mapToGenericErrorType(error));
     }
   }
 
@@ -73,9 +72,9 @@ class MovieDetailsBloc {
 
     if (stateData is Success) {
       if (stateData.movieDetails.isFavorite) {
-        await repository.removeFavoriteMovieId(movieId);
+        await repository.unfavoriteMovie(movieId);
       } else {
-        await repository.upsertFavoriteMovieId(movieId);
+        await repository.favoriteMovie(movieId);
       }
 
       yield await repository.getMovieDetails(movieId).then(

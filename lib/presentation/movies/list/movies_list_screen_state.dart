@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'package:domain/model/model.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 abstract class MoviesListBodyState {}
 
@@ -14,8 +15,9 @@ class Success implements MoviesListBodyState {
 
 class Loading implements MoviesListBodyState {}
 
-class Error implements MoviesListBodyState {
-  Error({@required this.error}) : assert(error != null);
+class Error implements MoviesListBodyState, GenericError {
+  Error({@required this.type}) : assert(type != null);
 
-  final dynamic error;
+  @override
+  final GenericErrorType type;
 }

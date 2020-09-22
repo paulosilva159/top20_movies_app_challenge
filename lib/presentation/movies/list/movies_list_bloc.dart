@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 
 import 'package:domain/model/model.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'movies_list_screen_state.dart';
 
@@ -62,7 +63,7 @@ class MoviesListBloc {
           );
     } catch (error) {
       yield Error(
-        error: error,
+        type: mapToGenericErrorType(error),
       );
     }
   }
@@ -75,9 +76,9 @@ class MoviesListBloc {
       if (stateData.moviesList
           .where((movie) => movie.isFavorite)
           .contains(movieDetails)) {
-        await repository.removeFavoriteMovieId(movieDetails.id);
+        await repository.unfavoriteMovie(movieDetails.id);
       } else {
-        await repository.upsertFavoriteMovieId(movieDetails.id);
+        await repository.favoriteMovie(movieDetails.id);
       }
 
       yield await repository.getMoviesList().then(

@@ -86,7 +86,7 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
                   errorWidgetBuilder: (context, snapshot) =>
                       SliverFillRemaining(
                     child: ErrorIndicator(
-                      error: snapshot.error,
+                      type: snapshot.type,
                       onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
                     ),
                   ),

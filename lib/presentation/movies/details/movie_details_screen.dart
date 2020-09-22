@@ -59,7 +59,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               movieDetails: snapshot.movieDetails,
             ),
             errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
-              error: snapshot.error,
+              type: snapshot.type,
               onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
             ),
             loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),

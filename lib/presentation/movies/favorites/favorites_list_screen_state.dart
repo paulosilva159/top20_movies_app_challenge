@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'package:domain/model/model.dart';
+import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 abstract class FavoritesListScreenState {}
 
@@ -14,10 +15,9 @@ class Success implements FavoritesListScreenState {
 
 class Loading implements FavoritesListScreenState {}
 
-class Error implements FavoritesListScreenState {
-  Error({
-    @required this.error,
-  }) : assert(error != null);
+class Error implements FavoritesListScreenState, GenericError {
+  Error({@required this.type}) : assert(type != null);
 
-  final dynamic error;
+  @override
+  final GenericErrorType type;
 }

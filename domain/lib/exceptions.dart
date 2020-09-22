@@ -1,5 +1,5 @@
-abstract class Top20Exception implements Exception {}
+abstract class MoviesException implements Exception {}
 
-class UnexpectedException implements Top20Exception {}
+class UnexpectedException implements MoviesException {}
 
-class NoConnectionException implements Top20Exception {}
+class NoConnectionException implements MoviesException {}

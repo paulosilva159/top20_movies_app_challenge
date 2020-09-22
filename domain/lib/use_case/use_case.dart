@@ -19,7 +19,7 @@ abstract class UseCase<R, P> {
         },
       ).catchError(
         (error) {
-          if (error is! Top20Exception) {
+          if (error is! MoviesException) {
             throw UnexpectedException();
           } else {
             throw error;

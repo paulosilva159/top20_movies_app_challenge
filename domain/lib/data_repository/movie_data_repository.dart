@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../model/model.dart';
+import 'package:domain/model/model.dart';
 
 abstract class MovieDataRepository {
   const MovieDataRepository();
