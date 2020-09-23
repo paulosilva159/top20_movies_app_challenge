@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:domain/exceptions.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
@@ -22,7 +21,7 @@ class ErrorIndicator extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            if (type is NoConnectionException)
+            if (type == GenericErrorType.noConnection)
               Text(
                 S.of(context).connectionErrorMessage,
                 style: const TextStyle(

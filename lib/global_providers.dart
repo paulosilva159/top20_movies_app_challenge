@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:domain/use_case/get_favorites_list_uc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -12,6 +13,8 @@ import 'package:domain/use_case/get_movies_list_uc.dart';
 import 'package:tokenlab_challenge/common/utils.dart';
 import 'package:tokenlab_challenge/data/cache/data_source/movies_cache_data_source.dart';
 import 'package:tokenlab_challenge/data/remote/data_source/movies_remote_data_source.dart';
+import 'package:tokenlab_challenge/data/remote/infrastucture/movies_dio.dart';
+import 'package:tokenlab_challenge/data/remote/infrastucture/url_builder.dart';
 import 'package:tokenlab_challenge/data/repository/movies_repository.dart';
 
 List<SingleChildWidget> globalProviders = [
@@ -31,8 +34,12 @@ SingleChildWidget _movieRepositoryProvider = ProxyProvider2<
 );
 
 List<SingleChildWidget> _movieRemoteProviders = [
-  Provider(
-    create: (context) => Dio(),
+  Provider<Dio>(
+    create: (context) => MoviesDio(
+      BaseOptions(
+        baseUrl: PathBuilder.moviesList(),
+      ),
+    ),
   ),
   ProxyProvider<Dio, MoviesRemoteDataSource>(
     update: (context, dio, _) => MoviesRemoteDataSource(dio: dio),
