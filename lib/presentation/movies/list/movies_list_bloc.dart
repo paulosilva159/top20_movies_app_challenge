@@ -7,11 +7,12 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:domain/model/model.dart';
+import 'package:tokenlab_challenge/common/subscription_holder.dart';
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
-import 'movies_list_screen_state.dart';
+import 'movies_list_screen_models.dart';
 
-class MoviesListBloc {
+class MoviesListBloc with SubscriptionHolder {
   MoviesListBloc({
     @required this.getMoviesList,
     @required this.favoriteMovie,
@@ -19,26 +20,27 @@ class MoviesListBloc {
   })  : assert(getMoviesList != null),
         assert(favoriteMovie != null),
         assert(unfavoriteMovie != null) {
-    _subscriptions
-      ..add(
-        Rx.merge([_onFocusGainController.stream, _onTryAgainController.stream])
-            .flatMap(
-              (_) => _fetchMoviesList(),
-            )
-            .listen(_onNewStateSubject.add),
-      )
-      ..add(
-        _onFavoriteTapController.stream
-            .flatMap(_toogleFavoriteState)
-            .listen(_onNewStateSubject.add),
-      );
+    Rx.merge([
+      _onFocusGainController.stream,
+      _onTryAgainController.stream,
+    ])
+        .flatMap(
+          (_) => _fetchMoviesList(),
+        )
+        .listen(_onNewStateSubject.add)
+        .addTo(subscriptions);
+
+    _onFavoriteTapController.stream
+        .flatMap(
+          (movie) => _toogleFavoriteState(movie, _onNewActionController),
+        )
+        .listen(_onNewStateSubject.add)
+        .addTo(subscriptions);
   }
 
   final GetMoviesListUC getMoviesList;
   final FavoriteMovieUC favoriteMovie;
   final UnfavoriteMovieUC unfavoriteMovie;
-
-  final _subscriptions = CompositeSubscription();
 
   final _onFocusGainController = StreamController<void>();
   Sink<void> get onFocusGain => _onFocusGainController.sink;
@@ -48,6 +50,9 @@ class MoviesListBloc {
 
   final _onFavoriteTapController = StreamController<MovieShortDetails>();
   Sink<MovieShortDetails> get onFavoriteTap => _onFavoriteTapController.sink;
+
+  final _onNewActionController = PublishSubject<MoviesListBodyAction>();
+  Stream<MoviesListBodyAction> get onNewAction => _onNewActionController.stream;
 
   final _onNewStateSubject = BehaviorSubject<MoviesListBodyState>();
   Stream<MoviesListBodyState> get onNewState => _onNewStateSubject.stream;
@@ -69,20 +74,34 @@ class MoviesListBloc {
   }
 
   Stream<MoviesListBodyState> _toogleFavoriteState(
-      MovieShortDetails movieDetails) async* {
+      MovieShortDetails movieDetails, Sink eventSink) async* {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
-      if (stateData.moviesList
-          .where((movie) => movie.isFavorite)
-          .contains(movieDetails)) {
-        await unfavoriteMovie.getFuture(
-          params: UnfavoriteMovieUCParams(movieDetails.id),
-        );
-      } else {
-        await favoriteMovie.getFuture(
-          params: FavoriteMovieUCParams(movieDetails.id),
-        );
+      try {
+        if (stateData.moviesList
+            .where((movie) => movie.isFavorite)
+            .contains(movieDetails)) {
+          await unfavoriteMovie.getFuture(
+            params: UnfavoriteMovieUCParams(movieDetails.id),
+          );
+
+          eventSink.add(
+            ShowFavoriteTogglingSuccess(
+                title: movieDetails.title, isToFavorite: false),
+          );
+        } else {
+          await favoriteMovie.getFuture(
+            params: FavoriteMovieUCParams(movieDetails.id),
+          );
+
+          eventSink.add(
+            ShowFavoriteTogglingSuccess(
+                title: movieDetails.title, isToFavorite: true),
+          );
+        }
+      } catch (error) {
+        eventSink.add(ShowFavoriteTogglingError());
       }
 
       yield await getMoviesList.getFuture().then(
@@ -96,8 +115,9 @@ class MoviesListBloc {
   void dispose() {
     _onFocusGainController.close();
     _onFavoriteTapController.close();
+    _onNewActionController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();
-    _subscriptions.dispose();
+    disposeAll();
   }
 }

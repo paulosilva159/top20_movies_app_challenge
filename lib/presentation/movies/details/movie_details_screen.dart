@@ -7,13 +7,16 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
+import 'package:tokenlab_challenge/presentation/common/action_stream_listener.dart';
+import 'package:tokenlab_challenge/presentation/common/alert_dialogs/adaptive_alert_dialog.dart';
+import 'package:tokenlab_challenge/presentation/common/alert_dialogs/states_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
 
 import 'package:domain/model/model.dart';
 
 import 'movie_details_bloc.dart';
-import 'movie_details_screen_state.dart';
+import 'movie_details_screen_models.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   MovieDetailsScreen({@required this.movieId, @required this.bloc})
@@ -53,20 +56,30 @@ class MovieDetailsScreen extends StatelessWidget {
             title: Text(S.of(context).detailsScreenTopTitle),
             centerTitle: true,
           ),
-          body: StreamBuilder<MovieDetailsBodyState>(
-            stream: bloc.onNewState,
-            builder: (context, snapshot) =>
-                AsyncSnapshotResponseView<Loading, Error, Success>(
-              snapshot: snapshot,
-              successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
-                onFavoriteTap: () => bloc.onFavoriteTap.add(null),
-                movieDetails: snapshot.movieDetails,
+          body: ActionStreamListener<MovieDetailsBodyAction>(
+            actionStream: bloc.onNewAction,
+            onReceived: (event) {
+              if (event is ShowFavoriteTogglingError) {
+                errorAlertDialog(context);
+              } else if (event is ShowFavoriteTogglingSuccess) {
+                successAlertDialog(context, event.title, event.isToFavorite);
+              }
+            },
+            child: StreamBuilder<MovieDetailsBodyState>(
+              stream: bloc.onNewState,
+              builder: (context, snapshot) =>
+                  AsyncSnapshotResponseView<Loading, Error, Success>(
+                snapshot: snapshot,
+                successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
+                  onFavoriteTap: () => bloc.onFavoriteTap.add(null),
+                  movieDetails: snapshot.movieDetails,
+                ),
+                errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
+                  type: snapshot.type,
+                  onTryAgainTap: () => bloc.onTryAgain.add(null),
+                ),
+                loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
               ),
-              errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
-                type: snapshot.type,
-                onTryAgainTap: () => bloc.onTryAgain.add(null),
-              ),
-              loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
             ),
           ),
         ),

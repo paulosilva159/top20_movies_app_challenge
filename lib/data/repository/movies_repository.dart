@@ -231,9 +231,12 @@ class MoviesRepository extends MoviesDataRepository {
         },
       ).catchError((error) => <MovieShortDetails>[]);
 
+  // @override
+  // Future<void> favoriteMovie(int movieId) =>
+  //     cacheDataSource.upsertFavoriteMovieId(movieId);
+
   @override
-  Future<void> favoriteMovie(int movieId) =>
-      cacheDataSource.upsertFavoriteMovieId(movieId);
+  Future<void> favoriteMovie(int movieId) => throw Error();
 
   @override
   Future<void> unfavoriteMovie(int movieId) =>

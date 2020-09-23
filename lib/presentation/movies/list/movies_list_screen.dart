@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
+import 'package:tokenlab_challenge/presentation/common/action_stream_listener.dart';
+import 'package:tokenlab_challenge/presentation/common/alert_dialogs/states_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/assets_builder.dart';
 
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
@@ -17,7 +19,7 @@ import 'package:tokenlab_challenge/presentation/common/routes.dart';
 import 'package:domain/model/model.dart';
 
 import 'movies_list_bloc.dart';
-import 'movies_list_screen_state.dart';
+import 'movies_list_screen_models.dart';
 
 class MoviesListScreen extends StatelessWidget {
   MoviesListScreen({
@@ -76,27 +78,38 @@ class MoviesListScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              StreamBuilder(
-                stream: bloc.onNewState,
-                builder: (context, snapshot) =>
-                    AsyncSnapshotResponseView<Loading, Error, Success>(
-                  snapshot: snapshot,
-                  successWidgetBuilder: (context, snapshot) =>
-                      _MoviesListStructure(
-                    onFavoriteTap: bloc.onFavoriteTap.add,
-                    movieStructureType: movieStructureType,
-                    moviesList: snapshot.moviesList,
-                  ),
-                  errorWidgetBuilder: (context, snapshot) =>
-                      SliverFillRemaining(
-                    child: ErrorIndicator(
-                      type: snapshot.type,
-                      onTryAgainTap: () => bloc.onTryAgain.add(null),
+              ActionStreamListener(
+                actionStream: bloc.onNewAction,
+                onReceived: (event) {
+                  if (event is ShowFavoriteTogglingError) {
+                    errorAlertDialog(context);
+                  } else if (event is ShowFavoriteTogglingSuccess) {
+                    successAlertDialog(
+                        context, event.title, event.isToFavorite);
+                  }
+                },
+                child: StreamBuilder(
+                  stream: bloc.onNewState,
+                  builder: (context, snapshot) =>
+                      AsyncSnapshotResponseView<Loading, Error, Success>(
+                    snapshot: snapshot,
+                    successWidgetBuilder: (context, snapshot) =>
+                        _MoviesListStructure(
+                      onFavoriteTap: bloc.onFavoriteTap.add,
+                      movieStructureType: movieStructureType,
+                      moviesList: snapshot.moviesList,
                     ),
-                  ),
-                  loadingWidgetBuilder: (context, snapshot) =>
-                      SliverFillRemaining(
-                    child: LoadingIndicator(),
+                    errorWidgetBuilder: (context, snapshot) =>
+                        SliverFillRemaining(
+                      child: ErrorIndicator(
+                        type: snapshot.type,
+                        onTryAgainTap: () => bloc.onTryAgain.add(null),
+                      ),
+                    ),
+                    loadingWidgetBuilder: (context, snapshot) =>
+                        SliverFillRemaining(
+                      child: LoadingIndicator(),
+                    ),
                   ),
                 ),
               )
@@ -137,11 +150,12 @@ class _MoviesListStructure extends StatelessWidget {
                 ),
               ),
               Align(
-                  alignment: Alignment.topRight,
-                  child: FavoriteIndicator(
-                    isFavorite: moviesList[index].isFavorite,
-                    onFavoriteTap: () => onFavoriteTap(moviesList[index]),
-                  )),
+                alignment: Alignment.topRight,
+                child: FavoriteIndicator(
+                  isFavorite: moviesList[index].isFavorite,
+                  onFavoriteTap: () => onFavoriteTap(moviesList[index]),
+                ),
+              ),
             ],
           ),
         ),

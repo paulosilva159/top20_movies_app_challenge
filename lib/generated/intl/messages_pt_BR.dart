@@ -19,18 +19,28 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'pt_BR';
 
-  static m0(score) => "Pontuação: ${score}";
+  static m0(movie) => "${movie} favoritado com sucesso!";
 
-  static m1(voteQuantity) => "Qtd. de Votos: ${voteQuantity}";
+  static m1(movie) => "${movie} desfavoritado com sucesso!";
+
+  static m2(score) => "Pontuação: ${score}";
+
+  static m3(voteQuantity) => "Qtd. de Votos: ${voteQuantity}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "alertDialogActionTitle" : MessageLookupByLibrary.simpleMessage("Fechar"),
+    "alertDialogErrorMessage" : MessageLookupByLibrary.simpleMessage("Erro ao tentar (des)favoritar!"),
+    "alertDialogErrorTitle" : MessageLookupByLibrary.simpleMessage("Erro"),
+    "alertDialogSuccessTitle" : MessageLookupByLibrary.simpleMessage("Sucesso"),
+    "alertDialogToFavoriteSuccessMessage" : m0,
+    "alertDialogToUnfavoriteSuccessMessage" : m1,
     "bottomNavigationItemGridTitle" : MessageLookupByLibrary.simpleMessage("Grade"),
     "bottomNavigationItemListTitle" : MessageLookupByLibrary.simpleMessage("Lista"),
     "connectionErrorMessage" : MessageLookupByLibrary.simpleMessage("Verifique sua conexão!"),
     "detailsScreenTopTitle" : MessageLookupByLibrary.simpleMessage("Detalhes"),
-    "detailsTileScore" : m0,
-    "detailsTileVotesQtt" : m1,
+    "detailsTileScore" : m2,
+    "detailsTileVotesQtt" : m3,
     "dioErrorMessage" : MessageLookupByLibrary.simpleMessage("Erro durante tentativa de obter dados"),
     "favoritesListScreenTitle" : MessageLookupByLibrary.simpleMessage("Favoritos"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Deu erro!"),

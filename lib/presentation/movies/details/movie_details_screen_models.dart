@@ -19,3 +19,17 @@ class Error implements MovieDetailsBodyState, GenericError {
   @override
   final GenericErrorType type;
 }
+
+abstract class MovieDetailsBodyAction {}
+
+class ShowFavoriteTogglingError implements MovieDetailsBodyAction {}
+
+class ShowFavoriteTogglingSuccess implements MovieDetailsBodyAction {
+  ShowFavoriteTogglingSuccess(
+      {@required this.title, @required this.isToFavorite})
+      : assert(title != null),
+        assert(isToFavorite != null);
+
+  final String title;
+  final bool isToFavorite;
+}
