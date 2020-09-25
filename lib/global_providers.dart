@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:domain/use_case/get_favorites_list_uc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 

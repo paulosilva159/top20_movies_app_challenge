@@ -1,5 +1,3 @@
-import 'movies_structure_type.dart';
-
 abstract class Routes {
   static const moviesList = 'movies';
   static const home = '/';
@@ -10,6 +8,6 @@ abstract class Routes {
   static const String moviesListQueryParam = 'type';
 
   static String movieById(int id) => '$movieDetails/$id';
-  static String moviesListByStructure(MovieStructureType movieStructureType) =>
+  static String moviesListByStructure(String movieStructureType) =>
       '$moviesList?type=$movieStructureType';
 }

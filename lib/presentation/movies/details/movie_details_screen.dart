@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/action_stream_listener.dart';
-import 'package:tokenlab_challenge/presentation/common/alert_dialogs/adaptive_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/alert_dialogs/states_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
@@ -60,9 +59,10 @@ class MovieDetailsScreen extends StatelessWidget {
             actionStream: bloc.onNewAction,
             onReceived: (event) {
               if (event is ShowFavoriteTogglingError) {
-                errorAlertDialog(context);
+                toogleFavoriteStateErrorAlertDialog(context);
               } else if (event is ShowFavoriteTogglingSuccess) {
-                successAlertDialog(context, event.title, event.isToFavorite);
+                toogleFavoriteStateSuccessAlertDialog(
+                    context, event.title, event.isToFavorite);
               }
             },
             child: StreamBuilder<MovieDetailsBodyState>(

@@ -1,3 +1,4 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,8 +59,8 @@ class _MoviesInitialScreenState extends State<MoviesInitialScreen> {
                   icon: Icon(flow.iconData),
                 ),
                 navigatorKey: flow.navigatorKey,
-                initialRouteName:
-                    Routes.moviesListByStructure(flow.movieStructureType),
+                initialRouteName: Routes.moviesListByStructure(
+                    EnumToString.convertToString(flow.movieStructureType)),
               ),
             )
             .toList(),

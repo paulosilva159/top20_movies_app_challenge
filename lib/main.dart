@@ -46,7 +46,7 @@ Future<void> main() async {
           final movieStructureType = params[Routes.moviesListQueryParam][0];
 
           return MoviesListScreen.create(
-            movieStructureType.split('.')[1] ==
+            movieStructureType ==
                     EnumToString.convertToString(MovieStructureType.list)
                 ? MovieStructureType.list
                 : MovieStructureType.grid,

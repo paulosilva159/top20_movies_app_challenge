@@ -78,8 +78,10 @@ class MoviesListBloc with SubscriptionHolder {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
+      final moviesList = stateData.moviesList;
+
       try {
-        if (stateData.moviesList
+        if (moviesList
             .where((movie) => movie.isFavorite)
             .contains(movieDetails)) {
           await unfavoriteMovie.getFuture(
@@ -100,15 +102,22 @@ class MoviesListBloc with SubscriptionHolder {
                 title: movieDetails.title, isToFavorite: true),
           );
         }
+
+        yield Success(
+          moviesList: moviesList
+              .map((movie) => movie == movieDetails
+                  ? MovieShortDetails(
+                      isFavorite: !movie.isFavorite,
+                      id: movie.id,
+                      title: movie.title,
+                      posterUrl: movie.posterUrl,
+                    )
+                  : movie)
+              .toList(),
+        );
       } catch (error) {
         eventSink.add(ShowFavoriteTogglingError());
       }
-
-      yield await getMoviesList.getFuture().then(
-            (moviesList) => Success(
-              moviesList: moviesList,
-            ),
-          );
     }
   }
 

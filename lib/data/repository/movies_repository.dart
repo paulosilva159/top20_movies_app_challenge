@@ -20,32 +20,24 @@ class MoviesRepository extends MoviesDataRepository {
   final MoviesCacheDataSource cacheDataSource;
 
   @override
-  Future<MovieLongDetails> getMovieDetails(int movieId) =>
-      cacheDataSource.getFavorites().then(
-            (favoritesIdList) => cacheDataSource
-                .getMovieDetails(movieId)
-                .then(
-                  (movie) => movie.toDomainModel(
-                    favoritesIdList.contains(movieId),
-                  ),
-                )
-                .catchError(
-                  (error) => remoteDataSource
-                      .getMovieDetails(movieId)
-                      .then(
-                        (movie) => _upsertMovieDetails(
-                          movie.toCacheModel(),
-                        ).then(
-                          (_) => movie.toCacheModel(),
-                        ),
-                      )
-                      .then(
-                        (cacheModel) => cacheModel.toDomainModel(
-                          favoritesIdList.contains(movieId),
-                        ),
-                      ),
-                ),
-          );
+  Future<MovieLongDetails> getMovieDetails(int movieId) => Future.wait([
+        cacheDataSource.getFavorites(),
+        _getMovieDetailsCacheModel(movieId),
+      ]).then((futures) {
+        final List<int> favoritesIdList = futures[0];
+        final MovieLongDetailsCM movie = futures[1];
+
+        return movie.toDomainModel(favoritesIdList.contains(movieId));
+      });
+
+  Future<MovieLongDetailsCM> _getMovieDetailsCacheModel(int movieId) =>
+      cacheDataSource.getMovieDetails(movieId).catchError((error) =>
+          remoteDataSource
+              .getMovieDetails(movieId)
+              .then((movie) => movie.toCacheModel())
+              .then(
+                (movie) => _upsertMovieDetails(movie).then((_) => movie),
+              ));
 
   // Future<MovieLongDetails> getMovieDetails2(int movieId) =>
   //     cacheDataSource.getFavorites().then(
@@ -105,37 +97,31 @@ class MoviesRepository extends MoviesDataRepository {
   // }
 
   @override
-  Future<List<MovieShortDetails>> getMoviesList() => cacheDataSource
-      .getFavorites()
-      .then(
-        (favoritesIdList) => cacheDataSource
-            .getMoviesList()
-            .then(
-              (movies) => movies
-                  .map(
-                    (movie) =>
-                        movie.toDomainModel(favoritesIdList.contains(movie.id)),
-                  )
-                  .toList(),
+  Future<List<MovieShortDetails>> getMoviesList() => Future.wait([
+        cacheDataSource.getFavorites(),
+        _getMoviesListCacheModel(),
+      ]).then((futures) {
+        final List<int> favoritesIdList = futures[0];
+        final List<MovieShortDetailsCM> moviesList = futures[1];
+
+        return moviesList
+            .map(
+              (movie) =>
+                  movie.toDomainModel(favoritesIdList.contains(movie.id)),
             )
-            .catchError((error) => remoteDataSource
+            .toList();
+      });
+
+  Future<List<MovieShortDetailsCM>> _getMoviesListCacheModel() =>
+      cacheDataSource.getMoviesList().catchError(
+            (error) => remoteDataSource
                 .getMoviesList()
+                .then((movies) =>
+                    movies.map((movie) => movie.toCacheModel()).toList())
                 .then(
-                  (movies) => _upsertMoviesList(
-                          movies.map((movie) => movie.toCacheModel()).toList())
-                      .then(
-                    (_) => movies.map((movie) => movie.toCacheModel()).toList(),
-                  ),
-                )
-                .then(
-                  (movies) => movies
-                      .map(
-                        (movie) => movie
-                            .toDomainModel(favoritesIdList.contains(movie.id)),
-                      )
-                      .toList(),
-                )),
-      );
+                  (movies) => _upsertMoviesList(movies).then((_) => movies),
+                ),
+          );
 
   // Future<List<MovieShortDetails>> getMoviesList2() => cacheDataSource
   //     .getFavorites()
@@ -231,12 +217,12 @@ class MoviesRepository extends MoviesDataRepository {
         },
       ).catchError((error) => <MovieShortDetails>[]);
 
-  // @override
-  // Future<void> favoriteMovie(int movieId) =>
-  //     cacheDataSource.upsertFavoriteMovieId(movieId);
-
   @override
-  Future<void> favoriteMovie(int movieId) => throw Error();
+  Future<void> favoriteMovie(int movieId) =>
+      cacheDataSource.upsertFavoriteMovieId(movieId);
+
+  // @override
+  // Future<void> favoriteMovie(int movieId) => throw Error();
 
   @override
   Future<void> unfavoriteMovie(int movieId) =>

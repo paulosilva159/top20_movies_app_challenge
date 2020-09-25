@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:domain/model/model.dart';
 import 'package:domain/use_case/favorite_movie_uc.dart';
 import 'package:domain/use_case/get_movie_details_uc.dart';
 import 'package:domain/use_case/unfavorite_movie_uc.dart';
@@ -85,15 +86,17 @@ class MovieDetailsBloc with SubscriptionHolder {
     final stateData = _onNewStateSubject.value;
 
     if (stateData is Success) {
+      final movie = stateData.movieDetails;
+
       try {
-        if (stateData.movieDetails.isFavorite) {
+        if (movie.isFavorite) {
           await unfavoriteMovie.getFuture(
             params: UnfavoriteMovieUCParams(movieId),
           );
 
           eventSink.add(
             ShowFavoriteTogglingSuccess(
-                title: stateData.movieDetails.title, isToFavorite: false),
+                title: movie.title, isToFavorite: false),
           );
         } else {
           await favoriteMovie.getFuture(
@@ -101,25 +104,26 @@ class MovieDetailsBloc with SubscriptionHolder {
           );
 
           eventSink.add(
-            ShowFavoriteTogglingSuccess(
-                title: stateData.movieDetails.title, isToFavorite: true),
+            ShowFavoriteTogglingSuccess(title: movie.title, isToFavorite: true),
           );
         }
+
+        yield Success(
+          movieDetails: MovieLongDetails(
+            isFavorite: !movie.isFavorite,
+            voteCount: movie.voteCount,
+            id: movie.id,
+            voteAverage: movie.voteAverage,
+            tagline: movie.tagline,
+            overview: movie.overview,
+            title: movie.title,
+          ),
+        );
       } catch (error) {
         eventSink.add(
           ShowFavoriteTogglingError(),
         );
       }
-
-      yield await getMovieDetails
-          .getFuture(
-            params: GetMovieDetailsUCParams(movieId),
-          )
-          .then(
-            (movie) => Success(
-              movieDetails: movie,
-            ),
-          );
     }
   }
 
