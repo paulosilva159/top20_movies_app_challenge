@@ -202,17 +202,14 @@ class MoviesRepository extends MoviesDataRepository {
   @override
   Future<List<MovieShortDetails>> getFavoritesList() => Future.wait([
         cacheDataSource.getFavorites(),
-        cacheDataSource.getMoviesList(),
+        getMoviesList(),
       ]).then(
         (futureList) {
           final List<int> favoritesId = futureList[0];
-          final List<MovieShortDetailsCM> moviesList = futureList[1];
+          final List<MovieShortDetails> moviesList = futureList[1];
 
           return moviesList
               .where((movie) => favoritesId.contains(movie.id))
-              .map((movie) => movie.toDomainModel(
-                    favoritesId.contains(movie.id),
-                  ))
               .toList();
         },
       ).catchError((error) => <MovieShortDetails>[]);
