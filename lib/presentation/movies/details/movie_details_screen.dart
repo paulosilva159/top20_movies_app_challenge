@@ -59,9 +59,9 @@ class MovieDetailsScreen extends StatelessWidget {
             actionStream: bloc.onNewAction,
             onReceived: (event) {
               if (event is ShowFavoriteTogglingError) {
-                toogleFavoriteStateErrorAlertDialog(context);
+                showToogleFavoriteErrorDialog(context);
               } else if (event is ShowFavoriteTogglingSuccess) {
-                toogleFavoriteStateSuccessAlertDialog(
+                showToogleFavoriteSuccessDialog(
                     context, event.title, event.isToFavorite);
               }
             },

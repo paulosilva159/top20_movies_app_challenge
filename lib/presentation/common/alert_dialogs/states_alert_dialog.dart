@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/alert_dialogs/adaptive_alert_dialog.dart';
 
-void toogleFavoriteStateErrorAlertDialog(BuildContext context) =>
+void showToogleFavoriteErrorDialog(BuildContext context) =>
     AdaptiveAlertDialog(
       title: S.of(context).alertDialogErrorTitle,
       message: S.of(context).alertDialogErrorMessage,
@@ -14,7 +14,7 @@ void toogleFavoriteStateErrorAlertDialog(BuildContext context) =>
       ],
     ).show(context);
 
-void toogleFavoriteStateSuccessAlertDialog(
+void showToogleFavoriteSuccessDialog(
         BuildContext context, String title, bool isToFavorite) =>
     AdaptiveAlertDialog(
       title: S.of(context).alertDialogSuccessTitle,
