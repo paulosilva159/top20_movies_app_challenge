@@ -21,8 +21,8 @@ import 'package:domain/model/model.dart';
 import 'movies_list_bloc.dart';
 import 'movies_list_screen_models.dart';
 
-class MoviesListScreen extends StatelessWidget {
-  MoviesListScreen({
+class MoviesListScreen extends StatefulWidget {
+  const MoviesListScreen({
     @required this.movieStructureType,
     @required this.bloc,
   })  : assert(movieStructureType != null),
@@ -30,8 +30,6 @@ class MoviesListScreen extends StatelessWidget {
 
   final MovieStructureType movieStructureType;
   final MoviesListBloc bloc;
-
-  final _focusDetectorKey = UniqueKey();
 
   static Widget create(MovieStructureType movieStructureType) => ProxyProvider3<
           GetMoviesListUC, FavoriteMovieUC, UnfavoriteMovieUC, MoviesListBloc>(
@@ -50,9 +48,16 @@ class MoviesListScreen extends StatelessWidget {
       );
 
   @override
+  _MoviesListScreenState createState() => _MoviesListScreenState();
+}
+
+class _MoviesListScreenState extends State<MoviesListScreen> {
+  final _focusDetectorKey = UniqueKey();
+
+  @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => bloc.onFocusGain.add(null),
+        onFocusGained: () => widget.bloc.onFocusGain.add(null),
         child: Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -79,7 +84,7 @@ class MoviesListScreen extends StatelessWidget {
                 ),
               ),
               ActionStreamListener(
-                actionStream: bloc.onNewAction,
+                actionStream: widget.bloc.onNewAction,
                 onReceived: (event) {
                   if (event is ShowFavoriteTogglingError) {
                     showToogleFavoriteErrorDialog(context);
@@ -89,21 +94,21 @@ class MoviesListScreen extends StatelessWidget {
                   }
                 },
                 child: StreamBuilder(
-                  stream: bloc.onNewState,
+                  stream: widget.bloc.onNewState,
                   builder: (context, snapshot) =>
                       AsyncSnapshotResponseView<Loading, Error, Success>(
                     snapshot: snapshot,
                     successWidgetBuilder: (context, snapshot) =>
                         _MoviesListStructure(
-                      onFavoriteTap: bloc.onFavoriteTap.add,
-                      movieStructureType: movieStructureType,
+                      onFavoriteTap: widget.bloc.onFavoriteTap.add,
+                      movieStructureType: widget.movieStructureType,
                       moviesList: snapshot.moviesList,
                     ),
                     errorWidgetBuilder: (context, snapshot) =>
                         SliverFillRemaining(
                       child: ErrorIndicator(
                         type: snapshot.type,
-                        onTryAgainTap: () => bloc.onTryAgain.add(null),
+                        onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
                       ),
                     ),
                     loadingWidgetBuilder: (context, snapshot) =>

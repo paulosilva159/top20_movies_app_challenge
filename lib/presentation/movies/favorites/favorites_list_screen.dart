@@ -12,12 +12,10 @@ import 'package:tokenlab_challenge/presentation/common/page_navigation.dart';
 import 'favorites_list_bloc.dart';
 import 'favorites_list_screen_state.dart';
 
-class FavoritesListScreen extends StatelessWidget {
-  FavoritesListScreen({@required this.bloc}) : assert(bloc != null);
+class FavoritesListScreen extends StatefulWidget {
+  const FavoritesListScreen({@required this.bloc}) : assert(bloc != null);
 
   final FavoritesListBloc bloc;
-
-  final _focusDetectorKey = UniqueKey();
 
   static Widget create() =>
       ProxyProvider<GetFavoritesListUC, FavoritesListBloc>(
@@ -33,16 +31,23 @@ class FavoritesListScreen extends StatelessWidget {
       );
 
   @override
+  _FavoritesListScreenState createState() => _FavoritesListScreenState();
+}
+
+class _FavoritesListScreenState extends State<FavoritesListScreen> {
+  final _focusDetectorKey = UniqueKey();
+
+  @override
   Widget build(BuildContext context) => FocusDetector(
         key: _focusDetectorKey,
-        onFocusGained: () => bloc.onFocusGain.add(null),
+        onFocusGained: () => widget.bloc.onFocusGain.add(null),
         child: Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).favoritesListScreenTitle),
             centerTitle: true,
           ),
           body: StreamBuilder<FavoritesListScreenState>(
-            stream: bloc.onNewState,
+            stream: widget.bloc.onNewState,
             builder: (context, snapshot) =>
                 AsyncSnapshotResponseView<Loading, Error, Success>(
               snapshot: snapshot,
@@ -65,7 +70,7 @@ class FavoritesListScreen extends StatelessWidget {
               ),
               errorWidgetBuilder: (context, stateData) => ErrorIndicator(
                 type: stateData.type,
-                onTryAgainTap: () => bloc.onTryAgain.add(null),
+                onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
               ),
             ),
           ),

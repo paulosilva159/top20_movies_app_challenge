@@ -3,9 +3,9 @@ import 'package:hive/hive.dart';
 import 'package:tokenlab_challenge/data/cache/model/movies_cache_model.dart';
 
 class MoviesCacheDataSource {
-  final String _moviesListBoxName = 'moviesListBox';
-  final String _movieDetailsBoxName = 'movieDetailsBox';
-  final String _favoritesBoxName = 'favoritesBox';
+  static const String _moviesListBoxName = 'moviesListBox';
+  static const String _movieDetailsBoxName = 'movieDetailsBox';
+  static const String _favoritesBoxName = 'favoritesBox';
 
   Future<List<MovieShortDetailsCM>> getMoviesList() =>
       Hive.openBox(_moviesListBoxName).then(
