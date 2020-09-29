@@ -1,30 +1,33 @@
 import 'dart:async';
 
+import 'package:domain/data_observables.dart';
 import 'package:domain/model/model.dart';
 import 'package:domain/use_case/favorite_movie_uc.dart';
 import 'package:domain/use_case/get_movie_details_uc.dart';
 import 'package:domain/use_case/unfavorite_movie_uc.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:tokenlab_challenge/common/subscription_holder.dart';
-
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
 import 'movie_details_screen_models.dart';
 
 class MovieDetailsBloc with SubscriptionHolder {
-  MovieDetailsBloc({
-    @required this.getMovieDetails,
-    @required this.favoriteMovie,
-    @required this.unfavoriteMovie,
-    @required this.movieId,
-  })  : assert(getMovieDetails != null),
+  MovieDetailsBloc(
+      {@required this.getMovieDetails,
+      @required this.favoriteMovie,
+      @required this.unfavoriteMovie,
+      @required this.movieId,
+      @required this.activeFavoriteUpdateStreamWrapper})
+      : assert(getMovieDetails != null),
         assert(favoriteMovie != null),
         assert(unfavoriteMovie != null),
-        assert(movieId != null) {
+        assert(movieId != null),
+        assert(activeFavoriteUpdateStreamWrapper != null) {
     Rx.merge([
+      Stream.value(null),
       _onTryAgainController.stream,
-      _onFocusGainController.stream,
+      activeFavoriteUpdateStreamWrapper.value,
     ])
         .flatMap(
           (_) => _fetchMovieLongDetails(),
@@ -45,12 +48,10 @@ class MovieDetailsBloc with SubscriptionHolder {
   final GetMovieDetailsUC getMovieDetails;
   final FavoriteMovieUC favoriteMovie;
   final UnfavoriteMovieUC unfavoriteMovie;
+  final ActiveFavoriteUpdateStreamWrapper activeFavoriteUpdateStreamWrapper;
 
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
-
-  final _onFocusGainController = StreamController<void>();
-  Sink<void> get onFocusGain => _onFocusGainController.sink;
 
   final _onFavoriteTapController = StreamController<void>();
   Sink<void> get onFavoriteTap => _onFavoriteTapController.sink;
@@ -129,7 +130,6 @@ class MovieDetailsBloc with SubscriptionHolder {
 
   void dispose() {
     _onFavoriteTapController.close();
-    _onFocusGainController.close();
     _onNewActionController.close();
     _onTryAgainController.close();
     _onNewStateSubject.close();

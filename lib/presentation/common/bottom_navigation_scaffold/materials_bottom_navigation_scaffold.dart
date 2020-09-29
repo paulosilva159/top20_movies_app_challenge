@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:fluro/fluro.dart';
-
+import 'package:provider/provider.dart';
 import 'package:tokenlab_challenge/presentation/common/bottom_navigator_tab.dart';
 
 class MaterialBottomNavigationScaffold extends StatefulWidget {
@@ -147,9 +145,8 @@ class PageFlowBuilder extends StatelessWidget {
             ? Navigator(
                 key: item.navigatorKey,
                 initialRoute: item.initialRouteName,
-                onGenerateRoute: (settings) => Router.appRouter
-                    .matchRoute(context, settings.name, routeSettings: settings)
-                    .route,
+                onGenerateRoute:
+                    Provider.of<RouteFactory>(context, listen: false),
               )
             : Container(),
       ),

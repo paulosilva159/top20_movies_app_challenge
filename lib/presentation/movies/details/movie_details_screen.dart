@@ -1,23 +1,20 @@
+import 'package:domain/data_observables.dart';
+import 'package:domain/model/model.dart';
 import 'package:domain/use_case/favorite_movie_uc.dart';
 import 'package:domain/use_case/get_movie_details_uc.dart';
 import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:flutter/material.dart';
-
-import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
-
 import 'package:tokenlab_challenge/generated/l10n.dart';
 import 'package:tokenlab_challenge/presentation/common/action_stream_listener.dart';
 import 'package:tokenlab_challenge/presentation/common/alert_dialogs/states_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
 
-import 'package:domain/model/model.dart';
-
 import 'movie_details_bloc.dart';
 import 'movie_details_screen_models.dart';
 
-class MovieDetailsScreen extends StatefulWidget {
+class MovieDetailsScreen extends StatelessWidget {
   const MovieDetailsScreen({@required this.movieId, @required this.bloc})
       : assert(movieId != null),
         assert(bloc != null);
@@ -25,15 +22,21 @@ class MovieDetailsScreen extends StatefulWidget {
   final int movieId;
   final MovieDetailsBloc bloc;
 
-  static Widget create(int id) => ProxyProvider3<GetMovieDetailsUC,
-          FavoriteMovieUC, UnfavoriteMovieUC, MovieDetailsBloc>(
+  static Widget create(int id) => ProxyProvider4<
+          GetMovieDetailsUC,
+          FavoriteMovieUC,
+          UnfavoriteMovieUC,
+          ActiveFavoriteUpdateStreamWrapper,
+          MovieDetailsBloc>(
         update: (context, getMovieDetails, favoriteMovie, unfavoriteMovie,
-                movieDetailsBloc) =>
+                activeFavoriteUpdateStreamWrapper, movieDetailsBloc) =>
             movieDetailsBloc ??
             MovieDetailsBloc(
                 getMovieDetails: getMovieDetails,
                 favoriteMovie: favoriteMovie,
                 unfavoriteMovie: unfavoriteMovie,
+                activeFavoriteUpdateStreamWrapper:
+                    activeFavoriteUpdateStreamWrapper,
                 movieId: id),
         dispose: (context, bloc) => bloc.dispose(),
         child: Consumer<MovieDetailsBloc>(
@@ -45,46 +48,35 @@ class MovieDetailsScreen extends StatefulWidget {
       );
 
   @override
-  _MovieDetailsScreenState createState() => _MovieDetailsScreenState();
-}
-
-class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  final _focusDetectorKey = UniqueKey();
-
-  @override
-  Widget build(BuildContext context) => FocusDetector(
-        key: _focusDetectorKey,
-        onFocusGained: () => widget.bloc.onFocusGain.add(null),
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(S.of(context).detailsScreenTopTitle),
-            centerTitle: true,
-          ),
-          body: ActionStreamListener<MovieDetailsBodyAction>(
-            actionStream: widget.bloc.onNewAction,
-            onReceived: (event) {
-              if (event is ShowFavoriteTogglingError) {
-                showToogleFavoriteErrorDialog(context);
-              } else if (event is ShowFavoriteTogglingSuccess) {
-                showToogleFavoriteSuccessDialog(
-                    context, event.title, event.isToFavorite);
-              }
-            },
-            child: StreamBuilder<MovieDetailsBodyState>(
-              stream: widget.bloc.onNewState,
-              builder: (context, snapshot) =>
-                  AsyncSnapshotResponseView<Loading, Error, Success>(
-                snapshot: snapshot,
-                successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
-                  onFavoriteTap: () => widget.bloc.onFavoriteTap.add(null),
-                  movieDetails: snapshot.movieDetails,
-                ),
-                errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
-                  type: snapshot.type,
-                  onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
-                ),
-                loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).detailsScreenTopTitle),
+          centerTitle: true,
+        ),
+        body: ActionStreamListener<MovieDetailsBodyAction>(
+          actionStream: bloc.onNewAction,
+          onReceived: (event) {
+            if (event is ShowFavoriteTogglingError) {
+              showToogleFavoriteErrorDialog(context);
+            } else if (event is ShowFavoriteTogglingSuccess) {
+              showToogleFavoriteSuccessDialog(
+                  context, event.title, event.isToFavorite);
+            }
+          },
+          child: StreamBuilder<MovieDetailsBodyState>(
+            stream: bloc.onNewState,
+            builder: (context, snapshot) =>
+                AsyncSnapshotResponseView<Loading, Error, Success>(
+              snapshot: snapshot,
+              successWidgetBuilder: (context, snapshot) => _MovieDetailsTile(
+                onFavoriteTap: () => bloc.onFavoriteTap.add(null),
+                movieDetails: snapshot.movieDetails,
               ),
+              errorWidgetBuilder: (context, snapshot) => ErrorIndicator(
+                type: snapshot.type,
+                onTryAgainTap: () => bloc.onTryAgain.add(null),
+              ),
+              loadingWidgetBuilder: (context, snapshot) => LoadingIndicator(),
             ),
           ),
         ),

@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:domain/data_observables.dart';
+import 'package:domain/model/model.dart';
 import 'package:domain/use_case/favorite_movie_uc.dart';
 import 'package:domain/use_case/get_movies_list_uc.dart';
 import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-
-import 'package:domain/model/model.dart';
 import 'package:tokenlab_challenge/common/subscription_holder.dart';
 import 'package:tokenlab_challenge/presentation/common/generic_error.dart';
 
@@ -17,11 +17,14 @@ class MoviesListBloc with SubscriptionHolder {
     @required this.getMoviesList,
     @required this.favoriteMovie,
     @required this.unfavoriteMovie,
+    @required this.activeFavoriteUpdateStreamWrapper,
   })  : assert(getMoviesList != null),
         assert(favoriteMovie != null),
-        assert(unfavoriteMovie != null) {
+        assert(unfavoriteMovie != null),
+        assert(activeFavoriteUpdateStreamWrapper != null) {
     Rx.merge([
-      _onFocusGainController.stream,
+      Stream.value(null),
+      activeFavoriteUpdateStreamWrapper.value,
       _onTryAgainController.stream,
     ])
         .flatMap(
@@ -41,9 +44,7 @@ class MoviesListBloc with SubscriptionHolder {
   final GetMoviesListUC getMoviesList;
   final FavoriteMovieUC favoriteMovie;
   final UnfavoriteMovieUC unfavoriteMovie;
-
-  final _onFocusGainController = StreamController<void>();
-  Sink<void> get onFocusGain => _onFocusGainController.sink;
+  final ActiveFavoriteUpdateStreamWrapper activeFavoriteUpdateStreamWrapper;
 
   final _onTryAgainController = StreamController<void>();
   Sink<void> get onTryAgain => _onTryAgainController.sink;
@@ -122,7 +123,6 @@ class MoviesListBloc with SubscriptionHolder {
   }
 
   void dispose() {
-    _onFocusGainController.close();
     _onFavoriteTapController.close();
     _onNewActionController.close();
     _onTryAgainController.close();

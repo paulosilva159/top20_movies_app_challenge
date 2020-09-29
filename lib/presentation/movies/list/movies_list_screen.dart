@@ -1,14 +1,13 @@
+import 'package:domain/data_observables.dart';
+import 'package:domain/model/model.dart';
 import 'package:domain/use_case/favorite_movie_uc.dart';
 import 'package:domain/use_case/get_movies_list_uc.dart';
 import 'package:domain/use_case/unfavorite_movie_uc.dart';
 import 'package:flutter/material.dart';
-
-import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
 import 'package:tokenlab_challenge/presentation/common/action_stream_listener.dart';
 import 'package:tokenlab_challenge/presentation/common/alert_dialogs/states_alert_dialog.dart';
 import 'package:tokenlab_challenge/presentation/common/assets_builder.dart';
-
 import 'package:tokenlab_challenge/presentation/common/async_snapshot_response_view.dart';
 import 'package:tokenlab_challenge/presentation/common/image_loader.dart';
 import 'package:tokenlab_challenge/presentation/common/indicators/indicators.dart';
@@ -16,12 +15,10 @@ import 'package:tokenlab_challenge/presentation/common/movies_structure_type.dar
 import 'package:tokenlab_challenge/presentation/common/page_navigation.dart';
 import 'package:tokenlab_challenge/presentation/common/routes.dart';
 
-import 'package:domain/model/model.dart';
-
 import 'movies_list_bloc.dart';
 import 'movies_list_screen_models.dart';
 
-class MoviesListScreen extends StatefulWidget {
+class MoviesListScreen extends StatelessWidget {
   const MoviesListScreen({
     @required this.movieStructureType,
     @required this.bloc,
@@ -31,15 +28,28 @@ class MoviesListScreen extends StatefulWidget {
   final MovieStructureType movieStructureType;
   final MoviesListBloc bloc;
 
-  static Widget create(MovieStructureType movieStructureType) => ProxyProvider3<
-          GetMoviesListUC, FavoriteMovieUC, UnfavoriteMovieUC, MoviesListBloc>(
-        update: (context, getMoviesList, favoriteMovie, unfavoriteMovie,
-                moviesListBloc) =>
+  static Widget create(MovieStructureType movieStructureType) => ProxyProvider4<
+          GetMoviesListUC,
+          FavoriteMovieUC,
+          UnfavoriteMovieUC,
+          ActiveFavoriteUpdateStreamWrapper,
+          MoviesListBloc>(
+        update: (
+          context,
+          getMoviesList,
+          favoriteMovie,
+          unfavoriteMovie,
+          activeFavoriteUpdateStreamWrapper,
+          moviesListBloc,
+        ) =>
             moviesListBloc ??
             MoviesListBloc(
-                getMoviesList: getMoviesList,
-                favoriteMovie: favoriteMovie,
-                unfavoriteMovie: unfavoriteMovie),
+              getMoviesList: getMoviesList,
+              favoriteMovie: favoriteMovie,
+              unfavoriteMovie: unfavoriteMovie,
+              activeFavoriteUpdateStreamWrapper:
+                  activeFavoriteUpdateStreamWrapper,
+            ),
         dispose: (context, bloc) => bloc.dispose(),
         child: Consumer<MoviesListBloc>(
           builder: (context, bloc, child) => MoviesListScreen(
@@ -48,78 +58,67 @@ class MoviesListScreen extends StatefulWidget {
       );
 
   @override
-  _MoviesListScreenState createState() => _MoviesListScreenState();
-}
-
-class _MoviesListScreenState extends State<MoviesListScreen> {
-  final _focusDetectorKey = UniqueKey();
-
-  @override
-  Widget build(BuildContext context) => FocusDetector(
-        key: _focusDetectorKey,
-        onFocusGained: () => widget.bloc.onFocusGain.add(null),
-        child: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(Routes.favorites);
-                    },
-                    icon: const Icon(Icons.favorite),
-                  )
-                ],
-                expandedHeight: 250,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: const Text('TMDb'),
-                  centerTitle: true,
-                  background: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Image.asset(
-                      AssetsBuilder.top20Image,
-                    ),
+  Widget build(BuildContext context) => Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(Routes.favorites);
+                  },
+                  icon: const Icon(Icons.favorite),
+                )
+              ],
+              expandedHeight: 250,
+              flexibleSpace: FlexibleSpaceBar(
+                title: const Text('TMDb'),
+                centerTitle: true,
+                background: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Image.asset(
+                    AssetsBuilder.top20Image,
                   ),
                 ),
               ),
-              ActionStreamListener(
-                actionStream: widget.bloc.onNewAction,
-                onReceived: (event) {
-                  if (event is ShowFavoriteTogglingError) {
-                    showToogleFavoriteErrorDialog(context);
-                  } else if (event is ShowFavoriteTogglingSuccess) {
-                    showToogleFavoriteSuccessDialog(
-                        context, event.title, event.isToFavorite);
-                  }
-                },
-                child: StreamBuilder(
-                  stream: widget.bloc.onNewState,
-                  builder: (context, snapshot) =>
-                      AsyncSnapshotResponseView<Loading, Error, Success>(
-                    snapshot: snapshot,
-                    successWidgetBuilder: (context, snapshot) =>
-                        _MoviesListStructure(
-                      onFavoriteTap: widget.bloc.onFavoriteTap.add,
-                      movieStructureType: widget.movieStructureType,
-                      moviesList: snapshot.moviesList,
-                    ),
-                    errorWidgetBuilder: (context, snapshot) =>
-                        SliverFillRemaining(
-                      child: ErrorIndicator(
-                        type: snapshot.type,
-                        onTryAgainTap: () => widget.bloc.onTryAgain.add(null),
-                      ),
-                    ),
-                    loadingWidgetBuilder: (context, snapshot) =>
-                        SliverFillRemaining(
-                      child: LoadingIndicator(),
+            ),
+            ActionStreamListener(
+              actionStream: bloc.onNewAction,
+              onReceived: (event) {
+                if (event is ShowFavoriteTogglingError) {
+                  showToogleFavoriteErrorDialog(context);
+                } else if (event is ShowFavoriteTogglingSuccess) {
+                  showToogleFavoriteSuccessDialog(
+                      context, event.title, event.isToFavorite);
+                }
+              },
+              child: StreamBuilder(
+                stream: bloc.onNewState,
+                builder: (context, snapshot) =>
+                    AsyncSnapshotResponseView<Loading, Error, Success>(
+                  snapshot: snapshot,
+                  successWidgetBuilder: (context, snapshot) =>
+                      _MoviesListStructure(
+                    onFavoriteTap: bloc.onFavoriteTap.add,
+                    movieStructureType: movieStructureType,
+                    moviesList: snapshot.moviesList,
+                  ),
+                  errorWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: ErrorIndicator(
+                      type: snapshot.type,
+                      onTryAgainTap: () => bloc.onTryAgain.add(null),
                     ),
                   ),
+                  loadingWidgetBuilder: (context, snapshot) =>
+                      SliverFillRemaining(
+                    child: LoadingIndicator(),
+                  ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       );
 }
