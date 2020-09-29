@@ -1,5 +1,11 @@
 {
   "@@locale": "en_US",
+  "alertDialogErrorTitle": "Error",
+  "alertDialogErrorMessage": "Error while trying to (un)favorite!",
+  "alertDialogSuccessTitle": "Success",
+  "alertDialogToFavoriteSuccessMessage": "{movie} favorited with success!",
+  "alertDialogToUnfavoriteSuccessMessage": "{movie} unfavorited with success!",
+  "alertDialogActionTitle": "Done",
   "detailsTileVotesQtt": "{voteQuantity}: Votes",
   "detailsTileScore": "{score}: Score",
   "favoritesListScreenTitle": "Favorites",
