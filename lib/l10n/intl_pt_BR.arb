@@ -1,10 +1,18 @@
 {
   "@@locale": "pt_BR",
+  "alertDialogErrorTitle": "Erro",
+  "alertDialogErrorMessage": "Erro ao tentar (des)favoritar!",
+  "alertDialogSuccessTitle": "Sucesso",
+  "alertDialogToFavoriteSuccessMessage": "{movie} favoritado com sucesso!",
+  "alertDialogToUnfavoriteSuccessMessage": "{movie} desfavoritado com sucesso!",
+  "alertDialogActionTitle": "Fechar",
   "detailsTileVotesQtt": "Qtd. de Votos: {voteQuantity}",
   "detailsTileScore": "Pontuação: {score}",
+  "favoritesListScreenTitle": "Favoritos",
   "detailsScreenTopTitle": "Detalhes",
   "tryAgainMessage": "Tente Novamente",
   "connectionErrorMessage": "Verifique sua conexão!",
+  "dioErrorMessage": "Erro durante tentativa de obter dados",
   "genericErrorMessage": "Deu erro!",
   "bottomNavigationItemListTitle": "Lista",
   "bottomNavigationItemGridTitle": "Grade"

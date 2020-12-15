@@ -33,6 +33,66 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Error`
+  String get alertDialogErrorTitle {
+    return Intl.message(
+      'Error',
+      name: 'alertDialogErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error while trying to (un)favorite!`
+  String get alertDialogErrorMessage {
+    return Intl.message(
+      'Error while trying to (un)favorite!',
+      name: 'alertDialogErrorMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get alertDialogSuccessTitle {
+    return Intl.message(
+      'Success',
+      name: 'alertDialogSuccessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{movie} favorited with success!`
+  String alertDialogToFavoriteSuccessMessage(Object movie) {
+    return Intl.message(
+      '$movie favorited with success!',
+      name: 'alertDialogToFavoriteSuccessMessage',
+      desc: '',
+      args: [movie],
+    );
+  }
+
+  /// `{movie} unfavorited with success!`
+  String alertDialogToUnfavoriteSuccessMessage(Object movie) {
+    return Intl.message(
+      '$movie unfavorited with success!',
+      name: 'alertDialogToUnfavoriteSuccessMessage',
+      desc: '',
+      args: [movie],
+    );
+  }
+
+  /// `Done`
+  String get alertDialogActionTitle {
+    return Intl.message(
+      'Done',
+      name: 'alertDialogActionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{voteQuantity}: Votes`
   String detailsTileVotesQtt(Object voteQuantity) {
     return Intl.message(
@@ -50,6 +110,16 @@ class S {
       name: 'detailsTileScore',
       desc: '',
       args: [score],
+    );
+  }
+
+  /// `Favorites`
+  String get favoritesListScreenTitle {
+    return Intl.message(
+      'Favorites',
+      name: 'favoritesListScreenTitle',
+      desc: '',
+      args: [],
     );
   }
 
@@ -78,6 +148,16 @@ class S {
     return Intl.message(
       'Verify your connection!',
       name: 'connectionErrorMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error while trying to obtain data`
+  String get dioErrorMessage {
+    return Intl.message(
+      'Error while trying to obtain data',
+      name: 'dioErrorMessage',
       desc: '',
       args: [],
     );
