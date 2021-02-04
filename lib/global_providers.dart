@@ -105,8 +105,8 @@ class _TMGlobalProviderState extends State<TMGlobalProvider> {
       ];
 
   List<SingleChildWidget> _fluroProviders() => [
-        Provider<Router>(
-          create: (_) => Router()
+        Provider<FluroRouter>(
+          create: (_) => FluroRouter()
             ..define(
               Routes.home,
               handler: Handler(
@@ -142,7 +142,7 @@ class _TMGlobalProviderState extends State<TMGlobalProvider> {
               ),
             ),
         ),
-        ProxyProvider<Router, RouteFactory>(
+        ProxyProvider<FluroRouter, RouteFactory>(
           update: (context, router, _) => (settings) => router
               .matchRoute(context, settings.name, routeSettings: settings)
               .route,

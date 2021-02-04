@@ -1,9 +1,7 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:fluro/fluro.dart';
-
 import 'package:tokenlab_challenge/presentation/common/bottom_navigator_tab.dart';
 
 class CupertinoBottomNavigationScaffold extends StatelessWidget {
@@ -43,7 +41,7 @@ class CupertinoBottomNavigationScaffold extends StatelessWidget {
                       settings.copyWith(name: barItem.initialRouteName);
                 }
 
-                return Router.appRouter
+                return FluroRouter.appRouter
                     .matchRoute(context, routeSettings.name,
                         routeSettings: routeSettings)
                     .route;

@@ -25,17 +25,18 @@ Future<void> main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          theme: ThemeData(
-            textTheme: const TextTheme(
-              headline1: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          onGenerateRoute: Provider.of<RouteFactory>(context, listen: false));
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          headline1: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      onGenerateRoute: Provider.of<RouteFactory>(context, listen: false));
 }
